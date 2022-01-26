@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header>
+    <el-header style="z-index: 5; padding: 0;opacity: 0.8">
       <el-menu
           :default-active="activeIndex2"
           class="el-menu-demo"
@@ -16,7 +16,13 @@
         <el-menu-item index="4">关于</el-menu-item>
       </el-menu>
     </el-header>
-    <el-main>Main</el-main>
+    <el-main style="padding: 0;overflow: visible">
+      <el-carousel style=" background-color: dimgrey;margin: -60px 0 0 0" indicator-position="outside" height="500px">
+        <el-carousel-item v-for="item in 4" :key="item">
+          <h3>{{ item }}</h3>
+        </el-carousel-item>
+      </el-carousel>
+    </el-main>
     <el-footer>Footer</el-footer>
   </el-container>
 </template>
@@ -33,5 +39,13 @@ const handleSelect = (key: string, keyPath: string[]) => {
 <style scoped>
 .el-menu.el-menu--horizontal {
   border-bottom: solid 1px #131313;
+}
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 18px;
+  opacity: 0.75;
+  line-height: 300px;
+  margin: 0;
+  text-align: center;
 }
 </style>
