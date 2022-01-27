@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: user-security
+  config:
+    # ???
+    # https://docs.spring.io/spring-cloud-consul/docs/current/reference/html/#config-data-import
+    import: optional:consul:localhost:8500
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      config:
+        enabled: true
+        # ??????? consul kv ?? "prefixes/name/data-key"
+        # ?: "service/user-security/dev"
+        prefixes:
+          - service
+        name: ${spring.application.name}
+        data-key: dev
+        format: YAML # Value ??
+      discovery:
+        enabled: true
+        register: true    # ????? consul
+        deregister: true  # ?????????
+        service-name: ${spring.application.name}  # ??? consul ????
+        health-check-path: /actuator/health   # ??????? ? Spring Boot Actuator ??
+        heartbeat:
+          enabled: true   # ?? consul ????
+
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+    consul:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env,beans"
+  health:
+    refresh:
+      enabled: true
+
+
