@@ -29,13 +29,14 @@
       </el-carousel>
 
 <!--      预览图片-->
-      <div style="margin: 0">
-        <div style="text-align: center">
+      <div style="margin: 0 auto; text-align: center">
+        <div style="margin: 20px !important;">
           <el-space size="100px" wrap>
             <el-card v-for="i in 4" :key="i" style=" width: 500px; height: 300px" :body-style="{ padding: '0px' }">
               <img
                   src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
                   class="image"
+                  style="padding: 20px"
               />
             </el-card>
           </el-space>
