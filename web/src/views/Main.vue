@@ -22,23 +22,26 @@
 
     <el-main style="padding: 0;overflow: visible">
 <!--      走马灯-->
-      <el-carousel style=" background-color: dimgrey;margin: -60px 0 0 0" indicator-position="outside" :height="carouselHeight">
+      <el-carousel style=" background-color: dimgrey;margin: -60px 0 0 0" :height="carouselHeight">
         <el-carousel-item v-for="item in 4" :key="item">
-          <h3>{{ item }}</h3>
+          <img
+              style="width: 100%;height: 100%"
+              src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"
+          />
+          <h3>aaaaaaaaaaaa</h3>
         </el-carousel-item>
       </el-carousel>
 
 <!--      预览图片-->
       <div style="margin: 0 auto; text-align: center">
-        <div style="margin: 20px !important;">
-          <el-space size="100px" wrap>
-            <el-card v-for="i in 4" :key="i" style=" width: 500px; height: 300px" :body-style="{ padding: '0px' }">
+        <div style="margin: 50px !important;">
+          <el-space v-for="i in 4" :key="i" wrap>
+            <div>
               <img
-                  src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-                  class="image"
-                  style="padding: 20px"
+                  :style="{'width': cardWidth,'height':cardHeight, 'margin':'10px'}"
+                  src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
               />
-            </el-card>
+            </div>
           </el-space>
         </div>
       </div>
@@ -68,6 +71,9 @@ export default defineComponent({
 
     function setHeight(){
       carouselHeight.value=window.innerWidth/16*9+'px'
+      cardWidth.value=window.innerWidth/2*0.8+'px'
+      cardHeight.value=window.innerWidth/2*0.8/16*9+'px'
+
     }
 
     /**
@@ -105,8 +111,5 @@ export default defineComponent({
   margin: 0;
   text-align: center;
 }
-.image {
-  width: 100%;
-  display: block;
-}
+
 </style>
