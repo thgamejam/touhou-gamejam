@@ -1,3 +1,5 @@
+server:
+  port: 3000  # 修改 Spring Boot Web 端口
 spring:
   profiles:
     active: @spring.active@   # 控制 Maven 环境切换
