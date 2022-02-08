@@ -74,7 +74,7 @@ def api():
         #         --ts_out="{ts_out}" `
         #         {file}
         #     '''
-        cmd = f'protoc --proto_path="{proto_path}" --plugin=protoc-gen-ts="{PROTOC_GEN_TS_PATH}" --java_out="{java_out}" --js_out="import_style=commonjs,binary:{ts_out}" --ts_out="{ts_out}" {file}'
+        cmd = f'protoc --proto_path="{proto_path}" --plugin=protoc-gen-ts="{PROTOC_GEN_TS_PATH}" --java_out="{java_out}" --ts_out="{ts_out}" {file}'
         print(cmd)
         
         exitcode, output = subprocess.getstatusoutput(cmd)
