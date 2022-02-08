@@ -23,12 +23,12 @@
     <el-main style="padding: 0;overflow: visible">
 <!--      走马灯-->
       <el-carousel style=" background-color: dimgrey;margin: -60px 0 0 0" :height="carouselHeight">
-        <el-carousel-item v-for="item in 4" :key="item">
-          <img
+        <el-carousel-item v-for="item in carouselImg" :key="item">
+          <el-image
               style="width: 100%;height: 100%"
-              src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"
+              :src=item.imgURL
           />
-          <h3>aaaaaaaaaaaa</h3>
+
         </el-carousel-item>
       </el-carousel>
 
@@ -37,7 +37,8 @@
         <div style="margin: 50px !important;">
           <el-space v-for="i in 4" :key="i" wrap>
             <div>
-              <img
+              <el-image
+                  class="image"
                   :style="{'width': cardWidth,'height':cardHeight, 'margin':'10px'}"
                   src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
               />
@@ -62,6 +63,20 @@ export default defineComponent({
     const cardHeight=ref('')
     const cardWidth=ref('')
     const activeIndex = ref('1')
+    let carouselImg = ref([
+        {
+          imgURL: "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+          router: "",
+          text: "",
+          des: ""
+        },
+      {
+        imgURL: "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+        router: "",
+        text: "",
+        des: ""
+      },
+    ])
 
 
     const handleSelect = (key: string, keyPath: string[]) => {
@@ -75,6 +90,7 @@ export default defineComponent({
       cardHeight.value=window.innerWidth/2*0.8/16*9+'px'
 
     }
+
 
     /**
      * 初始化设置高度
@@ -92,6 +108,7 @@ export default defineComponent({
       activeIndex,
       cardHeight,
       cardWidth,
+      carouselImg,
       carouselHeight,
       handleSelect
     }
@@ -112,4 +129,7 @@ export default defineComponent({
   text-align: center;
 }
 
+.image:hover{
+  box-shadow:0 0 3px 3px #F0FFFF;
+}
 </style>
