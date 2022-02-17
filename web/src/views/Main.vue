@@ -22,7 +22,7 @@
 
     <el-main style="padding: 0;overflow: visible">
 <!--      走马灯-->
-      <el-carousel style=" background-color: dimgrey;margin: -60px 0 0 0" :height="carouselHeight">
+      <el-carousel style=" background-color: dimgrey;margin: -60px 0 0 0" :height="carouselHeight+'px'">
         <el-carousel-item v-for="item in carouselImg" :key="item">
           <el-image
               style="width: 100%;height: 100%"
@@ -36,10 +36,16 @@
       <div style="margin: 0 auto; text-align: center">
         <div style="margin: 50px !important;">
           <el-space v-for="i in 4" :key="i" wrap>
-            <div>
-              <el-image
+            <div class="ani">
+<!--              文字介绍栏-->
+              <div class="mv" :style="{'height':cardHeight*0.5+'px','width': cardWidth+'px'}">
+                <h2 style="margin: 20px">《这是标题》</h2>
+                <h3 style="margin: 20px">&nbsp;&nbsp;&nbsp;&nbsp;这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍</h3>
+              </div>
+<!--              展示图片-->
+              <img
                   class="image"
-                  :style="{'width': cardWidth,'height':cardHeight, 'margin':'10px'}"
+                  :style="{'width': cardWidth+'px','height':cardHeight+'px', 'margin':'10px'}"
                   src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
               />
             </div>
@@ -59,9 +65,9 @@
 import {defineComponent, onBeforeMount, ref} from 'vue'
 export default defineComponent({
   setup(){
-    const carouselHeight=ref('')
-    const cardHeight=ref('')
-    const cardWidth=ref('')
+    const carouselHeight=ref(0)
+    const cardHeight=ref(0)
+    const cardWidth=ref(0)
     const activeIndex = ref('1')
     let carouselImg = ref([
         {
@@ -85,9 +91,9 @@ export default defineComponent({
 
 
     function setHeight(){
-      carouselHeight.value=window.innerWidth/16*9+'px'
-      cardWidth.value=window.innerWidth/2*0.8+'px'
-      cardHeight.value=window.innerWidth/2*0.8/16*9+'px'
+      carouselHeight.value=window.innerWidth/16*9
+      cardWidth.value=window.innerWidth/2*0.8
+      cardHeight.value=window.innerWidth/2*0.8/16*9
 
     }
 
@@ -129,7 +135,43 @@ export default defineComponent({
   text-align: center;
 }
 
-.image:hover{
-  box-shadow:0 0 3px 3px #F0FFFF;
+/*展示框文字描述动画*/
+.ani:hover>.mv{
+  animation-name: cardTextAni;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+/*展示框图片边缘发光动画*/
+.ani:hover>.image{
+  animation-name: cardImageAni;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+
+/*展示框文字自适应*/
+.mv{
+  position: absolute;
+  transform: translateY(100%);
+  word-break:break-word;
+  text-align:left;
+  background-color:rgba(28,28,35,0.78);
+  color:rgba(255,255,255,0.6);
+  margin:10px;
+  opacity: 0;
+}
+
+
+
+@keyframes cardTextAni
+{
+  0%   {opacity: 0}
+  100% {opacity: 1}
+}
+
+@keyframes cardImageAni
+{
+  0%   { box-shadow:0 0 0px 0px rgba(255,255,255,0);}
+  100% { box-shadow:0 0 3px 3px rgba(119, 110, 110, 0.6);}
 }
 </style>
