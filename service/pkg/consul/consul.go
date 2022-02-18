@@ -5,7 +5,7 @@ import (
 	"github.com/go-kratos/kratos/contrib/config/consul/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/registry"
-	pkgConf "service/pkg/conf"
+	"service/pkg/conf"
 
 	consulRegistry "github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	consulAPI "github.com/hashicorp/consul/api"
@@ -13,10 +13,10 @@ import (
 
 type Consul struct {
 	client *consulAPI.Client
-	conf   *pkgConf.Consul
+	conf   *conf.Consul
 }
 
-func New(conf *pkgConf.Consul) *Consul {
+func New(conf *conf.Consul) *Consul {
 	consulConfig := consulAPI.DefaultConfig()
 
 	if conf != nil {

@@ -42,15 +42,27 @@ message Server {
 
 message Data {
   message Database {
-    string driver = 1;
-    string source = 2;
+    string source = 1;
+    uint32 max_idle_conn = 2;
+    uint32 max_open_conn = 3;
+    google.protobuf.Duration conn_max_lifetime = 4;
   }
   message Redis {
     string network = 1;
     string addr = 2;
-    google.protobuf.Duration read_timeout = 3;
-    google.protobuf.Duration write_timeout = 4;
+    string password = 3;
+    google.protobuf.Duration read_timeout = 4;
+    google.protobuf.Duration write_timeout = 5;
+  }
+  message ObjectStorage {
+    string url = 1;
+    string access_key = 2;
+    string secret_key = 3;
+    string bucket = 4;
+    google.protobuf.Duration small_file_expiration_time = 5;
+    google.protobuf.Duration large_file_expiration_time = 6;
   }
   Database database = 1;
   Redis redis = 2;
+  ObjectStorage object_storage = 3;
 }
