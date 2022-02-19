@@ -3,36 +3,32 @@
 
 openapi: 3.0.3
 info:
-    title: Greeter API
-    description: The greeting service definition.
+    title: Template API
     version: 0.0.1
 paths:
-    /helloworld/{name}:
+    /template:
         get:
             tags:
-                - Greeter
-            description: Sends a greeting
-            operationId: Greeter_SayHello
+                - Template
+            operationId: Template_GetTemplate
             parameters:
-                - name: name
-                  in: path
-                  required: true
+                - name: id
+                  in: query
                   schema:
-                    type: string
+                    type: integer
+                    format: uint64
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/HelloReply'
+                                $ref: '#/components/schemas/GetTemplateReply'
 components:
     schemas:
-        HelloReply:
+        GetTemplateReply:
             type: object
-            properties:
-                message:
-                    type: string
-            description: The response message containing the greetings
+            properties: {}
+            description: GetTemplateReply
 tags:
-    - name: Greeter
+    - name: Template

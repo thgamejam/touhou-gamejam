@@ -106,9 +106,11 @@ func main() {
 	}
 
 	// 服务注册
-	rr := consulUtil.Registrar()
+	rr := consulUtil.NewRegistrar()
+	// 服务发现
+	rd := consulUtil.NewDiscovery()
 
-	app, cleanup, err := initApp(pkgBootstrap.Server, pkgBootstrap.Service, rr, logger)
+	app, cleanup, err := initApp(pkgBootstrap.Server, pkgBootstrap.Service, rr, rd, logger)
 	if err != nil {
 		panic(err)
 	}

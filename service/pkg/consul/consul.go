@@ -2,13 +2,12 @@ package consul
 
 import (
 	"fmt"
-	"github.com/go-kratos/kratos/contrib/config/consul/v2"
+	consulConfig "github.com/go-kratos/kratos/contrib/config/consul/v2"
+	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/registry"
-	"service/pkg/conf"
-
-	consulRegistry "github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	consulAPI "github.com/hashicorp/consul/api"
+	"service/pkg/conf"
 )
 
 type Consul struct {
@@ -17,7 +16,7 @@ type Consul struct {
 }
 
 func New(conf *conf.Consul) *Consul {
-	consulConfig := consulAPI.DefaultConfig()
+	cc := consulAPI.DefaultConfig()
 
 	if conf != nil {
 		fmt.Printf("consul address: %v, scheme: %v, datacenter: %v\n",
@@ -26,12 +25,12 @@ func New(conf *conf.Consul) *Consul {
 			conf.Datacenter,
 		)
 
-		consulConfig.Address = conf.Address
-		consulConfig.Scheme = conf.Scheme
-		consulConfig.Datacenter = conf.Datacenter
+		cc.Address = conf.Address
+		cc.Scheme = conf.Scheme
+		cc.Datacenter = conf.Datacenter
 	}
 
-	client, err := consulAPI.NewClient(consulConfig)
+	client, err := consulAPI.NewClient(cc)
 	if err != nil {
 		panic(err)
 	}
@@ -42,13 +41,18 @@ func New(conf *conf.Consul) *Consul {
 	}
 }
 
-func (c *Consul) Registrar() registry.Registrar {
-	r := consulRegistry.New(c.client, consulRegistry.WithHealthCheck(false))
+func (c *Consul) NewDiscovery() registry.Discovery {
+	r := consul.New(c.client, consul.WithHealthCheck(false))
+	return r
+}
+
+func (c *Consul) NewRegistrar() registry.Registrar {
+	r := consul.New(c.client, consul.WithHealthCheck(false))
 	return r
 }
 
 func (c *Consul) NewConfigSource() config.Source {
-	cs, err := consul.New(c.client, consul.WithPath(c.conf.Path))
+	cs, err := consulConfig.New(c.client, consulConfig.WithPath(c.conf.Path))
 	//consul中需要标注文件后缀，kratos读取配置需要适配文件后缀
 	//The file suffix needs to be marked, and kratos needs to adapt the file suffix to read the configuration.
 	if err != nil {

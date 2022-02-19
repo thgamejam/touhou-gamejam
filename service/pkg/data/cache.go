@@ -1,4 +1,4 @@
-package cache
+package data
 
 import (
 	"github.com/go-redis/redis/v8"

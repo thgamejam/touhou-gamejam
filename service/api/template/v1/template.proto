@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package template.v1;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "service/api/template/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.template.v1";
+option java_outer_classname = "TemplateProtoV1";
+
+service Template {
+  rpc CreateTemplate (CreateTemplateRequest) returns (CreateTemplateReply) {}
+  rpc DeleteTemplate (DeleteTemplateRequest) returns (DeleteTemplateReply) {}
+  rpc GetTemplate (GetTemplateRequest) returns (GetTemplateReply) {
+    option (google.api.http) = {
+      get: "/template"
+    };
+  }
+  rpc UpdateTemplate (UpdateTemplateRequest) returns (UpdateTemplateReply) {}
+  rpc ListTemplate (ListTemplateRequest) returns (ListTemplateReply) {}
+}
+
+// CreateTemplateRequest
+message CreateTemplateRequest {
+}
+// CreateTemplateReply
+message CreateTemplateReply {
+}
+
+// DeleteTemplateRequest
+message DeleteTemplateRequest {
+}
+// DeleteTemplateReply
+message DeleteTemplateReply {
+}
+
+// GetTemplateRequest
+message GetTemplateRequest {
+  uint64 id = 1 [(validate.rules).uint64 = {gt: 0}];
+}
+// GetTemplateReply
+message GetTemplateReply {
+}
+
+// UpdateTemplateRequest
+message UpdateTemplateRequest {
+}
+// UpdateTemplateReply
+message UpdateTemplateReply {
+}
+
+// ListTemplateRequest
+message ListTemplateRequest {
+}
+// ListTemplateReply
+message ListTemplateReply {
+}

@@ -19,6 +19,6 @@ import (
 )
 
 // initApp init kratos application.
-func initApp(*pkgConf.Server, *pkgConf.Service, registry.Registrar, log.Logger) (*kratos.App, func(), error) {
+func initApp(*pkgConf.Server, *pkgConf.Service, registry.Registrar, registry.Discovery, log.Logger) (*kratos.App, func(), error) {
 	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }
