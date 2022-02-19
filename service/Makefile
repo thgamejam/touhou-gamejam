@@ -30,8 +30,8 @@ init:
 .PHONY: app
 # 创建一个微服务
 app:
-	@echo -n "输入微服务的名称: "
-	@read service_name
+	bash ./script/create_app.sh
+	make generate;
 
 .PHONY: service
 # 生成 Service 代码
