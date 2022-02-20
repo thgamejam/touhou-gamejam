@@ -4,6 +4,7 @@
     <div style="width: 100px;height: 100px;margin: 0 auto;background-color: #A7A7A7">
       我是logo
     </div>
+<!--    输入框-->
     <div style="margin: 40px">
       <el-input style="margin: 0 0 20px;" v-model="input" placeholder="电子邮箱或手机号码" />
       <el-input v-model="password" type="password" placeholder="密码" />
@@ -15,11 +16,13 @@
           <a class="loginText">立即注册</a>
         </div>
       </div>
-      <el-button style="width: 100%;margin: 10px 0 0 0;" type="success">登录</el-button>
+<!--      登录按钮-->
+      <el-button class="loginButton" type="success">登录</el-button>
       <el-divider style="opacity: 0.8;margin: 30px 0 30px 0;">
         <p style="font-size:5px;">或用以下方式登录</p>
       </el-divider>
-      <div style="font-size: 30px; color: #A7A7A7">
+<!--      其他方式登录图标-->
+      <div style="font-size: 30px; color: white">
         <i class="ri-github-fill"></i>
         <i class="ri-qq-fill" style="margin: 0 20px 0 20px;"></i>
         <i class="ri-wechat-fill"></i>
@@ -50,6 +53,15 @@ export default {
   text-decoration:underline;
   color: #A7A7A7;
 }
+.loginButton{
+  width: 100%;
+  margin: 10px 0 0 0;
+  background-color: #00A038;
+  border-radius: 8px
+}
+.loginButton:hover{
+  box-shadow: 0 0 5px 2px #00A038;
+}
 .loginDiv{
   text-align: center;
   /*background-color: white;*/
@@ -64,7 +76,6 @@ export default {
   color: #A7A7A7;
   font-size: 15px;
 }
-
 /deep/.el-input__inner {
   background-color: transparent !important;
   border: 1px solid #A7A7A7;
