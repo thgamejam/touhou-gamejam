@@ -1,9 +1,12 @@
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
-INTERNAL_PROTO_FILES=$(shell find app/*/internal -name "*.proto")
-API_PROTO_FILES=$(shell find api -name *.proto)
+INTERNAL_PROTO_FILES=$(shell find "./app/*/internal" -name "*.proto")
+API_PROTO_FILES=$(shell find "./api" -name "*.proto" -type f ! -name "error_reason.proto")
+ERROR_PROTO_FILES=$(shell find "./api" -name "error_reason.proto")
 
-PKG_CONF_PROTO_FILES=$(shell find pkg/conf -name *.proto)
+PKG_CONF_PROTO_FILES=$(shell find "./pkg/conf" -name *.proto)
+
+WIRE_FILES=$(shell find "./app/*/cmd/service" -name "wire.go")
 
 # 判断Docker的环境
 DOCKER_EXE="$(shell command -v docker.exe)"
@@ -25,19 +28,27 @@ init:
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@v0.6.1
 	go install github.com/google/wire/cmd/wire@latest
 	go install github.com/envoyproxy/protoc-gen-validate@latest
+	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
 	bash ./script/dev-environment.sh
 
 .PHONY: app
 # 创建一个微服务
 app:
 	bash ./script/create_app.sh
-	make generate;
+	make all;
 
 .PHONY: service
 # 生成 Service 代码
 service:
-	@echo -n "输入微服务的名称: "
-	@read service_name
+	bash ./script/generate_service.sh
+
+.PHONY: wire
+# 依赖注入
+wire:
+	@for file in $(WIRE_FILES) ; do \
+		path=$$( dirname $$file ) ; \
+		wire $$path ; \
+	done
 
 .PHONY: errors
 # generate errors code
@@ -46,7 +57,7 @@ errors:
                --proto_path=./third_party \
                --go_out=paths=source_relative:. \
                --go-errors_out=paths=source_relative:. \
-               $(API_PROTO_FILES)
+               $(ERROR_PROTO_FILES)
 
 .PHONY: config
 # generate internal proto
@@ -70,7 +81,10 @@ api:
  	       --go_out=paths=source_relative:. \
  	       --go-http_out=paths=source_relative:. \
  	       --go-grpc_out=paths=source_relative:. \
- 	       --openapi_out==paths=source_relative:. \
+ 	       --validate_out=paths=source_relative,lang=go:. \
+ 	       --openapiv2_out . \
+           --openapiv2_opt logtostderr=true \
+           --openapiv2_opt json_names_for_fields=false \
 	       $(API_PROTO_FILES)
 
 .PHONY: build
@@ -86,12 +100,12 @@ generate:
 	go generate ./...
 
 .PHONY: all
-# generate all
+# 生成所有代码
 all:
 	make api;
 	make errors;
 	make config;
-	make generate;
+	make wire;
 
 # show help
 help:
