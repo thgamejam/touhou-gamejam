@@ -40,7 +40,12 @@
 <!--              文字介绍栏-->
               <div class="mv" :style="{'height':cardHeight*0.5+'px','width': cardWidth+'px'}">
                 <h2 style="margin: 20px">《这是标题》</h2>
-                <h3 style="margin: 20px">&nbsp;&nbsp;&nbsp;&nbsp;这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍</h3>
+                <h4 style="margin: 20px">&nbsp;&nbsp;&nbsp;&nbsp;这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍</h4>
+                <div style="position:absolute;right:0px;bottom:10px;width:100px;color: white">
+                  <a style="color: rgba(255,255,255,0.8)">
+                    <h5>了解详情</h5>
+                  </a>
+                </div>
               </div>
 <!--              展示图片-->
               <img
@@ -142,11 +147,10 @@ export default defineComponent({
   animation-fill-mode: forwards;
 }
 
+
 /*展示框图片边缘发光动画*/
 .ani:hover>.image{
-  animation-name: cardImageAni;
-  animation-duration: 0.5s;
-  animation-fill-mode: forwards;
+  box-shadow: 0 0 10px 5px rgba(0,0,0,0.4);
 }
 
 /*展示框文字自适应*/
@@ -156,12 +160,10 @@ export default defineComponent({
   word-break:break-word;
   text-align:left;
   background-color:rgba(28,28,35,0.78);
-  color:rgba(255,255,255,0.6);
+  color:rgba(255,255,255,0.8);
   margin:10px;
   opacity: 0;
 }
-
-
 
 @keyframes cardTextAni
 {
@@ -169,9 +171,4 @@ export default defineComponent({
   100% {opacity: 1}
 }
 
-@keyframes cardImageAni
-{
-  0%   { box-shadow:0 0 0px 0px rgba(255,255,255,0);}
-  100% { box-shadow:0 0 3px 3px rgba(119, 110, 110, 0.6);}
-}
 </style>
