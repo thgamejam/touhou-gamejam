@@ -15,7 +15,7 @@ $docker run -d \
   --name consul \
   -p 8500:8500 -p 8502:8502 -p 8300:8300 -p 8600:8600 \
   -e CONSUL_BIND_INTERFACE=eth0 \
-  -e 'CONSUL_LOCAL_CONFIG={\"skip_leave_on_interrupt\": true}' \
+  -e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
   consul:1.11.2 agent -server -ui \
     -bind='0.0.0.0' \
     -retry-join='0.0.0.0' \

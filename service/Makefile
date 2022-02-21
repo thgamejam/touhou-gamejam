@@ -2,6 +2,7 @@ GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
 INTERNAL_PROTO_FILES=$(shell find "./app/*/internal" -name "*.proto")
 API_PROTO_FILES=$(shell find "./api" -name "*.proto" -type f ! -name "error_reason.proto")
+#API_PROTO_FILES=$(shell find "./api" -name "*.proto")
 ERROR_PROTO_FILES=$(shell find "./api" -name "error_reason.proto")
 
 PKG_CONF_PROTO_FILES=$(shell find "./pkg/conf" -name *.proto)
@@ -29,7 +30,7 @@ init:
 	go install github.com/google/wire/cmd/wire@latest
 	go install github.com/envoyproxy/protoc-gen-validate@latest
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
-	bash ./script/dev-environment.sh
+	bash ./script/dev_environment.sh
 
 .PHONY: app
 # 创建一个微服务
