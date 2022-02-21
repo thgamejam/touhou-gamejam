@@ -50,9 +50,9 @@ wire:
 		wire $$path ; \
 	done
 
-.PHONY: errors
+.PHONY: error
 # generate errors code
-errors:
+error:
 	protoc --proto_path=. \
                --proto_path=./third_party \
                --go_out=paths=source_relative:. \
@@ -103,7 +103,7 @@ generate:
 # 生成所有代码
 all:
 	make api;
-	make errors;
+	make error;
 	make config;
 	make wire;
 
