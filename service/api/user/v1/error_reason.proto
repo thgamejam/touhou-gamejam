@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package user.v1;
+import "errors/errors.proto";
+
+option go_package = "service/api/user/v1;v1";
+option java_multiple_files = true;
+option java_package = "user.v1.errors";
+option objc_class_prefix = "APIUserErrors";
+
+enum ErrorReason {
+  option (errors.default_code) = 0;
+
+  // 定义错误代码
+  UNKNOWN_ERROR = 0;
+  LOGIN_FAILED = 1;
+  REGISTER_FAILED = 2;
+}
