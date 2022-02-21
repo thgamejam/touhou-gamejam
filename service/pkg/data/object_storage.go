@@ -19,7 +19,7 @@ type Client struct {
 }
 
 // NewObjectStorage 初始化对象存储
-func NewObjectStorage(c *conf.Data_ObjectStorage) (*Client, error) {
+func NewObjectStorage(c *conf.Service) (*Client, error) {
 
 	// TODO 绑定 Log 未完成
 
@@ -29,7 +29,7 @@ func NewObjectStorage(c *conf.Data_ObjectStorage) (*Client, error) {
 		func(service, region string) (aws.Endpoint, error) {
 			return aws.Endpoint{
 				PartitionID:       "aws",
-				URL:               c.Url, // minio url
+				URL:               c.Data.ObjectStorage.Url, // minio url
 				SigningRegion:     defaultRegion,
 				HostnameImmutable: true,
 			}, nil
@@ -41,8 +41,8 @@ func NewObjectStorage(c *conf.Data_ObjectStorage) (*Client, error) {
 		func(lo *config.LoadOptions) error {
 			lo.Region = defaultRegion
 			lo.Credentials = credentials.NewStaticCredentialsProvider(
-				c.AccessKey, // Access Key
-				c.SecretKey, // Secret Key
+				c.Data.ObjectStorage.AccessKey, // Access Key
+				c.Data.ObjectStorage.SecretKey, // Secret Key
 				"",
 			)
 			lo.EndpointResolver = staticResolver
@@ -57,11 +57,11 @@ func NewObjectStorage(c *conf.Data_ObjectStorage) (*Client, error) {
 
 	oss := &Client{
 		S3Client:                client,
-		smallFileExpirationTime: c.SmallFileExpirationTime.AsDuration(),
-		largeFileExpirationTime: c.LargeFileExpirationTime.AsDuration(),
+		smallFileExpirationTime: c.Data.ObjectStorage.SmallFileExpirationTime.AsDuration(),
+		largeFileExpirationTime: c.Data.ObjectStorage.LargeFileExpirationTime.AsDuration(),
 	}
 
-	oss.bucket = aws.String(c.Bucket)
+	oss.bucket = aws.String(c.Data.ObjectStorage.Bucket)
 
 	return oss, nil
 }

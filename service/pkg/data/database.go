@@ -7,9 +7,9 @@ import (
 )
 
 // NewDataBase 初始化数据库
-func NewDataBase(c *conf.Data_Database) (*gorm.DB, error) {
+func NewDataBase(c *conf.Service) (*gorm.DB, error) {
 	db, err := gorm.Open(
-		mysql.Open(c.Source),
+		mysql.Open(c.Data.Database.Source),
 		&gorm.Config{
 			//Logger: , // TODO 绑定 Log 未完成
 		})
@@ -23,11 +23,11 @@ func NewDataBase(c *conf.Data_Database) (*gorm.DB, error) {
 	}
 	// 设置连接池
 	// 空闲
-	selDb.SetMaxIdleConns(int(c.MaxIdleConn))
+	selDb.SetMaxIdleConns(int(c.Data.Database.MaxIdleConn))
 	// 打开
-	selDb.SetMaxOpenConns(int(c.MaxOpenConn))
+	selDb.SetMaxOpenConns(int(c.Data.Database.MaxOpenConn))
 	// 超时 time.Second * 30
-	selDb.SetConnMaxLifetime(c.ConnMaxLifetime.AsDuration())
+	selDb.SetConnMaxLifetime(c.Data.Database.ConnMaxLifetime.AsDuration())
 
 	return db, nil
 }
