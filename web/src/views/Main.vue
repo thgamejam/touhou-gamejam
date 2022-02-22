@@ -41,7 +41,7 @@
               <div class="mv" :style="{'height':cardHeight*0.5+'px','width': cardWidth+'px'}">
                 <h2 style="margin: 20px">《这是标题》</h2>
                 <h4 style="margin: 20px">&nbsp;&nbsp;&nbsp;&nbsp;这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍这是介绍</h4>
-                <div style="position:absolute;right:0px;bottom:10px;width:100px;color: white">
+                <div style="position:absolute;right:0;bottom:10px;width:100px;color: white">
                   <a style="color: rgba(255,255,255,0.8)">
                     <h5>了解详情</h5>
                   </a>
