@@ -1,13 +1,13 @@
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
-INTERNAL_PROTO_FILES=$(shell find "./app/*/internal" -name "*.proto")
+INTERNAL_PROTO_FILES=$(shell find "./app" -name "*.proto")
 API_PROTO_FILES=$(shell find "./api" -name "*.proto" -type f ! -name "error_reason.proto")
 #API_PROTO_FILES=$(shell find "./api" -name "*.proto")
 ERROR_PROTO_FILES=$(shell find "./api" -name "error_reason.proto")
 
 PKG_CONF_PROTO_FILES=$(shell find "./pkg/conf" -name *.proto)
 
-WIRE_FILES=$(shell find "./app/*/cmd/service" -name "wire.go")
+WIRE_FILES=$(shell find "./app" -name "wire.go")
 
 # 判断Docker的环境
 DOCKER_EXE="$(shell command -v docker.exe)"
