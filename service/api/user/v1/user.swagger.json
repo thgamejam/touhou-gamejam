@@ -44,6 +44,16 @@
         }
       }
     },
+    "v1AccountFormat": {
+      "type": "string",
+      "enum": [
+        "ID",
+        "USERNAME",
+        "EMAIL",
+        "PHONE"
+      ],
+      "default": "ID"
+    },
     "v1CreateUserReply": {
       "type": "object",
       "properties": {

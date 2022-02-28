@@ -1643,6 +1643,8 @@ func (m *VerifyPasswordRequest) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for Format
+
 	if l := utf8.RuneCountInString(m.GetUsername()); l < 4 || l > 32 {
 		err := VerifyPasswordRequestValidationError{
 			field:  "Username",

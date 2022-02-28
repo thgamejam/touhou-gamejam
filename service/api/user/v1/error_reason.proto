@@ -15,4 +15,6 @@ enum ErrorReason {
   UNKNOWN_ERROR = 0;
   LOGIN_FAILED = 1;
   REGISTER_FAILED = 2;
+  INTERNAL_SERVER_ERROR = 4 [(errors.code) = 500];
+  CONTENT_MISSING = 5 [(errors.code) = 400];
 }

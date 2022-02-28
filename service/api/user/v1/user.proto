@@ -9,6 +9,13 @@ option java_multiple_files = true;
 option java_package = "dev.kratos.api.user.v1";
 option java_outer_classname = "UserProtoV1";
 
+enum AccountFormat {
+  ID = 0;
+  USERNAME = 1;
+  EMAIL = 2;
+  PHONE = 3;
+}
+
 service User {
   // 创建用户
   rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {}
@@ -93,8 +100,9 @@ message ListUserReply {
 
 // VerifyPasswordRequest 验证密码请求
 message VerifyPasswordRequest {
-  string username = 1 [(validate.rules).string = {min_len: 4, max_len: 32}];
-  string password = 2;
+  AccountFormat format = 1;
+  string username = 2 [(validate.rules).string = {min_len: 4, max_len: 32}];
+  string password = 3;
 }
 // VerifyPasswordReply 验证密码回复
 message VerifyPasswordReply {
