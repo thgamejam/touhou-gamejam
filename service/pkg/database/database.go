@@ -1,4 +1,4 @@
-package data
+package database
 
 import (
 	"gorm.io/driver/mysql"
@@ -29,5 +29,26 @@ func NewDataBase(c *conf.Service) (*gorm.DB, error) {
 	// 超时 time.Second * 30
 	selDb.SetConnMaxLifetime(c.Data.Database.ConnMaxLifetime.AsDuration())
 
+	err = registerCallbacks(db)
+	if err != nil {
+		return nil, err
+	}
+
 	return db, nil
+}
+
+func registerCallbacks(db *gorm.DB) (err error) {
+	err = db.Callback().Create().Replace("gorm:create_time_stamp", createCallback)
+	if err != nil {
+		return err
+	}
+	err = db.Callback().Update().Replace("gorm:update_time_stamp", updateCallback)
+	if err != nil {
+		return err
+	}
+	err = db.Callback().Delete().Replace("gorm:delete_time_stamp", deleteCallback)
+	if err != nil {
+		return err
+	}
+	return err
 }

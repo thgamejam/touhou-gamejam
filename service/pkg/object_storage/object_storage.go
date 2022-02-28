@@ -1,4 +1,4 @@
-package data
+package object_storage
 
 import (
 	"context"
