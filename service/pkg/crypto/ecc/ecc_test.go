@@ -1,16 +1,14 @@
 package ecc
 
 import (
+	"github.com/stretchr/testify/assert"
 	"service/pkg/uuid"
 	"testing"
 )
 
 func TestECC_GenerateKey(t *testing.T) {
-
 	privateKeyStr, publicKeyStr, err := GenerateKey()
-	if err != nil {
-		t.Fatalf("TestECC_GenerateKey:  GenerateKey failed!err:=%v", err)
-	}
+	assert.Nil(t, err)
 
 	t.Logf("TestECC_GenerateKey:  GenerateKey success.")
 	t.Logf("\tPrivateKey:\n%v", privateKeyStr)
@@ -18,45 +16,33 @@ func TestECC_GenerateKey(t *testing.T) {
 }
 
 func TestECC_ParsePrivateKey(t *testing.T) {
-
 	privateKeyStr, _, _ := GenerateKey()
-
 	_, err := ParsePrivateKey([]byte(privateKeyStr))
-	if err != nil {
-		t.Fatalf("TestParseECCPrivateKey:  ParsePrivateKey failed!err:=%v", err)
-	}
-
+	assert.Nil(t, err)
 }
 
 func TestECC_EncryptANDDecrypt(t *testing.T) {
 	privateKeyStr, publicKeyStr, err := GenerateKey()
-	if err != nil {
-		t.Fatalf("TestECC_EncryptANDDecrypt:  GenerateKey failed!err:=%v", err)
-	}
+	assert.Nil(t, err)
 
 	ecdsaPublicKey, err := ParsePublicKey([]byte(publicKeyStr))
-	if err != nil {
-		t.Fatalf("TestECC_EncryptANDDecrypt:  ParsePublicKey failed!err:=%v", err)
-	}
+	assert.Nil(t, err)
 
 	ecdsaPrivateKey, err := ParsePrivateKey([]byte(privateKeyStr))
-	if err != nil {
-		t.Fatalf("TestECC_EncryptANDDecrypt:  ParsePrivateKey failed!err:=%v", err)
-	}
+	assert.Nil(t, err)
 
 	plaintext := []byte("s@strluck.com")
 	t.Logf("TestECC_EncryptANDDecrypt:  log:=plaintext: %v", string(plaintext))
 
 	ciphertext, err := Encrypt(ecdsaPublicKey, plaintext)
-	if err != nil {
-		t.Fatalf("TestECC:  Encrypt failed!err:=%v", err)
-	}
+	assert.Nil(t, err)
 	t.Logf("TestECC_EncryptANDDecrypt:  log:=ciphertext: %v", ciphertext)
 
 	recoveredPlaintext, err := Decrypt(ecdsaPrivateKey, ciphertext)
-	if err != nil {
-		t.Fatalf("TestECC:  Decrypt failed!err:=%v", err)
-	}
+	assert.Nil(t, err)
+
+	assert.Equal(t, plaintext, recoveredPlaintext)
+
 	t.Logf("TestECC_EncryptANDDecrypt:  log:=recoveredPlaintext: %v", string(recoveredPlaintext))
 }
 
@@ -65,14 +51,10 @@ func BenchmarkECC_Encrypt(b *testing.B) {
 	b.StopTimer()
 
 	_, publicKeyStr, err := GenerateKey()
-	if err != nil {
-		b.Fatalf("BenchmarkECC_Encrypt:  GenerateKey failed!err:=%v", err)
-	}
+	assert.Nil(b, err)
 
 	ecdsaPublicKey, err := ParsePublicKey([]byte(publicKeyStr))
-	if err != nil {
-		b.Fatalf("BenchmarkECC_Encrypt:  ParsePublicKey failed!err:=%v", err)
-	}
+	assert.Nil(b, err)
 
 	uuids := make([]string, b.N, b.N)
 	for i := 0; i < b.N; i++ {
@@ -94,25 +76,19 @@ func BenchmarkECC_Decrypt(b *testing.B) {
 	b.StopTimer()
 
 	privateKeyStr, publicKeyStr, err := GenerateKey()
-	if err != nil {
-		b.Fatalf("BenchmarkECC_Decrypt:  GenerateKey failed!err:=%v", err)
-	}
+	assert.Nil(b, err)
+
 	ecdsaPublicKey, err := ParsePublicKey([]byte(publicKeyStr))
-	if err != nil {
-		b.Fatalf("BenchmarkECC_Decrypt:  ParsePublicKey failed!err:=%v", err)
-	}
+	assert.Nil(b, err)
+
 	ecdsaPrivateKey, err := ParsePrivateKey([]byte(privateKeyStr))
-	if err != nil {
-		b.Fatalf("BenchmarkECC_Decrypt:  ParsePrivateKey failed!err:=%v", err)
-	}
+	assert.Nil(b, err)
 
 	ciphertexts := make([]string, b.N, b.N)
 
 	for i := 0; i < b.N; i++ {
 		ciphertext, err := Encrypt(ecdsaPublicKey, []byte(uuid.New().String()))
-		if err != nil {
-			b.Errorf("BenchmarkECC_Decrypt:  Encrypt failed!err:=%v", err)
-		}
+		assert.Nil(b, err)
 		ciphertexts[i] = ciphertext
 	}
 

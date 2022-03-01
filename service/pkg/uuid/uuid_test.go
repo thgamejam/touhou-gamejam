@@ -1,6 +1,9 @@
 package uuid
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestUUID_New(t *testing.T) {
 	uuid := New()
@@ -9,17 +12,13 @@ func TestUUID_New(t *testing.T) {
 
 func TestUUID_NewUUID1(t *testing.T) {
 	uuid, err := NewUUID1()
-	if err != nil {
-		t.Fatalf("TestUUID_NewUUID1:  NewUUID1 failed!err:=%v", err)
-	}
+	assert.Nil(t, err)
 	t.Logf("TestUUID_NewUUID1:  NewUUID1 log.uuid:=%v\n", uuid.Format())
 }
 
 func TestUUID_NewOrderedUUID(t *testing.T) {
 	uuid, err := NewOrderedUUID()
-	if err != nil {
-		t.Fatalf("TestUUID_NewOrderedUUID:  NewOrderedUUID failed!err:=%v", err)
-	}
+	assert.Nil(t, err)
 	t.Logf("TestUUID_NewOrderedUUID:  NewOrderedUUID log.uuid:=%v\n", uuid.Format())
 }
 
@@ -30,20 +29,14 @@ func TestUUID_Parse(t *testing.T) {
 
 	var parseUUID UUID
 	parseUUID, err = Parse(uuid.String())
-	if err != nil {
-		t.Fatalf("TestUUID_Parse:  Parse-uuid failed!err:=%v uuid:=%v", err, uuid.String())
-	}
+	assert.Nil(t, err)
 	t.Logf("TestUUID_Parse:  Parse-uuid log.uuid:=%v\n", parseUUID.Format())
 
 	parseUUID, err = Parse(uuid1.String())
-	if err != nil {
-		t.Fatalf("TestUUID_Parse:  Parse-uuid-1 failed!err:=%v uuid:=%v", err, uuid1.String())
-	}
+	assert.Nil(t, err)
 	t.Logf("TestUUID_Parse:  Parse-uuid-1 log.uuid:=%v\n", parseUUID.Format())
 
 	parseUUID, err = Parse(orderedUUID.String())
-	if err != nil {
-		t.Fatalf("TestUUID_Parse:  Parse-uuid-ordered failed!err:=%v uuid:=%v", err, orderedUUID.String())
-	}
+	assert.Nil(t, err)
 	t.Logf("TestUUID_Parse:  Parse-uuid-ordered log.uuid:=%v\n", parseUUID.Format())
 }
