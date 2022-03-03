@@ -1,31 +1,44 @@
 package data
 
 import (
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/wire"
+    "github.com/go-kratos/kratos/v2/log"
+    "github.com/google/wire"
+    "gorm.io/gorm"
+    "service/pkg/cache"
+    "service/pkg/database"
 )
 
 // ProviderSet is data providers.
 var ProviderSet = wire.NewSet(
-	NewData,
-	NewAccountRepo,
-	// TODO 数据客户端构建函数
+    NewData,
+    NewAccountRepo,
+    cache.NewCache,
+    database.NewDataBase,
+    // TODO 数据客户端构建函数
 )
 
 // Data .
 type Data struct {
-	// TODO 封装的数据客户端
+    // TODO 封装的数据客户端
+    Cache    *cache.Cache
+    DataBase *gorm.DB
 }
 
 // NewData .
 func NewData(
-	// TODO 需要的数据客户端
-	logger log.Logger,
+// TODO 需要的数据客户端
+    db *gorm.DB,
+    cache *cache.Cache,
+    logger log.Logger,
 ) (*Data, func(), error) {
-	data := &Data{}
-
-	cleanup := func() {
-		log.NewHelper(logger).Info("closing the data resources")
-	}
-	return data, cleanup, nil
+    data := &Data{
+        DataBase: db,
+        Cache:    cache,
+    }
+    
+    cleanup := func() {
+        _ = cache.Close()
+        log.NewHelper(logger).Info("closing the data resources")
+    }
+    return data, cleanup, nil
 }

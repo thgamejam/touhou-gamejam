@@ -28,7 +28,7 @@ func (u userRepo) GetUserByUserUUID(ctx context.Context, uuid uuid.UUID) (*biz.U
     account := &Account{
         UUID: uuid,
     }
-    accountInfo, err := u.data.Redis.Get(ctx, userCacheKey(uuid)).Result()
+    accountInfo, err := u.data.Cache.GetClient().Get(ctx, userCacheKey(uuid)).Result()
     if err == redis.Nil {
         // 缓存不存在，从数据库获取数据
         if err = u.data.DataBase.First(&account).Error; err != nil {
@@ -36,13 +36,13 @@ func (u userRepo) GetUserByUserUUID(ctx context.Context, uuid uuid.UUID) (*biz.U
         }
         // 序列化数据
         accountByte, err := json.Marshal(account)
-        if err == nil {
+        if err != nil {
             return nil, err
         }
         accountInfo = string(accountByte)
         // 存入redis缓存
-        err = u.data.Redis.Set(ctx, userCacheKey(uuid), accountInfo, 0).Err()
-        if err == nil {
+        err = u.data.Cache.GetClient().Set(ctx, userCacheKey(uuid), accountInfo, 0).Err()
+        if err != nil {
             return nil, err
         }
     } else {
