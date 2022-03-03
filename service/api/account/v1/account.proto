@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package account.v1;
+
+import "validate/validate.proto";
+
+option go_package = "service/api/account/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.account.v1";
+option java_outer_classname = "AccountProtoV1";
+
+service Account {
+  // 创建邮箱账号
+  rpc CreateEMailAccount (CreateEMailAccountReq) returns (CreateEMailAccountReply) {}
+
+  // 使用ID获取账号
+  rpc GetAccount (GetAccountReq) returns (GetAccountReply) {}
+
+  // 校验密码
+  rpc VerifyPassword(VerifyPasswordReq) returns (VerifyPasswordReply) {}
+
+  // 保存密码
+  rpc SavePassword(SavePasswordReq) returns (SavePasswordReply) {}
+
+  // 获取密码加密公钥
+  rpc GetKey (GetKeyReq) returns (GetKeyReply) {}
+}
+
+// CreateEMailAccountReq 创建邮箱账号请求
+message CreateEMailAccountReq {
+  // 密文密码 len:64-256
+  string ciphertext = 1 [(validate.rules).string = {min_len: 64, max_len: 256}];
+  // 公钥摘要 len:16
+  string hash = 2 [(validate.rules).string.len = 16];
+  // 电子邮箱地址
+  string email = 3 [(validate.rules).string.email = true];
+}
+// CreateAccountReply 创建账号回复
+message CreateEMailAccountReply {
+  uint64 id = 1;
+}
+
+// GetAccountReq 使用ID获取账号请求
+message GetAccountReq {
+  uint64 id = 1 [(validate.rules).uint64 = {gt: 0}];
+}
+// GetAccountReply 使用ID获取账号回复
+message GetAccountReply {
+  string uuid = 1;    // uuid
+  string email = 2;   // 电子邮箱地址
+  uint32 telCode = 3; // 国际区号
+  string phone = 4;   // 电话号
+  uint32 status = 5;  // 账号状态
+}
+
+// VerifyPasswordReq 验证密码请求
+message VerifyPasswordReq {
+  // 用户登录标识, 未必是用户名 len:4-32
+  string username = 1 [(validate.rules).string = {min_len: 4, max_len: 32}];
+  // 密文密码 len:64-256
+  string ciphertext = 2 [(validate.rules).string = {min_len: 64, max_len: 256}];
+  // 公钥摘要 len:16
+  string hash = 3 [(validate.rules).string.len = 16];
+}
+// VerifyPasswordReply 验证密码回复
+message VerifyPasswordReply {
+  uint64 id = 1;
+}
+
+// SavePasswordReq 保存密码请求
+message SavePasswordReq {
+  // 用户id
+  uint64 id = 1 [(validate.rules).uint64 = {gt: 0}];
+  // 密文密码 len:64-256
+  string ciphertext = 2 [(validate.rules).string = {min_len: 64, max_len: 256}];
+  // 公钥摘要 len:16
+  string hash = 3 [(validate.rules).string.len = 16];
+}
+// SavePasswordReply 保存密码回复
+message SavePasswordReply {
+  uint64 id = 1;
+}
+
+// GetKeyReq 获取公钥请求
+message GetKeyReq {}
+// GetKeyReply 获取公钥回复
+message GetKeyReply {
+  string hash = 1;  // 密钥hash
+  string key = 2;   // 公钥内容
+}

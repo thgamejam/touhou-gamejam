@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package account.v1;
+import "errors/errors.proto";
+
+option go_package = "service/api/account/v1;v1";
+option java_multiple_files = true;
+option java_package = "account.v1.errors";
+option objc_class_prefix = "APIAccountErrors";
+
+enum ErrorReason {
+  option (errors.default_code) = 500;
+
+  // 定义错误代码
+  INTERNAL_SERVER_ERROR = 0 [(errors.code) = 500];
+  CONTENT_MISSING = 1 [(errors.code) = 400];
+}
