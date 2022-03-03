@@ -50,9 +50,9 @@ func GenerateKey() (privateKeyStr string, publicKeyStr string, err error) {
 }
 
 // ParsePrivateKey 解码秘钥
-func ParsePrivateKey(data []byte) (privateKey *ecdsa.PrivateKey, err error) {
+func ParsePrivateKey(data string) (privateKey *ecdsa.PrivateKey, err error) {
 	// pem解码
-	block, _ := pem.Decode(data)
+	block, _ := pem.Decode([]byte(data))
 	// x509解码
 	privateKey, err = x509.ParseECPrivateKey(block.Bytes)
 	if err != nil {
@@ -62,9 +62,9 @@ func ParsePrivateKey(data []byte) (privateKey *ecdsa.PrivateKey, err error) {
 }
 
 // ParsePublicKey 解码共钥
-func ParsePublicKey(data []byte) (publicKey *ecdsa.PublicKey, err error) {
+func ParsePublicKey(data string) (publicKey *ecdsa.PublicKey, err error) {
 	// pem解密
-	block, _ := pem.Decode(data)
+	block, _ := pem.Decode([]byte(data))
 	// x509解密
 	publicInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {

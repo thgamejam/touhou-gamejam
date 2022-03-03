@@ -17,7 +17,7 @@ func TestECC_GenerateKey(t *testing.T) {
 
 func TestECC_ParsePrivateKey(t *testing.T) {
 	privateKeyStr, _, _ := GenerateKey()
-	_, err := ParsePrivateKey([]byte(privateKeyStr))
+	_, err := ParsePrivateKey(privateKeyStr)
 	assert.Nil(t, err)
 }
 
@@ -25,16 +25,17 @@ func TestECC_EncryptANDDecrypt(t *testing.T) {
 	privateKeyStr, publicKeyStr, err := GenerateKey()
 	assert.Nil(t, err)
 
-	ecdsaPublicKey, err := ParsePublicKey([]byte(publicKeyStr))
+	ecdsaPublicKey, err := ParsePublicKey(publicKeyStr)
 	assert.Nil(t, err)
 
-	ecdsaPrivateKey, err := ParsePrivateKey([]byte(privateKeyStr))
+	ecdsaPrivateKey, err := ParsePrivateKey(privateKeyStr)
 	assert.Nil(t, err)
 
 	plaintext := []byte("s@strluck.com")
 	t.Logf("TestECC_EncryptANDDecrypt:  log:=plaintext: %v", string(plaintext))
 
 	ciphertext, err := Encrypt(ecdsaPublicKey, plaintext)
+	t.Logf("TestECC_EncryptANDDecrypt:  log:=plaintext len: %v", len(string(ciphertext)))
 	assert.Nil(t, err)
 	t.Logf("TestECC_EncryptANDDecrypt:  log:=ciphertext: %v", ciphertext)
 
@@ -53,7 +54,7 @@ func BenchmarkECC_Encrypt(b *testing.B) {
 	_, publicKeyStr, err := GenerateKey()
 	assert.Nil(b, err)
 
-	ecdsaPublicKey, err := ParsePublicKey([]byte(publicKeyStr))
+	ecdsaPublicKey, err := ParsePublicKey(publicKeyStr)
 	assert.Nil(b, err)
 
 	uuids := make([]string, b.N, b.N)
@@ -78,10 +79,10 @@ func BenchmarkECC_Decrypt(b *testing.B) {
 	privateKeyStr, publicKeyStr, err := GenerateKey()
 	assert.Nil(b, err)
 
-	ecdsaPublicKey, err := ParsePublicKey([]byte(publicKeyStr))
+	ecdsaPublicKey, err := ParsePublicKey(publicKeyStr)
 	assert.Nil(b, err)
 
-	ecdsaPrivateKey, err := ParsePrivateKey([]byte(privateKeyStr))
+	ecdsaPrivateKey, err := ParsePrivateKey(privateKeyStr)
 	assert.Nil(b, err)
 
 	ciphertexts := make([]string, b.N, b.N)
