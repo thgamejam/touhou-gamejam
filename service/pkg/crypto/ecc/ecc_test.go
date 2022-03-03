@@ -8,7 +8,7 @@ import (
 
 func TestECC_GenerateKey(t *testing.T) {
 	privateKeyStr, publicKeyStr, err := GenerateKey()
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	t.Logf("TestECC_GenerateKey:  GenerateKey success.")
 	t.Logf("\tPrivateKey:\n%v", privateKeyStr)
@@ -18,29 +18,29 @@ func TestECC_GenerateKey(t *testing.T) {
 func TestECC_ParsePrivateKey(t *testing.T) {
 	privateKeyStr, _, _ := GenerateKey()
 	_, err := ParsePrivateKey(privateKeyStr)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 }
 
 func TestECC_EncryptANDDecrypt(t *testing.T) {
 	privateKeyStr, publicKeyStr, err := GenerateKey()
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	ecdsaPublicKey, err := ParsePublicKey(publicKeyStr)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	ecdsaPrivateKey, err := ParsePrivateKey(privateKeyStr)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	plaintext := []byte("s@strluck.com")
 	t.Logf("TestECC_EncryptANDDecrypt:  log:=plaintext: %v", string(plaintext))
 
 	ciphertext, err := Encrypt(ecdsaPublicKey, plaintext)
-	t.Logf("TestECC_EncryptANDDecrypt:  log:=plaintext len: %v", len(string(ciphertext)))
-	assert.Nil(t, err)
+	t.Logf("TestECC_EncryptANDDecrypt:  log:=plaintext len: %v", len(ciphertext))
+	assert.NoError(t, err)
 	t.Logf("TestECC_EncryptANDDecrypt:  log:=ciphertext: %v", ciphertext)
 
 	recoveredPlaintext, err := Decrypt(ecdsaPrivateKey, ciphertext)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, plaintext, recoveredPlaintext)
 
@@ -52,10 +52,10 @@ func BenchmarkECC_Encrypt(b *testing.B) {
 	b.StopTimer()
 
 	_, publicKeyStr, err := GenerateKey()
-	assert.Nil(b, err)
+	assert.NoError(b, err)
 
 	ecdsaPublicKey, err := ParsePublicKey(publicKeyStr)
-	assert.Nil(b, err)
+	assert.NoError(b, err)
 
 	uuids := make([]string, b.N, b.N)
 	for i := 0; i < b.N; i++ {
@@ -77,19 +77,19 @@ func BenchmarkECC_Decrypt(b *testing.B) {
 	b.StopTimer()
 
 	privateKeyStr, publicKeyStr, err := GenerateKey()
-	assert.Nil(b, err)
+	assert.NoError(b, err)
 
 	ecdsaPublicKey, err := ParsePublicKey(publicKeyStr)
-	assert.Nil(b, err)
+	assert.NoError(b, err)
 
 	ecdsaPrivateKey, err := ParsePrivateKey(privateKeyStr)
-	assert.Nil(b, err)
+	assert.NoError(b, err)
 
 	ciphertexts := make([]string, b.N, b.N)
 
 	for i := 0; i < b.N; i++ {
 		ciphertext, err := Encrypt(ecdsaPublicKey, []byte(uuid.New().String()))
-		assert.Nil(b, err)
+		assert.NoError(b, err)
 		ciphertexts[i] = ciphertext
 	}
 
