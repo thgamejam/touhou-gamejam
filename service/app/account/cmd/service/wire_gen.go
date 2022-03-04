@@ -14,14 +14,24 @@ import (
 	"service/app/account/internal/data"
 	"service/app/account/internal/server"
 	"service/app/account/internal/service"
+	"service/pkg/cache"
 	"service/pkg/conf"
+	"service/pkg/database"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
 func initApp(confServer *conf.Server, confService *conf.Service, registrar registry.Registrar, discovery registry.Discovery, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(logger)
+	db, err := database.NewDataBase(confService)
+	if err != nil {
+		return nil, nil, err
+	}
+	cacheCache, err := cache.NewCache(confService)
+	if err != nil {
+		return nil, nil, err
+	}
+	dataData, cleanup, err := data.NewData(db, cacheCache, logger)
 	if err != nil {
 		return nil, nil, err
 	}

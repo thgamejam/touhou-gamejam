@@ -1,41 +1,42 @@
 package service
 
 import (
-	"context"
-	"github.com/go-kratos/kratos/v2/log"
-	pb "service/api/account/v1"
-	"service/app/account/internal/biz"
+    "context"
+    "github.com/go-kratos/kratos/v2/log"
+    "service/app/account/internal/biz"
+
+    pb "service/api/account/v1"
 )
 
 type AccountService struct {
-	pb.UnimplementedAccountServer
+    pb.UnimplementedAccountServer
 
-	uc  *biz.AccountUseCase
-	log *log.Helper
+    uc  *biz.AccountUseCase
+    log *log.Helper
 }
 
 func NewAccountService(
-	uc *biz.AccountUseCase,
-	logger log.Logger,
+    uc *biz.AccountUseCase,
+    logger log.Logger,
 ) *AccountService {
-	return &AccountService{
-		uc:  uc,
-		log: log.NewHelper(logger),
-	}
+    return &AccountService{
+        uc:  uc,
+        log: log.NewHelper(logger),
+    }
 }
 
-func (s *AccountService) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountReply, error) {
-	return &pb.CreateAccountReply{}, nil
+func (s *AccountService) CreateEMailAccount(ctx context.Context, req *pb.CreateEMailAccountReq) (*pb.CreateEMailAccountReply, error) {
+    return &pb.CreateEMailAccountReply{}, nil
 }
-func (s *AccountService) DeleteAccount(ctx context.Context, req *pb.DeleteAccountRequest) (*pb.DeleteAccountReply, error) {
-	return &pb.DeleteAccountReply{}, nil
+func (s *AccountService) GetAccount(ctx context.Context, req *pb.GetAccountReq) (*pb.GetAccountReply, error) {
+    return &pb.GetAccountReply{}, nil
 }
-func (s *AccountService) GetAccount(ctx context.Context, req *pb.GetAccountRequest) (*pb.GetAccountReply, error) {
-	return &pb.GetAccountReply{}, nil
+func (s *AccountService) VerifyPassword(ctx context.Context, req *pb.VerifyPasswordReq) (*pb.VerifyPasswordReply, error) {
+    return &pb.VerifyPasswordReply{}, nil
 }
-func (s *AccountService) UpdateAccount(ctx context.Context, req *pb.UpdateAccountRequest) (*pb.UpdateAccountReply, error) {
-	return &pb.UpdateAccountReply{}, nil
+func (s *AccountService) SavePassword(ctx context.Context, req *pb.SavePasswordReq) (*pb.SavePasswordReply, error) {
+    return &pb.SavePasswordReply{}, nil
 }
-func (s *AccountService) ListAccount(ctx context.Context, req *pb.ListAccountRequest) (*pb.ListAccountReply, error) {
-	return &pb.ListAccountReply{}, nil
+func (s *AccountService) GetKey(ctx context.Context, req *pb.GetKeyReq) (*pb.GetKeyReply, error) {
+    return &pb.GetKeyReply{}, nil
 }
