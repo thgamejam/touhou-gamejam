@@ -5,6 +5,8 @@ import (
     "service/pkg/conf"
     "service/pkg/database"
     "testing"
+
+    "github.com/stretchr/testify/assert"
 )
 
 var (
@@ -31,6 +33,5 @@ func TestAccountRepo_GetAccountByID(t *testing.T) {
     Cache, _ := cache.NewCache(Conf)
     DataBase, _ := database.NewDataBase(Conf)
     data, _, _ := NewData(DataBase, Cache, nil)
-    
-    
+    assert.NotNil(t, data)
 }

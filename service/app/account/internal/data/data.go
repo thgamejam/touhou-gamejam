@@ -14,19 +14,16 @@ var ProviderSet = wire.NewSet(
     NewAccountRepo,
     cache.NewCache,
     database.NewDataBase,
-    // TODO 数据客户端构建函数
 )
 
 // Data .
 type Data struct {
-    // TODO 封装的数据客户端
     Cache    *cache.Cache
     DataBase *gorm.DB
 }
 
 // NewData .
 func NewData(
-// TODO 需要的数据客户端
     db *gorm.DB,
     cache *cache.Cache,
     logger log.Logger,

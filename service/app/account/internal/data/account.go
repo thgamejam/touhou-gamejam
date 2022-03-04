@@ -2,9 +2,10 @@ package data
 
 import (
     "context"
-    "github.com/go-kratos/kratos/v2/log"
     "service/app/account/internal/biz"
     "strconv"
+
+    "github.com/go-kratos/kratos/v2/log"
 )
 
 type accountRepo struct {
@@ -77,7 +78,7 @@ func (r *accountRepo) GetAccountByID(ctx context.Context, id uint64) (*biz.Accou
     model := &Account{}
     ok, err := r.data.Cache.Get(ctx, accountCacheKey(id), &model)
     if err != nil {
-        return nil, err
+        r.log.Error("") // TODO
     }
     // 缓存不存在key
     if !ok {
@@ -87,7 +88,7 @@ func (r *accountRepo) GetAccountByID(ctx context.Context, id uint64) (*biz.Accou
         }
         err = r.saveAccountModelToCache(ctx, model)
         if err != nil {
-            return nil, err
+            r.log.Error("") // TODO
         }
     }
     return modelToAccount(model), nil
@@ -97,7 +98,7 @@ func (r *accountRepo) GetAccountByEMail(ctx context.Context, email string) (*biz
     model := &Account{}
     v, ok, err := r.data.Cache.GetString(ctx, accountEMailCacheKey(email))
     if err != nil {
-        log.Error("") // TODO
+        r.log.Error("") // TODO
     }
 
     if ok {
@@ -116,7 +117,7 @@ func (r *accountRepo) GetAccountByEMail(ctx context.Context, email string) (*biz
 
     err = r.saveAccountModelToCache(ctx, model)
     if err != nil {
-        log.Error("") // TODO
+        r.log.Error("") // TODO
     }
 
     return modelToAccount(model), nil
@@ -127,20 +128,12 @@ func (r *accountRepo) GetAccountByPhone(ctx context.Context, phone *biz.TelPhone
     return nil, nil
 }
 
-func (r *accountRepo) GetPublicKey(ctx context.Context, s string) (*biz.PublicKey, error) {
-    panic("implement me")
-}
-
-func (r *accountRepo) GetPrivateKey(ctx context.Context, s string) (*biz.PrivateKey, error) {
-    panic("implement me")
-}
-
 func (r *accountRepo) UpdateAccount(ctx context.Context, account *biz.Account) error {
     model := &Account{}
     // 获取原来的账户数据
     ok, err := r.data.Cache.Get(ctx, accountCacheKey(account.ID), &model)
     if err != nil {
-        return err
+        r.log.Error("") // TODO
     }
     if !ok {
         err = r.data.DataBase.First(&model, account.ID).Error
@@ -160,5 +153,9 @@ func (r *accountRepo) UpdateAccount(ctx context.Context, account *biz.Account) e
     if err != nil {
         return err
     }
-    return r.saveAccountModelToCache(ctx, model)
+    err = r.saveAccountModelToCache(ctx, model)
+    if err != nil {
+        r.log.Error("") // TODO
+    }
+    return nil
 }
