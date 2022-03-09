@@ -2,9 +2,10 @@ package data
 
 import (
     "context"
+    v1 "service/api/account/v1"
     "service/app/account/internal/biz"
     "strconv"
-
+    
     "github.com/go-kratos/kratos/v2/log"
 )
 
@@ -82,10 +83,16 @@ func (r *accountRepo) GetAccountByID(ctx context.Context, id uint64) (*biz.Accou
     }
     // 缓存不存在key
     if !ok {
-        err = r.data.DataBase.First(&model, id).Error
-        if err == nil {
+        tx := r.data.DataBase.First(&model, id)
+        err = tx.Error
+        if err != nil {
             return nil, err
         }
+        
+        if tx.RowsAffected == 0 {
+            return nil, v1.ErrorInternalServerError("用户不存在 %v", id)
+        }
+        
         err = r.saveAccountModelToCache(ctx, model)
         if err != nil {
             r.log.Error("") // TODO

@@ -10,6 +10,10 @@ import (
 	"github.com/ethereum/go-ethereum/crypto/ecies"
 )
 
+// 秘钥加密签名，公钥解密签名
+
+// 公钥加密密文，私钥解密密文
+
 // GenerateKey 生成ECC公钥/秘钥对
 func GenerateKey() (privateKeyStr string, publicKeyStr string, err error) {
 	// 生成秘钥
