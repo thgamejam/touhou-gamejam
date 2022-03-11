@@ -1,0 +1,14 @@
+version: '3'
+services:
+  redis:
+    image: redis:6.2.6
+    container_name: redis
+    ports:
+      - 6379:6379
+    networks:
+      - default-net
+
+networks:
+  default-net:
+    external:
+      name: th_bridge

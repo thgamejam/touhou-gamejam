@@ -1,0 +1,16 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb:10.7.3
+    container_name: mariadb
+    ports:
+      - 3306:3306
+    environment:
+      - MARIADB_ROOT_PASSWORD=123456
+    networks:
+      - default-net
+
+networks:
+  default-net:
+    external:
+      name: th_bridge

@@ -1,0 +1,44 @@
+version: '3'
+services:
+  namesrv:
+    image: apacherocketmq/rocketmq:4.5.0
+    container_name: rmq-nameserver
+    ports:
+      - 9876:9876
+    command: sh mqnamesrv
+    networks:
+      - default-net
+#    volumes:
+#      - ./data/namesrv/logs:/home/rocketmq/logs
+  broker:
+    image: apacherocketmq/rocketmq:4.5.0
+    container_name: rmq-broker
+    ports:
+      - 10909:10909
+      - 10911:10911
+      - 10912:10912
+    depends_on:
+      - namesrv
+    command: sh mqbroker -n namesrv:9876 -c ../conf/broker.conf
+    networks:
+      - default-net
+    volumes:
+#      - ./data/broker/logs:/home/rocketmq/logs
+#      - ./data/broker/store:/home/rocketmq/store
+      - ./data/broker/conf/broker.conf:/home/rocketmq/rocketmq-4.5.0/conf/broker.conf
+  dashboard:
+    image: apacherocketmq/rocketmq-dashboard:1.0.0
+    container_name: rmq-dashboard
+    ports:
+      - 10980:8080
+    depends_on:
+      - namesrv
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=namesrv:9876
+    networks:
+      - default-net
+
+networks:
+  default-net:
+    external:
+      name: th_bridge

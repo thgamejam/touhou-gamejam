@@ -1,0 +1,26 @@
+version: '3'
+services:
+  consul:
+    image: consul:1.11.4
+    container_name: consul
+    ports:
+      - 8300:8300
+      - 8500:8500
+      - 8502:8502
+      - 8600:8600
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+      - 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}'
+    command: agent -server -ui
+      -retry-join='0.0.0.0'
+      -bootstrap-expect=1
+      -client='0.0.0.0'
+      -datacenter=dev
+      -node=consul-node1
+    networks:
+      - default-net
+
+networks:
+  default-net:
+    external:
+      name: th_bridge
