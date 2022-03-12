@@ -51,8 +51,9 @@ message Data {
     string network = 1;
     string addr = 2;
     string password = 3;
-    google.protobuf.Duration read_timeout = 4;
-    google.protobuf.Duration write_timeout = 5;
+    google.protobuf.Duration delay_delete_time = 4;
+    google.protobuf.Duration read_timeout = 5;
+    google.protobuf.Duration write_timeout = 6;
   }
   message ObjectStorage {
     string url = 1;
@@ -61,6 +62,16 @@ message Data {
     string bucket = 4;
     google.protobuf.Duration small_file_expiration_time = 5;
     google.protobuf.Duration large_file_expiration_time = 6;
+  }
+  message Queue {
+    string name_server_addr = 1;    // NameServer地址
+    string Name_server_domain = 2;  // NameServer域
+    string group_name = 3;         // 组名地址
+    string instance_name = 4;      // 实例名称
+    string namespace = 5;         // 设置生产者的命名空间
+    google.protobuf.Duration send_msg_timeout = 6;// 发送消息超时时间
+    bool is_vip_channel = 7;
+    uint32 with_compress_level = 8; // 设置压缩级别(0~9)，0 代表最佳速度，9 代表最佳压缩比
   }
   Database database = 1;
   Redis redis = 2;

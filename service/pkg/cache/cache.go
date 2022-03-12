@@ -9,7 +9,9 @@ import (
 )
 
 type Cache struct {
-	client *redis.Client
+	client *redis.Client // redis客户端
+
+	DelayDeleteTime time.Duration // 延迟删除等待时间
 }
 
 // NewCache 初始化缓存
@@ -22,13 +24,15 @@ func NewCache(c *conf.Service) (*Cache, error) {
 		WriteTimeout: c.Data.Redis.WriteTimeout.AsDuration(),
 		DB:           0, // use default DB
 	})
+
 	return &Cache{
-		client: rdb,
+		client:          rdb,
+		DelayDeleteTime: c.Data.Redis.DelayDeleteTime.AsDuration(),
 	}, nil
 }
 
-// Save 保存数据
-func (c *Cache) Save(ctx context.Context, key string, data interface{}, expiration time.Duration) error {
+// Set 保存数据
+func (c *Cache) Set(ctx context.Context, key string, data interface{}, expiration time.Duration) error {
 	jsonByte, err := json.Marshal(data)
 	if err != nil {
 		return err
@@ -37,7 +41,7 @@ func (c *Cache) Save(ctx context.Context, key string, data interface{}, expirati
 	return c.client.Set(ctx, key, jsonString, expiration).Err()
 }
 
-func (c *Cache) SaveString(ctx context.Context, key string, value string, expiration time.Duration) error {
+func (c *Cache) SetString(ctx context.Context, key string, value string, expiration time.Duration) error {
 	return c.client.Set(ctx, key, value, expiration).Err()
 }
 
@@ -60,6 +64,20 @@ func (c *Cache) GetString(ctx context.Context, key string) (value string, ok boo
 		return value, false, err
 	}
 	return value, true, nil
+}
+
+// Del 删除数据
+func (c *Cache) Del(ctx context.Context, key string) (err error) {
+	_, err = c.client.Del(ctx, key).Result()
+
+	// TODO 简单的延迟删除
+	var delayDel = func(key string) {
+		time.Sleep(c.DelayDeleteTime)
+		_, _ = c.client.Del(context.Background(), key).Result()
+	}
+	go delayDel(key)
+
+	return err
 }
 
 func (c *Cache) Close() error {
