@@ -44,11 +44,11 @@ func (r *accountRepo) createLockOpener(ctx context.Context, id int) (lock *LockO
     lock.Private = privateKey
 
     // 存缓存
-    err = r.data.Cache.Save(ctx, lockOpenerCacheKey(hash), lock, 0)
+    err = r.data.Cache.Set(ctx, lockOpenerCacheKey(hash), lock, 0)
     if err != nil {
         return
     }
-    err = r.data.Cache.SaveString(ctx, lockOpenerIDCacheKey(id), hash, 0)
+    err = r.data.Cache.SetString(ctx, lockOpenerIDCacheKey(id), hash, 0)
     if err != nil {
         return
     }
