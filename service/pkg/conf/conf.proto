@@ -43,8 +43,8 @@ message Server {
 message Data {
   message Database {
     string source = 1;
-    uint32 max_idle_conn = 2;
-    uint32 max_open_conn = 3;
+    uint32 maxIdleConn = 2;
+    uint32 maxOpenConn = 3;
     google.protobuf.Duration conn_max_lifetime = 4;
   }
   message Redis {
@@ -57,25 +57,25 @@ message Data {
   }
   message ObjectStorage {
     string url = 1;
-    string access_key = 2;
-    string secret_key = 3;
+    string accessKey = 2;
+    string secretKey = 3;
     string bucket = 4;
     google.protobuf.Duration small_file_expiration_time = 5;
     google.protobuf.Duration large_file_expiration_time = 6;
   }
-  message Queue {
-    string name_server_addr = 1;          // NameServer地址
-    string Name_server_domain = 2;        // NameServer域
-    string group_name = 3;                // 组名地址
-    google.protobuf.Duration send_msg_timeout = 4;// 发送消息超时时间
-    uint32 with_compress_level = 5;       // 设置压缩级别(0~9)，0 代表最佳速度，9 代表最佳压缩比
-    uint32 retry = 6;                     //消费者失败重试次数
-    uint32 delayLevel = 7;                //设置重新消费的延迟级别，共支持(0-18)种延迟级别
-    // 1   2   3    4    5   6   7   8   9   10  11  12  13  14   15   16   17  18
-    // 1s, 5s, 10s, 30s, 1m, 2m, 3m, 4m, 5m, 6m, 7m, 8m, 9m, 10m, 20m, 30m, 1h, 2h
-  }
+
   Database database = 1;
   Redis redis = 2;
   ObjectStorage object_storage = 3;
-  Queue queue = 4;
+}
+message Queue {
+  string nameServerAddr = 1;          // NameServer地址
+  string nameServerDomain = 2;        // NameServer域
+  string groupName = 3;                // 组名地址
+  google.protobuf.Duration sendMsgTimeout = 4;// 发送消息超时时间
+  uint32 withCompressLevel = 5;       // 设置压缩级别(0~9)，0 代表最佳速度，9 代表最佳压缩比
+  uint32 retry = 6;                     //消费者失败重试次数
+  uint32 delayLevel = 7;                //设置重新消费的延迟级别，共支持(0-18)种延迟级别
+  // 1   2   3    4    5   6   7   8   9   10  11  12  13  14   15   16   17  18
+  // 1s, 5s, 10s, 30s, 1m, 2m, 3m, 4m, 5m, 6m, 7m, 8m, 9m, 10m, 20m, 30m, 1h, 2h
 }
