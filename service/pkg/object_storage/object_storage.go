@@ -10,28 +10,24 @@ import (
 	"time"
 )
 
-type Client struct {
-	S3Client *s3.Client // 对象存储服务
-
-	bucket                  *string
-	smallFileExpirationTime time.Duration //小文件到期时间
-	largeFileExpirationTime time.Duration //大文件到期时间
+type ObjectStorage struct {
+	client *s3.Client // 对象存储服务
 }
 
 // NewObjectStorage 初始化对象存储
-func NewObjectStorage(c *conf.Service) (*Client, error) {
+func NewObjectStorage(c *conf.Service) (*ObjectStorage, error) {
 
 	// TODO 绑定 Log 未完成
 
 	const defaultRegion = "us-east-1"
 
-	staticResolver := aws.EndpointResolverFunc(
-		func(service, region string) (aws.Endpoint, error) {
+	staticResolver := aws.EndpointResolverWithOptionsFunc(
+		func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 			return aws.Endpoint{
-				PartitionID:       "aws",
-				URL:               c.Data.ObjectStorage.Url, // minio url
-				SigningRegion:     defaultRegion,
-				HostnameImmutable: true,
+				PartitionID:   "aws",
+				URL:           c.Data.ObjectStorage.Url, // minio url
+				SigningRegion: defaultRegion,
+				//HostnameImmutable: true,
 			}, nil
 		},
 	)
@@ -45,7 +41,7 @@ func NewObjectStorage(c *conf.Service) (*Client, error) {
 				c.Data.ObjectStorage.SecretKey, // Secret Key
 				"",
 			)
-			lo.EndpointResolver = staticResolver
+			lo.EndpointResolverWithOptions = staticResolver
 			return nil
 		},
 	)
@@ -55,27 +51,29 @@ func NewObjectStorage(c *conf.Service) (*Client, error) {
 
 	client := s3.NewFromConfig(cfg)
 
-	oss := &Client{
-		S3Client:                client,
-		smallFileExpirationTime: c.Data.ObjectStorage.SmallFileExpirationTime.AsDuration(),
-		largeFileExpirationTime: c.Data.ObjectStorage.LargeFileExpirationTime.AsDuration(),
+	oss := &ObjectStorage{
+		client: client,
 	}
-
-	oss.bucket = aws.String(c.Data.ObjectStorage.Bucket)
 
 	return oss, nil
 }
 
-// GetURL 获取文件对象的预签名URL
+// GetClient 获取对象存储客户端
+func (o *ObjectStorage) GetClient() *s3.Client {
+	return o.client
+}
+
+// PreSignGetURL 获取文件对象的预签名URL
+// bucket: 桶
 // key: 对象路径
 // expirationTime: 过期时间
-func (o *Client) GetURL(ctx context.Context, key string, expirationTime time.Duration) (string, error) {
+func (o *ObjectStorage) PreSignGetURL(ctx context.Context, bucket, key string, expirationTime time.Duration) (string, error) {
 	input := &s3.GetObjectInput{
-		Bucket: o.bucket,
+		Bucket: aws.String(bucket),
 		Key:    aws.String(key),
 	}
 
-	psClient := s3.NewPresignClient(o.S3Client)
+	psClient := s3.NewPresignClient(o.client)
 	req, err := psClient.PresignGetObject(ctx, input,
 		func(options *s3.PresignOptions) {
 			options.Expires = expirationTime // 设置url过期时间
@@ -88,12 +86,25 @@ func (o *Client) GetURL(ctx context.Context, key string, expirationTime time.Dur
 	return req.URL, nil
 }
 
-// GetSmallObjectURL 获取小对象的URL
-func (o *Client) GetSmallObjectURL(ctx context.Context, key string) (string, error) {
-	return o.GetURL(ctx, key, o.smallFileExpirationTime)
-}
+// PreSignPutURL 上传文件对象的预签名URL
+// bucket: 桶
+// key: 对象路径
+// expirationTime: 过期时间
+func (o *ObjectStorage) PreSignPutURL(ctx context.Context, bucket, key string, expirationTime time.Duration) (string, error) {
+	input := &s3.PutObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
+	}
 
-// GetLargeObjectURL 获取大对象的URL
-func (o *Client) GetLargeObjectURL(ctx context.Context, key string) (string, error) {
-	return o.GetURL(ctx, key, o.largeFileExpirationTime)
+	psClient := s3.NewPresignClient(o.client)
+	req, err := psClient.PresignPutObject(ctx, input,
+		func(options *s3.PresignOptions) {
+			options.Expires = expirationTime // 设置url过期时间
+		},
+	)
+	if err != nil {
+		return "", err
+	}
+
+	return req.URL, nil
 }
