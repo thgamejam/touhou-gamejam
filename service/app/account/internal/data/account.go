@@ -41,7 +41,7 @@ var modelToAccount = func(model *Account) *biz.Account {
     }
 }
 
-func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Account) error {
+func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Account) (uint64, error) {
     model := &Account{
         UUID:     account.UUID,
         Email:    account.Email,
@@ -52,9 +52,13 @@ func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Accou
     }
     err := r.data.DataBase.Create(&model).Error
     if err != nil {
-        return err
+        return 0, err
     }
-    return r.saveAccountModelToCache(ctx, model)
+    err = r.saveAccountModelToCache(ctx, model)
+    if err != nil {
+        return 0, err
+    }
+    return model.ID, nil
 }
 
 // saveAccountModelToCache 保存账户数据到缓存
@@ -108,7 +112,7 @@ func (r *accountRepo) GetAccountByID(ctx context.Context, id uint64) (*biz.Accou
         }
 
         if tx.RowsAffected == 0 {
-            return nil, v1.ErrorInternalServerError("用户不存在 %v", id) // TODO err
+            return nil, v1.ErrorInternalServerError("用户不存在 %v", id) // TODO 用户不存在 err
         }
 
         err = r.saveAccountModelToCache(ctx, model)
@@ -120,7 +124,6 @@ func (r *accountRepo) GetAccountByID(ctx context.Context, id uint64) (*biz.Accou
 }
 
 func (r *accountRepo) GetAccountByEMail(ctx context.Context, email string) (*biz.Account, error) {
-    model := &Account{}
     v, ok, err := r.data.Cache.GetString(ctx, accountEMailCacheKey(email))
     if err != nil {
         r.log.Error("") // TODO
@@ -135,9 +138,15 @@ func (r *accountRepo) GetAccountByEMail(ctx context.Context, email string) (*biz
     }
 
     // 通过邮箱查找账号数据
-    err = r.data.DataBase.First(&model, "email = ?", email).Error
+    model := &Account{}
+    tx := r.data.DataBase.First(&model, "email = ?", email)
+    err = tx.Error
     if err != nil {
         return nil, err
+    }
+
+    if tx.RowsAffected == 0 {
+        return nil, v1.ErrorInternalServerError("用户不存在 %v", email) // TODO 用户不存在 err
     }
 
     err = r.saveAccountModelToCache(ctx, model)
@@ -151,6 +160,36 @@ func (r *accountRepo) GetAccountByEMail(ctx context.Context, email string) (*biz
 func (r *accountRepo) GetAccountByPhone(ctx context.Context, phone *biz.TelPhone) (*biz.Account, error) {
     // TODO 未完成手机号功能
     return nil, nil
+}
+
+func (r *accountRepo) ExistAccountEMail(ctx context.Context, email string) (bool, error) {
+    _, ok, err := r.data.Cache.GetString(ctx, accountEMailCacheKey(email))
+    if err != nil {
+        r.log.Error("") // TODO
+    }
+
+    if ok {
+        return true, nil
+    }
+
+    // 通过邮箱查找账号数据
+    model := &Account{}
+    tx := r.data.DataBase.First(&model, "email = ?", email)
+    err = tx.Error
+    if err != nil {
+        return false, err
+    }
+
+    if tx.RowsAffected == 0 {
+        return false, nil
+    }
+
+    err = r.saveAccountModelToCache(ctx, model)
+    if err != nil {
+        r.log.Error("") // TODO
+    }
+
+    return true, nil
 }
 
 func (r *accountRepo) UpdateAccount(ctx context.Context, account *biz.Account) error {

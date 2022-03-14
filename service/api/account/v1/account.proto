@@ -16,6 +16,9 @@ service Account {
   // 使用ID获取账号
   rpc GetAccount (GetAccountReq) returns (GetAccountReply) {}
 
+  // ExistAccountEMail 是否存在邮箱
+  rpc ExistAccountEMail (ExistAccountEMailReq) returns (ExistAccountEMailReply) {}
+
   // 校验密码
   rpc VerifyPassword(VerifyPasswordReq) returns (VerifyPasswordReply) {}
 
@@ -53,6 +56,15 @@ message GetAccountReply {
   uint32 status = 5;  // 账号状态
 }
 
+// ExistAccountEMailReq 检查邮箱是否存在请求
+message ExistAccountEMailReq {
+  string email = 1 [(validate.rules).string.email = true];   // 电子邮箱地址
+}
+// ExistAccountEMailReply 检查邮箱是否存在回复
+message ExistAccountEMailReply {
+  bool ok = 1;  // true 存在, false 不存在
+}
+
 // VerifyPasswordReq 验证密码请求
 message VerifyPasswordReq {
   // 用户登录标识, 未必是用户名 len:4-32
@@ -78,7 +90,6 @@ message SavePasswordReq {
 }
 // SavePasswordReply 保存密码回复
 message SavePasswordReply {
-  uint64 id = 1;
 }
 
 // GetKeyReq 获取公钥请求

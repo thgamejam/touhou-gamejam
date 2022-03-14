@@ -66,6 +66,15 @@
       },
       "title": "CreateAccountReply 创建账号回复"
     },
+    "v1ExistAccountEMailReply": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      },
+      "title": "ExistAccountEMailReply 检查邮箱是否存在回复"
+    },
     "v1GetAccountReply": {
       "type": "object",
       "properties": {
@@ -91,12 +100,6 @@
     },
     "v1SavePasswordReply": {
       "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uint64"
-        }
-      },
       "title": "SavePasswordReply 保存密码回复"
     },
     "v1VerifyPasswordReply": {

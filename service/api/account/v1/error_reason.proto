@@ -14,4 +14,6 @@ enum ErrorReason {
   // 定义错误代码
   INTERNAL_SERVER_ERROR = 0 [(errors.code) = 500];
   CONTENT_MISSING = 1 [(errors.code) = 400];
+
+  INCORRECT_ACCOUNT = 1001;
 }

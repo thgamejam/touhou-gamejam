@@ -64,7 +64,8 @@ var hashPassword = func(password, sign string) string {
 
 type AccountRepo interface {
     // CreateEMailAccount 创建邮箱账户
-    CreateEMailAccount(context.Context, *Account) error
+    // 返回创造账户的id
+    CreateEMailAccount(context.Context, *Account) (uint64, error)
 
     // GetAccountByID 通过用户ID获取账户
     GetAccountByID(context.Context, uint64) (*Account, error)
@@ -72,6 +73,9 @@ type AccountRepo interface {
     GetAccountByEMail(context.Context, string) (*Account, error)
     // GetAccountByPhone 通过用户手机号获取账户
     GetAccountByPhone(context.Context, *TelPhone) (*Account, error)
+
+    // ExistAccountEMail 是否存在邮箱
+    ExistAccountEMail(context.Context, string) (bool, error)
 
     // GetPublicKey 获取公钥
     // 传入与公钥成对的密钥的md5-16哈希摘要
@@ -101,23 +105,42 @@ func (uc *AccountUseCase) GetKey(ctx context.Context, hash string) (*PublicKey, 
     return uc.repo.GetPublicKey(ctx, hash)
 }
 
-// CreateAccount 创建账户
-func (uc *AccountUseCase) CreateAccount(ctx context.Context, a *Account) (err error) {
-    // 创建有序的唯一id
-    a.UUID, err = uuid.NewOrderedUUID()
-    if err != nil {
-        return err
-    }
-    if a.Email != "" {
-        return uc.repo.CreateEMailAccount(ctx, a)
-    } else if a.Phone != nil {
-        return nil // TODO
-    }
-    return nil // TODO
+// GetRandomlyKey 获取任意的一个公钥
+func (uc *AccountUseCase) GetRandomlyKey(ctx context.Context) (*PublicKey, error) {
+    return uc.repo.GetRandomlyPublicKey(ctx)
 }
 
-func (uc *AccountUseCase) decryptPassword(
-    ctx context.Context, passwdCT *PasswordCiphertext) (string, error) {
+// CreateEMailAccount 使用邮箱创建账户
+func (uc *AccountUseCase) CreateEMailAccount(
+    ctx context.Context, email string, passwdCT *PasswordCiphertext) (id uint64, err error) {
+
+    // TODO 未判断邮箱是否已被注册
+
+    // 解密
+    password, err := uc.getPasswordPlaintext(ctx, passwdCT)
+    if err != nil {
+        return
+    }
+    // 创建有序的唯一id
+    guid, err := uuid.NewOrderedUUID()
+    if err != nil {
+        return 0, err
+    }
+    // 取密码哈希
+    passwordHash := hashPassword(password, guid.String())
+
+    a := &Account{
+        UUID:         guid,
+        Email:        email,
+        PasswordHash: passwordHash,
+        Status:       0,
+    }
+
+    return uc.repo.CreateEMailAccount(ctx, a)
+}
+
+// getPasswordPlaintext 获取密码明文
+func (uc *AccountUseCase) getPasswordPlaintext(ctx context.Context, passwdCT *PasswordCiphertext) (string, error) {
     // 获取私钥
     key, err := uc.repo.GetPrivateKey(ctx, passwdCT.KeyHash)
     if err != nil {
@@ -127,6 +150,12 @@ func (uc *AccountUseCase) decryptPassword(
     return decryptPassword(key, passwdCT.Ciphertext)
 }
 
+// GetAccount 通过ID获取账号
+func (uc *AccountUseCase) GetAccount(ctx context.Context, id uint64) (*Account, error) {
+    return uc.repo.GetAccountByID(ctx, id)
+}
+
+// SavePassword 保存密码, 修改密码
 func (uc *AccountUseCase) SavePassword(ctx context.Context, id uint64, passwdCT *PasswordCiphertext) (err error) {
     // 获取账户
     account, err := uc.repo.GetAccountByID(ctx, id)
@@ -134,7 +163,7 @@ func (uc *AccountUseCase) SavePassword(ctx context.Context, id uint64, passwdCT 
         return
     }
     // 解密
-    password, err := uc.decryptPassword(ctx, passwdCT)
+    password, err := uc.getPasswordPlaintext(ctx, passwdCT)
     if err != nil {
         return
     }
@@ -153,18 +182,24 @@ func (uc *AccountUseCase) SavePassword(ctx context.Context, id uint64, passwdCT 
 
 // VerifyPasswordByEMail 通过邮箱验证对应账户的密码
 func (uc *AccountUseCase) VerifyPasswordByEMail(
-    ctx context.Context, email string, passwdCT *PasswordCiphertext) (ok bool, err error) {
+    ctx context.Context, email string, passwdCT *PasswordCiphertext) (id uint64, ok bool, err error) {
     account, err := uc.repo.GetAccountByEMail(ctx, email)
     if err != nil {
         return
     }
     // 解密
-    password, err := uc.decryptPassword(ctx, passwdCT)
+    password, err := uc.getPasswordPlaintext(ctx, passwdCT)
     if err != nil {
         return
     }
     // 取密码哈希
     hash := hashPassword(password, account.UUID.String())
     ok = account.PasswordHash == hash
+    id = account.ID
     return
+}
+
+// ExistAccountEMail 是否存在邮箱
+func (uc *AccountUseCase) ExistAccountEMail(ctx context.Context, email string) (bool, error) {
+    return uc.ExistAccountEMail(ctx, email)
 }

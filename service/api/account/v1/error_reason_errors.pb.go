@@ -34,3 +34,15 @@ func IsContentMissing(err error) bool {
 func ErrorContentMissing(format string, args ...interface{}) *errors.Error {
 	return errors.New(400, ErrorReason_CONTENT_MISSING.String(), fmt.Sprintf(format, args...))
 }
+
+func IsIncorrectAccount(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_INCORRECT_ACCOUNT.String() && e.Code == 500
+}
+
+func ErrorIncorrectAccount(format string, args ...interface{}) *errors.Error {
+	return errors.New(500, ErrorReason_INCORRECT_ACCOUNT.String(), fmt.Sprintf(format, args...))
+}

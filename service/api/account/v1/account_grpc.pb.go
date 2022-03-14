@@ -26,6 +26,8 @@ type AccountClient interface {
 	CreateEMailAccount(ctx context.Context, in *CreateEMailAccountReq, opts ...grpc.CallOption) (*CreateEMailAccountReply, error)
 	// 使用ID获取账号
 	GetAccount(ctx context.Context, in *GetAccountReq, opts ...grpc.CallOption) (*GetAccountReply, error)
+	// ExistAccountEMail 是否存在邮箱
+	ExistAccountEMail(ctx context.Context, in *ExistAccountEMailReq, opts ...grpc.CallOption) (*ExistAccountEMailReply, error)
 	// 校验密码
 	VerifyPassword(ctx context.Context, in *VerifyPasswordReq, opts ...grpc.CallOption) (*VerifyPasswordReply, error)
 	// 保存密码
@@ -54,6 +56,15 @@ func (c *accountClient) CreateEMailAccount(ctx context.Context, in *CreateEMailA
 func (c *accountClient) GetAccount(ctx context.Context, in *GetAccountReq, opts ...grpc.CallOption) (*GetAccountReply, error) {
 	out := new(GetAccountReply)
 	err := c.cc.Invoke(ctx, "/account.v1.Account/GetAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountClient) ExistAccountEMail(ctx context.Context, in *ExistAccountEMailReq, opts ...grpc.CallOption) (*ExistAccountEMailReply, error) {
+	out := new(ExistAccountEMailReply)
+	err := c.cc.Invoke(ctx, "/account.v1.Account/ExistAccountEMail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +106,8 @@ type AccountServer interface {
 	CreateEMailAccount(context.Context, *CreateEMailAccountReq) (*CreateEMailAccountReply, error)
 	// 使用ID获取账号
 	GetAccount(context.Context, *GetAccountReq) (*GetAccountReply, error)
+	// ExistAccountEMail 是否存在邮箱
+	ExistAccountEMail(context.Context, *ExistAccountEMailReq) (*ExistAccountEMailReply, error)
 	// 校验密码
 	VerifyPassword(context.Context, *VerifyPasswordReq) (*VerifyPasswordReply, error)
 	// 保存密码
@@ -113,6 +126,9 @@ func (UnimplementedAccountServer) CreateEMailAccount(context.Context, *CreateEMa
 }
 func (UnimplementedAccountServer) GetAccount(context.Context, *GetAccountReq) (*GetAccountReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccount not implemented")
+}
+func (UnimplementedAccountServer) ExistAccountEMail(context.Context, *ExistAccountEMailReq) (*ExistAccountEMailReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExistAccountEMail not implemented")
 }
 func (UnimplementedAccountServer) VerifyPassword(context.Context, *VerifyPasswordReq) (*VerifyPasswordReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPassword not implemented")
@@ -168,6 +184,24 @@ func _Account_GetAccount_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AccountServer).GetAccount(ctx, req.(*GetAccountReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Account_ExistAccountEMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExistAccountEMailReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).ExistAccountEMail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/account.v1.Account/ExistAccountEMail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).ExistAccountEMail(ctx, req.(*ExistAccountEMailReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -240,6 +274,10 @@ var Account_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAccount",
 			Handler:    _Account_GetAccount_Handler,
+		},
+		{
+			MethodName: "ExistAccountEMail",
+			Handler:    _Account_ExistAccountEMail_Handler,
 		},
 		{
 			MethodName: "VerifyPassword",
