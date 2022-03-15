@@ -22,12 +22,7 @@ export default {
     window.addEventListener('scroll', onScroll)
 
     function onScroll(){
-      if (window.scrollY >= 300) {
-        affixTop = ref(true);
-      } else {
-        affixTop = ref(false);
-      }
-      console.log(affixTop.value)
+      affixTop.value = window.scrollY >= 300;
     }
 
     return { affixTop }
