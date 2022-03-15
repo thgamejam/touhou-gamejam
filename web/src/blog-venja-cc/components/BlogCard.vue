@@ -2,7 +2,7 @@
 <div class="blog-card-container">
 
   <div class="blog-card-title">
-    <h1><a href="">这是一个标题1abc</a></h1>
+    <h1><a class="blog-card-link" href="" itemprop="url">这是一个标题1abc</a></h1>
   </div>
 
   <div class="blog-card-meta">
@@ -24,7 +24,7 @@
     <p>◆孟德斯鸠</p>
 
     <div class="blog-card-body-button">
-      <a href="" class="btn">阅读全文</a>
+      <a href="" class="blog-card-link-btn">阅读全文 »</a>
     </div>
   </div>
 
@@ -42,8 +42,11 @@ export default {
 <style scoped>
 h1 {
   margin: 0;
+  padding: 0;
   font-size: 22px;
   font-weight: 400;
+  line-height: 1.5;
+  display: block;
 }
 h3 {
   padding-top: 10px;
@@ -53,13 +56,15 @@ h3 {
 }
 a {
   text-decoration: none;
-  color: #555;
+  position: relative;
   outline: none;
+  color: #555;
 }
 p {
   margin: 0;
   font-size: 14px;
 }
+
 .blog-card-container {
   line-height: 2;
 }
@@ -71,6 +76,10 @@ p {
 }
 .blog-card-meta-divider {
   margin: 0 0.5em;
+}
+
+.blog-card-title {
+
 }
 .blog-card-body {
   text-align: justify;
@@ -88,7 +97,35 @@ p {
   background: #ccc;
   text-align: center;
 }
-.btn {
+
+.blog-card-link::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  left: 0;
+  bottom: 0;
+  background-color: #000;
+  visibility: hidden;
+  -webkit-transform: scaleX(0);
+  -moz-transform: scaleX(0);
+  -ms-transform: scaleX(0);
+  -o-transform: scaleX(0);
+  transform: scaleX(0);
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+  transition-delay: 0s;
+}
+.blog-card-link:hover::before {
+  visibility: visible;
+  -webkit-transform: scaleX(1);
+  -moz-transform: scaleX(1);
+  -ms-transform: scaleX(1);
+  -o-transform: scaleX(1);
+  transform: scaleX(1);
+}
+
+.blog-card-link-btn {
   display: inline-block;
   padding: 0 20px;
   font-size: 14px;
@@ -98,14 +135,14 @@ p {
   text-decoration: none;
   border-radius: 2px;
   line-height: 2;
+}
+.blog-card-link-btn:hover {
+  border-color: #222;
+  color: #fff;
+  background: #222;
   transition-property: background-color, color, border-color;
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
   transition-delay: 0s;
-}
-.btn:hover {
-  border-color: #222;
-  color: #fff;
-  background: #222;
 }
 </style>

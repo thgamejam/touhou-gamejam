@@ -2,8 +2,11 @@
   <headband />
   <div class="index-container">
     <Nav />
+    <Toggle />
     <div class="index-wrapper">
       <div class="index-posts">
+        <BlogCard />
+        <BlogCard />
         <BlogCard />
       </div>
     </div>
@@ -14,9 +17,10 @@
 import Nav from "@/blog-venja-cc/components/Nav.vue";
 import Headband from "@/blog-venja-cc/components/Headband.vue";
 import BlogCard from "@/blog-venja-cc/components/BlogCard.vue";
+import Toggle from "@/blog-venja-cc/components/Toggle.vue";
 export default {
   name: "Index",
-  components: {BlogCard, Headband, Nav},
+  components: {Toggle, BlogCard, Headband, Nav},
   // Override background color
   setup() {
     let parentBody = document.querySelector('body');
