@@ -56,6 +56,10 @@
         }
       }
     },
+    "v1BindUserReply": {
+      "type": "object",
+      "title": "BindUserReply 绑定用户回复"
+    },
     "v1CreateEMailAccountReply": {
       "type": "object",
       "properties": {
@@ -94,6 +98,10 @@
         "status": {
           "type": "integer",
           "format": "int64"
+        },
+        "userID": {
+          "type": "string",
+          "format": "uint64"
         }
       },
       "title": "GetAccountReply 使用ID获取账号回复"

@@ -25,6 +25,9 @@ service Account {
   // 保存密码
   rpc SavePassword(SavePasswordReq) returns (SavePasswordReply) {}
 
+  // 绑定用户
+  rpc BindUser (BindUserReq) returns (BindUserReply) {}
+
   // 获取密码加密公钥
   rpc GetKey (GetKeyReq) returns (GetKeyReply) {}
 }
@@ -36,7 +39,7 @@ message CreateEMailAccountReq {
   // 公钥摘要 len:16
   string hash = 2 [(validate.rules).string.len = 16];
   // 电子邮箱地址
-  string email = 3 [(validate.rules).string.email = true];
+  string email = 3 [(validate.rules).string = {email: true, max_len: 32}];
 }
 // CreateAccountReply 创建账号回复
 message CreateEMailAccountReply {
@@ -54,11 +57,12 @@ message GetAccountReply {
   uint32 telCode = 3; // 国际区号
   string phone = 4;   // 电话号
   uint32 status = 5;  // 账号状态
+  uint64 userID = 6;  // 用户表ID
 }
 
 // ExistAccountEMailReq 检查邮箱是否存在请求
 message ExistAccountEMailReq {
-  string email = 1 [(validate.rules).string.email = true];   // 电子邮箱地址
+  string email = 1 [(validate.rules).string = {email: true, max_len: 32}];   // 电子邮箱地址
 }
 // ExistAccountEMailReply 检查邮箱是否存在回复
 message ExistAccountEMailReply {
@@ -91,6 +95,14 @@ message SavePasswordReq {
 // SavePasswordReply 保存密码回复
 message SavePasswordReply {
 }
+
+// BindUserReq 绑定用户请求
+message BindUserReq {
+  uint64 id = 1 [(validate.rules).uint64 = {gt: 0}];
+  uint64 userID = 2 [(validate.rules).uint64 = {gt: 0}];
+}
+// BindUserReply 绑定用户回复
+message BindUserReply {}
 
 // GetKeyReq 获取公钥请求
 message GetKeyReq {}
