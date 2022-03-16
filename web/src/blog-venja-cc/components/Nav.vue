@@ -6,7 +6,7 @@
       <p class="nav-meta-description">Softness is your greatest weakness</p>
     </div>
     <div class="nav-menu">
-      <ul class="nav-menu-list">
+      <ul class="nav-menu-list not-selectable">
         <li class="nav-menu-list-item">
           <a href="" ref="section">
             <i class="el-icon-s-home"> 首页 </i>

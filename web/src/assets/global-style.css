@@ -1,0 +1,78 @@
+.black {
+    color: black;
+}
+.white {
+    color: white;
+}
+
+.bg-black {
+    background-color: black;
+}
+.bg-white {
+    background-color: white;
+}
+
+.bold {
+    font-weight: bold;
+}
+.italic {
+    font-style: italic;
+}
+
+h1 {
+    font-size: 22px;
+}
+h3 {
+    font-size: 18px;
+}
+p {
+    font-size: 13px;
+}
+button {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+.center {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+.not-selectable {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+
+.basic-button {
+    display: inline-block;
+    padding: 0 20px;
+    font-size: 14px;
+    color: #555;
+    background: #fff;
+    border: 2px solid #555;
+    text-decoration: none;
+    border-radius: 2px;
+    line-height: 2;
+}
+.basic-button:hover {
+    border-color: #222;
+    color: #fff;
+    background: #222;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    transition-delay: 0s;
+}

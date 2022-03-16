@@ -80,6 +80,17 @@ func (m *CreateEMailAccountReq) validate(all bool) error {
 
 	}
 
+	if utf8.RuneCountInString(m.GetEmail()) > 32 {
+		err := CreateEMailAccountReqValidationError{
+			field:  "Email",
+			reason: "value length must be at most 32 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if err := m._validateEmail(m.GetEmail()); err != nil {
 		err = CreateEMailAccountReqValidationError{
 			field:  "Email",
@@ -469,6 +480,8 @@ func (m *GetAccountReply) validate(all bool) error {
 
 	// no validation rules for Status
 
+	// no validation rules for UserID
+
 	if len(errors) > 0 {
 		return GetAccountReplyMultiError(errors)
 	}
@@ -568,6 +581,17 @@ func (m *ExistAccountEMailReq) validate(all bool) error {
 	}
 
 	var errors []error
+
+	if utf8.RuneCountInString(m.GetEmail()) > 32 {
+		err := ExistAccountEMailReqValidationError{
+			field:  "Email",
+			reason: "value length must be at most 32 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if err := m._validateEmail(m.GetEmail()); err != nil {
 		err = ExistAccountEMailReqValidationError{
@@ -1290,6 +1314,227 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = SavePasswordReplyValidationError{}
+
+// Validate checks the field values on BindUserReq with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *BindUserReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on BindUserReq with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in BindUserReqMultiError, or
+// nil if none found.
+func (m *BindUserReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *BindUserReq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetId() <= 0 {
+		err := BindUserReqValidationError{
+			field:  "Id",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetUserID() <= 0 {
+		err := BindUserReqValidationError{
+			field:  "UserID",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return BindUserReqMultiError(errors)
+	}
+
+	return nil
+}
+
+// BindUserReqMultiError is an error wrapping multiple validation errors
+// returned by BindUserReq.ValidateAll() if the designated constraints aren't met.
+type BindUserReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m BindUserReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m BindUserReqMultiError) AllErrors() []error { return m }
+
+// BindUserReqValidationError is the validation error returned by
+// BindUserReq.Validate if the designated constraints aren't met.
+type BindUserReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e BindUserReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e BindUserReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e BindUserReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e BindUserReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e BindUserReqValidationError) ErrorName() string { return "BindUserReqValidationError" }
+
+// Error satisfies the builtin error interface
+func (e BindUserReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sBindUserReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = BindUserReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = BindUserReqValidationError{}
+
+// Validate checks the field values on BindUserReply with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *BindUserReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on BindUserReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in BindUserReplyMultiError, or
+// nil if none found.
+func (m *BindUserReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *BindUserReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return BindUserReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// BindUserReplyMultiError is an error wrapping multiple validation errors
+// returned by BindUserReply.ValidateAll() if the designated constraints
+// aren't met.
+type BindUserReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m BindUserReplyMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m BindUserReplyMultiError) AllErrors() []error { return m }
+
+// BindUserReplyValidationError is the validation error returned by
+// BindUserReply.Validate if the designated constraints aren't met.
+type BindUserReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e BindUserReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e BindUserReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e BindUserReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e BindUserReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e BindUserReplyValidationError) ErrorName() string { return "BindUserReplyValidationError" }
+
+// Error satisfies the builtin error interface
+func (e BindUserReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sBindUserReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = BindUserReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = BindUserReplyValidationError{}
 
 // Validate checks the field values on GetKeyReq with the rules defined in the
 // proto definition for this message. If any rules are violated, the first

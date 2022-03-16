@@ -24,6 +24,11 @@ const routes = [
     name: 'Blog',
     component: () => import('../blog-venja-cc/Index.vue')
   },
+  {
+    path: '/signin',
+    name: 'SignIn',
+    component: () => import('../blog-venja-cc/LoginRegister.vue')
+  },
 ]
 
 const router = createRouter({
