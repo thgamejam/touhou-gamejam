@@ -2,6 +2,9 @@ package data
 
 import (
     "context"
+    "crypto/md5"
+    "encoding/hex"
+    "service/pkg/crypto/ecc"
     "strconv"
 )
 
@@ -60,6 +63,40 @@ func (r *accountRepo) DeleteAccountToCache(ctx context.Context, model *Account) 
 
     // 删除缓存中的用户数据
     err = r.data.Cache.Del(ctx, accountCacheKey(model.ID))
+    if err != nil {
+        return
+    }
+    return
+}
+
+// hashMd5To16 获取密钥md5 hash值，返回16个字符
+var hashMd5To16 = func(privateKey string) string {
+    bytes := md5.Sum([]byte(privateKey))
+    return hex.EncodeToString(bytes[4:12])
+}
+
+// CreateLockOpenerToCache 创建钥匙对到缓存中
+func (r *accountRepo) CreateLockOpenerToCache(ctx context.Context, id int) (lock *LockOpener, hash string, err error) {
+    // 生成钥匙对
+    privateKey, publicKey, err := ecc.GenerateKey()
+    if err != nil {
+        return
+    }
+    // 取密钥hash
+    hash = hashMd5To16(privateKey)
+
+    lock = &LockOpener{
+        ID:      id,
+        Public:  publicKey,
+        Private: privateKey,
+    }
+
+    // 存缓存
+    err = r.data.Cache.Set(ctx, lockOpenerCacheKey(hash), lock, 0)
+    if err != nil {
+        return
+    }
+    err = r.data.Cache.SetString(ctx, lockOpenerIDCacheKey(id), hash, 0)
     if err != nil {
         return
     }

@@ -22,7 +22,7 @@ var modelToAccount = func(model *Account) *biz.Account {
         ID:           model.ID,
         UUID:         model.UUID,
         Email:        model.Email,
-        Phone:        &biz.TelPhone{TelCode: model.TelCode, Phone: model.Phone},
+        Phone:        biz.TelPhone{TelCode: model.TelCode, Phone: model.Phone},
         PasswordHash: model.Password,
         Status:       model.Status,
         UserID:       model.UserID,
@@ -136,7 +136,7 @@ func (r *accountRepo) ExistAccountEMail(ctx context.Context, email string) (bool
         return false, err
     }
     if !ok {
-        return false, v1.ErrorInternalServerError("用户不存在 %v", email) // TODO 用户不存在 err
+        return false, nil
     }
 
     err = r.SetAccountToCache(ctx, model)

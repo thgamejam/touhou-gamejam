@@ -19,7 +19,7 @@ type Account struct {
     ID           uint64
     UUID         uuid.UUID // 唯一标识符
     Email        string    // 邮箱
-    Phone        *TelPhone // 电话号码
+    Phone        TelPhone  // 电话号码
     PasswordHash string    // 密码哈希值
     Status       uint8     // 状态
     UserID       uint64    // 用户表ID
@@ -141,9 +141,9 @@ func (uc *AccountUseCase) VerifyPasswordByEMail(
 
 // ExistAccountEMail 是否存在邮箱
 func (uc *AccountUseCase) ExistAccountEMail(ctx context.Context, email string) (bool, error) {
-    return uc.ExistAccountEMail(ctx, email)
+    return uc.repo.ExistAccountEMail(ctx, email)
 }
 
 func (uc *AccountUseCase) BindUser(ctx context.Context, id, uid uint64) error {
-    return uc.BindUser(ctx, id, uid)
+    return uc.repo.BindUser(ctx, id, uid)
 }

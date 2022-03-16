@@ -5,15 +5,27 @@ import (
 )
 
 func (r *accountRepo) GetAccountByIDFromDB(ctx context.Context, id uint64) (model *Account, ok bool, err error) {
-    tx := r.data.DataBase.First(&model, id)
+    model = &Account{}
+    tx := r.data.DataBase.Limit(1).Find(&model, id)
     err = tx.Error
-    ok = tx.RowsAffected == 0
-    return
+    if err != nil {
+        return nil, false, err
+    }
+    if tx.RowsAffected == 0 {
+        return nil, false, nil
+    }
+    return model, true, nil
 }
 
 func (r *accountRepo) GetAccountByEMailFromDB(ctx context.Context, email string) (model *Account, ok bool, err error) {
-    tx := r.data.DataBase.First(&model, "email = ?", email)
+    model = &Account{}
+    tx := r.data.DataBase.Limit(1).Find(&model, "email = ?", email)
     err = tx.Error
-    ok = tx.RowsAffected == 0
-    return
+    if err != nil {
+        return nil, false, err
+    }
+    if tx.RowsAffected == 0 {
+        return nil, false, nil
+    }
+    return model, true, nil
 }
