@@ -2,10 +2,10 @@
 <div class="blog-card-container">
 
   <div class="blog-card-title">
-    <h1><a class="blog-card-link" href="" itemprop="url">这是一个标题1abc</a></h1>
+    <h1><a class="blog-card-link" href="">这是一个标题1abc</a></h1>
   </div>
 
-  <div class="blog-card-meta">
+  <div class="blog-card-meta not-selectable">
     <i class="el-icon-date"> 发表于 xxxx-xx-xx  </i>
     <span class="blog-card-meta-divider">|</span>
     <i class="el-icon-folder"> 归档于 ﹢﹢﹢ </i>
@@ -24,7 +24,7 @@
     <p>◆孟德斯鸠</p>
 
     <div class="blog-card-body-button">
-      <a href="" class="blog-card-link-btn">阅读全文 »</a>
+      <a href="" class="basic-button not-selectable">阅读全文 »</a>
     </div>
   </div>
 
@@ -43,14 +43,12 @@ export default {
 h1 {
   margin: 0;
   padding: 0;
-  font-size: 22px;
   font-weight: 400;
   line-height: 1.5;
   display: block;
 }
 h3 {
   padding-top: 10px;
-  font-size: 18px;
   margin: 20px 0 15px;
   line-height: 1.5;
 }
@@ -62,7 +60,6 @@ a {
 }
 p {
   margin: 0;
-  font-size: 14px;
 }
 
 .blog-card-container {
@@ -123,26 +120,5 @@ p {
   -ms-transform: scaleX(1);
   -o-transform: scaleX(1);
   transform: scaleX(1);
-}
-
-.blog-card-link-btn {
-  display: inline-block;
-  padding: 0 20px;
-  font-size: 14px;
-  color: #555;
-  background: #fff;
-  border: 2px solid #555;
-  text-decoration: none;
-  border-radius: 2px;
-  line-height: 2;
-}
-.blog-card-link-btn:hover {
-  border-color: #222;
-  color: #fff;
-  background: #222;
-  transition-property: background-color, color, border-color;
-  transition-duration: 0.2s;
-  transition-timing-function: ease-in-out;
-  transition-delay: 0s;
 }
 </style>
