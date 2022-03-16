@@ -454,6 +454,77 @@ func (x *Queue) GetDelayLevel() uint32 {
 	return 0
 }
 
+type Email struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	User string `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Pass string `protobuf:"bytes,2,opt,name=pass,proto3" json:"pass,omitempty"`
+	Host string `protobuf:"bytes,3,opt,name=host,proto3" json:"host,omitempty"`
+	Port uint32 `protobuf:"varint,4,opt,name=port,proto3" json:"port,omitempty"`
+}
+
+func (x *Email) Reset() {
+	*x = Email{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_conf_conf_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Email) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Email) ProtoMessage() {}
+
+func (x *Email) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_conf_conf_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Email.ProtoReflect.Descriptor instead.
+func (*Email) Descriptor() ([]byte, []int) {
+	return file_pkg_conf_conf_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *Email) GetUser() string {
+	if x != nil {
+		return x.User
+	}
+	return ""
+}
+
+func (x *Email) GetPass() string {
+	if x != nil {
+		return x.Pass
+	}
+	return ""
+}
+
+func (x *Email) GetHost() string {
+	if x != nil {
+		return x.Host
+	}
+	return ""
+}
+
+func (x *Email) GetPort() uint32 {
+	if x != nil {
+		return x.Port
+	}
+	return 0
+}
+
 type Server_HTTP struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -467,7 +538,7 @@ type Server_HTTP struct {
 func (x *Server_HTTP) Reset() {
 	*x = Server_HTTP{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_conf_conf_proto_msgTypes[7]
+		mi := &file_pkg_conf_conf_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -480,7 +551,7 @@ func (x *Server_HTTP) String() string {
 func (*Server_HTTP) ProtoMessage() {}
 
 func (x *Server_HTTP) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_conf_conf_proto_msgTypes[7]
+	mi := &file_pkg_conf_conf_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -530,7 +601,7 @@ type Server_GRPC struct {
 func (x *Server_GRPC) Reset() {
 	*x = Server_GRPC{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_conf_conf_proto_msgTypes[8]
+		mi := &file_pkg_conf_conf_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -543,7 +614,7 @@ func (x *Server_GRPC) String() string {
 func (*Server_GRPC) ProtoMessage() {}
 
 func (x *Server_GRPC) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_conf_conf_proto_msgTypes[8]
+	mi := &file_pkg_conf_conf_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -594,7 +665,7 @@ type Data_Database struct {
 func (x *Data_Database) Reset() {
 	*x = Data_Database{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_conf_conf_proto_msgTypes[9]
+		mi := &file_pkg_conf_conf_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -607,7 +678,7 @@ func (x *Data_Database) String() string {
 func (*Data_Database) ProtoMessage() {}
 
 func (x *Data_Database) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_conf_conf_proto_msgTypes[9]
+	mi := &file_pkg_conf_conf_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -667,7 +738,7 @@ type Data_Redis struct {
 func (x *Data_Redis) Reset() {
 	*x = Data_Redis{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_conf_conf_proto_msgTypes[10]
+		mi := &file_pkg_conf_conf_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -680,7 +751,7 @@ func (x *Data_Redis) String() string {
 func (*Data_Redis) ProtoMessage() {}
 
 func (x *Data_Redis) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_conf_conf_proto_msgTypes[10]
+	mi := &file_pkg_conf_conf_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -754,7 +825,7 @@ type Data_ObjectStorage struct {
 func (x *Data_ObjectStorage) Reset() {
 	*x = Data_ObjectStorage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_conf_conf_proto_msgTypes[11]
+		mi := &file_pkg_conf_conf_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -767,7 +838,7 @@ func (x *Data_ObjectStorage) String() string {
 func (*Data_ObjectStorage) ProtoMessage() {}
 
 func (x *Data_ObjectStorage) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_conf_conf_proto_msgTypes[11]
+	mi := &file_pkg_conf_conf_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -948,9 +1019,15 @@ var file_pkg_conf_conf_proto_rawDesc = []byte{
 	0x72, 0x65, 0x73, 0x73, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x72, 0x65, 0x74,
 	0x72, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x72, 0x65, 0x74, 0x72, 0x79, 0x12,
 	0x1e, 0x0a, 0x0a, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x18, 0x07, 0x20,
-	0x01, 0x28, 0x0d, 0x52, 0x0a, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x42,
-	0x17, 0x5a, 0x15, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x63,
-	0x6f, 0x6e, 0x66, 0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x01, 0x28, 0x0d, 0x52, 0x0a, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x22,
+	0x57, 0x0a, 0x05, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04,
+	0x70, 0x61, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x73, 0x73,
+	0x12, 0x12, 0x0a, 0x04, 0x68, 0x6f, 0x73, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x68, 0x6f, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x04, 0x70, 0x6f, 0x72, 0x74, 0x42, 0x17, 0x5a, 0x15, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x3b, 0x63, 0x6f, 0x6e,
+	0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -965,7 +1042,7 @@ func file_pkg_conf_conf_proto_rawDescGZIP() []byte {
 	return file_pkg_conf_conf_proto_rawDescData
 }
 
-var file_pkg_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_pkg_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_pkg_conf_conf_proto_goTypes = []interface{}{
 	(*CloudBootstrap)(nil),     // 0: kratos.api.CloudBootstrap
 	(*Consul)(nil),             // 1: kratos.api.Consul
@@ -974,32 +1051,33 @@ var file_pkg_conf_conf_proto_goTypes = []interface{}{
 	(*Server)(nil),             // 4: kratos.api.Server
 	(*Data)(nil),               // 5: kratos.api.Data
 	(*Queue)(nil),              // 6: kratos.api.Queue
-	(*Server_HTTP)(nil),        // 7: kratos.api.Server.HTTP
-	(*Server_GRPC)(nil),        // 8: kratos.api.Server.GRPC
-	(*Data_Database)(nil),      // 9: kratos.api.Data.Database
-	(*Data_Redis)(nil),         // 10: kratos.api.Data.Redis
-	(*Data_ObjectStorage)(nil), // 11: kratos.api.Data.ObjectStorage
-	(*duration.Duration)(nil),  // 12: google.protobuf.Duration
+	(*Email)(nil),              // 7: kratos.api.Email
+	(*Server_HTTP)(nil),        // 8: kratos.api.Server.HTTP
+	(*Server_GRPC)(nil),        // 9: kratos.api.Server.GRPC
+	(*Data_Database)(nil),      // 10: kratos.api.Data.Database
+	(*Data_Redis)(nil),         // 11: kratos.api.Data.Redis
+	(*Data_ObjectStorage)(nil), // 12: kratos.api.Data.ObjectStorage
+	(*duration.Duration)(nil),  // 13: google.protobuf.Duration
 }
 var file_pkg_conf_conf_proto_depIdxs = []int32{
 	1,  // 0: kratos.api.CloudBootstrap.consul:type_name -> kratos.api.Consul
 	4,  // 1: kratos.api.PkgBootstrap.server:type_name -> kratos.api.Server
 	3,  // 2: kratos.api.PkgBootstrap.service:type_name -> kratos.api.Service
 	5,  // 3: kratos.api.Service.data:type_name -> kratos.api.Data
-	7,  // 4: kratos.api.Server.http:type_name -> kratos.api.Server.HTTP
-	8,  // 5: kratos.api.Server.grpc:type_name -> kratos.api.Server.GRPC
-	9,  // 6: kratos.api.Data.database:type_name -> kratos.api.Data.Database
-	10, // 7: kratos.api.Data.redis:type_name -> kratos.api.Data.Redis
-	11, // 8: kratos.api.Data.object_storage:type_name -> kratos.api.Data.ObjectStorage
-	12, // 9: kratos.api.Queue.sendMsgTimeout:type_name -> google.protobuf.Duration
-	12, // 10: kratos.api.Server.HTTP.timeout:type_name -> google.protobuf.Duration
-	12, // 11: kratos.api.Server.GRPC.timeout:type_name -> google.protobuf.Duration
-	12, // 12: kratos.api.Data.Database.conn_max_lifetime:type_name -> google.protobuf.Duration
-	12, // 13: kratos.api.Data.Redis.delay_delete_time:type_name -> google.protobuf.Duration
-	12, // 14: kratos.api.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
-	12, // 15: kratos.api.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
-	12, // 16: kratos.api.Data.ObjectStorage.small_file_expiration_time:type_name -> google.protobuf.Duration
-	12, // 17: kratos.api.Data.ObjectStorage.large_file_expiration_time:type_name -> google.protobuf.Duration
+	8,  // 4: kratos.api.Server.http:type_name -> kratos.api.Server.HTTP
+	9,  // 5: kratos.api.Server.grpc:type_name -> kratos.api.Server.GRPC
+	10, // 6: kratos.api.Data.database:type_name -> kratos.api.Data.Database
+	11, // 7: kratos.api.Data.redis:type_name -> kratos.api.Data.Redis
+	12, // 8: kratos.api.Data.object_storage:type_name -> kratos.api.Data.ObjectStorage
+	13, // 9: kratos.api.Queue.sendMsgTimeout:type_name -> google.protobuf.Duration
+	13, // 10: kratos.api.Server.HTTP.timeout:type_name -> google.protobuf.Duration
+	13, // 11: kratos.api.Server.GRPC.timeout:type_name -> google.protobuf.Duration
+	13, // 12: kratos.api.Data.Database.conn_max_lifetime:type_name -> google.protobuf.Duration
+	13, // 13: kratos.api.Data.Redis.delay_delete_time:type_name -> google.protobuf.Duration
+	13, // 14: kratos.api.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
+	13, // 15: kratos.api.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
+	13, // 16: kratos.api.Data.ObjectStorage.small_file_expiration_time:type_name -> google.protobuf.Duration
+	13, // 17: kratos.api.Data.ObjectStorage.large_file_expiration_time:type_name -> google.protobuf.Duration
 	18, // [18:18] is the sub-list for method output_type
 	18, // [18:18] is the sub-list for method input_type
 	18, // [18:18] is the sub-list for extension type_name
@@ -1098,7 +1176,7 @@ func file_pkg_conf_conf_proto_init() {
 			}
 		}
 		file_pkg_conf_conf_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Server_HTTP); i {
+			switch v := v.(*Email); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1110,7 +1188,7 @@ func file_pkg_conf_conf_proto_init() {
 			}
 		}
 		file_pkg_conf_conf_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Server_GRPC); i {
+			switch v := v.(*Server_HTTP); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1122,7 +1200,7 @@ func file_pkg_conf_conf_proto_init() {
 			}
 		}
 		file_pkg_conf_conf_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Data_Database); i {
+			switch v := v.(*Server_GRPC); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1134,7 +1212,7 @@ func file_pkg_conf_conf_proto_init() {
 			}
 		}
 		file_pkg_conf_conf_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Data_Redis); i {
+			switch v := v.(*Data_Database); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1146,6 +1224,18 @@ func file_pkg_conf_conf_proto_init() {
 			}
 		}
 		file_pkg_conf_conf_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Data_Redis); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_conf_conf_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Data_ObjectStorage); i {
 			case 0:
 				return &v.state
@@ -1164,7 +1254,7 @@ func file_pkg_conf_conf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pkg_conf_conf_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
