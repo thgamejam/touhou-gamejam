@@ -13,7 +13,7 @@ type Account struct {
     Email    string    `json:"email" gorm:"column:email"`
     Status   uint8     `json:"status" gorm:"column:status"`
     UUID     uuid.UUID `json:"uuid" gorm:"column:uuid"`
-    Password string    `json:"password" gorm:"column:password"`
+    Password []byte    `json:"password" gorm:"column:password"`
     UserID   uint64    `json:"user_id" gorm:"column:user_id"`
 }
 

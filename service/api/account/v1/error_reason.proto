@@ -15,5 +15,6 @@ enum ErrorReason {
   INTERNAL_SERVER_ERROR = 0 [(errors.code) = 500];
   CONTENT_MISSING = 1 [(errors.code) = 400];
 
-  INCORRECT_ACCOUNT = 1001;
+  INCORRECT_ACCOUNT = 1001 [(errors.code) = 400];     // 帐户不正确
+  EMAIL_ALREADY_EXISTS = 1011 [(errors.code) = 400];  // 邮箱已存在
 }

@@ -40,9 +40,21 @@ func IsIncorrectAccount(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == ErrorReason_INCORRECT_ACCOUNT.String() && e.Code == 500
+	return e.Reason == ErrorReason_INCORRECT_ACCOUNT.String() && e.Code == 400
 }
 
 func ErrorIncorrectAccount(format string, args ...interface{}) *errors.Error {
-	return errors.New(500, ErrorReason_INCORRECT_ACCOUNT.String(), fmt.Sprintf(format, args...))
+	return errors.New(400, ErrorReason_INCORRECT_ACCOUNT.String(), fmt.Sprintf(format, args...))
+}
+
+func IsEmailAlreadyExists(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_EMAIL_ALREADY_EXISTS.String() && e.Code == 400
+}
+
+func ErrorEmailAlreadyExists(format string, args ...interface{}) *errors.Error {
+	return errors.New(400, ErrorReason_EMAIL_ALREADY_EXISTS.String(), fmt.Sprintf(format, args...))
 }

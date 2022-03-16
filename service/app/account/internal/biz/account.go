@@ -1,9 +1,10 @@
 package biz
 
 import (
+    "bytes"
     "context"
     "crypto/sha1"
-    "encoding/hex"
+    v1 "service/api/account/v1"
     "service/pkg/crypto/ecc"
     "service/pkg/uuid"
 )
@@ -20,7 +21,7 @@ type Account struct {
     UUID         uuid.UUID // 唯一标识符
     Email        string    // 邮箱
     Phone        TelPhone  // 电话号码
-    PasswordHash string    // 密码哈希值
+    PasswordHash []byte    // 密码哈希值
     Status       uint8     // 状态
     UserID       uint64    // 用户表ID
 }
@@ -45,16 +46,22 @@ var decryptPassword = func(key *PrivateKey, ciphertext string) (plaintext string
 }
 
 // hashPassword 密码取哈希值
-var hashPassword = func(password, sign string) string {
-    hashByte := sha1.Sum([]byte(password + sign))
-    return hex.EncodeToString(hashByte[:])
+var hashPassword = func(password, sign string) []byte {
+    byte20 := sha1.Sum([]byte(password + sign))
+    return byte20[:]
 }
 
 // CreateEMailAccount 使用邮箱创建账户
 func (uc *AccountUseCase) CreateEMailAccount(
     ctx context.Context, email string, passwdCT *PasswordCiphertext) (id uint64, err error) {
 
-    // TODO 未判断邮箱是否已被注册
+    isExist, err := uc.repo.ExistAccountEMail(ctx, email)
+    if err != nil {
+        return 0, err
+    }
+    if isExist {
+        return 0, v1.ErrorEmailAlreadyExists("email already exists (%v)", email)
+    }
 
     // 解密
     password, err := uc.getPasswordPlaintext(ctx, passwdCT)
@@ -134,7 +141,7 @@ func (uc *AccountUseCase) VerifyPasswordByEMail(
     }
     // 取密码哈希
     hash := hashPassword(password, account.UUID.String())
-    ok = account.PasswordHash == hash
+    ok = bytes.Equal(account.PasswordHash, hash)
     id = account.ID
     return
 }
