@@ -8,12 +8,17 @@ import (
 // Account 账户模型
 type Account struct {
     database.Model
-    UUID     uuid.UUID `json:"uuid" gorm:"column:uuid"`
     TelCode  uint16    `json:"tel_code" gorm:"column:tel_code"`
-    Phone    string    `json:"phone" gorm:"column:phone; type:char(11)"`
-    Email    string    `json:"email" gorm:"column:email; type:char(46)"`
+    Phone    string    `json:"phone" gorm:"column:phone"`
+    Email    string    `json:"email" gorm:"column:email"`
     Status   uint8     `json:"status" gorm:"column:status"`
-    Password string    `json:"password" gorm:"column:password; type:char(40)"`
+    UUID     uuid.UUID `json:"uuid" gorm:"column:uuid"`
+    Password string    `json:"password" gorm:"column:password"`
+    UserID   uint64    `json:"user_id" gorm:"column:user_id"`
+}
+
+func (Account) TableName() string {
+    return "account"
 }
 
 // LockOpener 公钥/密钥对

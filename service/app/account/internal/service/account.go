@@ -2,7 +2,6 @@ package service
 
 import (
     "context"
-    "github.com/go-kratos/kratos/v2/log"
     "regexp"
     "service/app/account/internal/biz"
 
@@ -13,23 +12,6 @@ const (
     // 按照 RFC 5322 的邮箱地址正则规则
     matchEMail = `([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])`
 )
-
-type AccountService struct {
-    pb.UnimplementedAccountServer
-
-    uc  *biz.AccountUseCase
-    log *log.Helper
-}
-
-func NewAccountService(
-    uc *biz.AccountUseCase,
-    logger log.Logger,
-) *AccountService {
-    return &AccountService{
-        uc:  uc,
-        log: log.NewHelper(logger),
-    }
-}
 
 func (s *AccountService) GetKey(ctx context.Context, req *pb.GetKeyReq) (*pb.GetKeyReply, error) {
     key, err := s.uc.GetRandomlyKey(ctx)
@@ -42,7 +24,9 @@ func (s *AccountService) GetKey(ctx context.Context, req *pb.GetKeyReq) (*pb.Get
     }, nil
 }
 
-func (s *AccountService) ExistAccountEMail(ctx context.Context, req *pb.ExistAccountEMailReq) (*pb.ExistAccountEMailReply, error) {
+func (s *AccountService) ExistAccountEMail(
+    ctx context.Context, req *pb.ExistAccountEMailReq) (*pb.ExistAccountEMailReply, error) {
+
     ok, err := s.uc.ExistAccountEMail(ctx, req.Email)
     if err != nil {
         return nil, err
@@ -50,7 +34,9 @@ func (s *AccountService) ExistAccountEMail(ctx context.Context, req *pb.ExistAcc
     return &pb.ExistAccountEMailReply{Ok: ok}, nil
 }
 
-func (s *AccountService) CreateEMailAccount(ctx context.Context, req *pb.CreateEMailAccountReq) (*pb.CreateEMailAccountReply, error) {
+func (s *AccountService) CreateEMailAccount(
+    ctx context.Context, req *pb.CreateEMailAccountReq) (*pb.CreateEMailAccountReply, error) {
+
     passwdCT := &biz.PasswordCiphertext{
         KeyHash:    req.Hash,
         Ciphertext: req.Ciphertext,
@@ -73,10 +59,13 @@ func (s *AccountService) GetAccount(ctx context.Context, req *pb.GetAccountReq) 
         TelCode: uint32(account.Phone.TelCode),
         Phone:   account.Phone.Phone,
         Status:  uint32(account.Status),
+        UserID:  account.UserID,
     }, nil
 }
 
-func (s *AccountService) VerifyPassword(ctx context.Context, req *pb.VerifyPasswordReq) (*pb.VerifyPasswordReply, error) {
+func (s *AccountService) VerifyPassword(
+    ctx context.Context, req *pb.VerifyPasswordReq) (*pb.VerifyPasswordReply, error) {
+
     // 正则判断req.Username是否为邮箱
     isEMail, err := regexp.MatchString(matchEMail, req.Username)
     if err != nil {
@@ -109,4 +98,12 @@ func (s *AccountService) SavePassword(ctx context.Context, req *pb.SavePasswordR
         return nil, err
     }
     return &pb.SavePasswordReply{}, nil
+}
+
+func (s *AccountService) BindUser(ctx context.Context, req *pb.BindUserReq) (*pb.BindUserReply, error) {
+    err := s.uc.BindUser(ctx, req.Id, req.UserID)
+    if err != nil {
+        return nil, err
+    }
+    return &pb.BindUserReply{}, nil
 }

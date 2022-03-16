@@ -32,6 +32,8 @@ type AccountClient interface {
 	VerifyPassword(ctx context.Context, in *VerifyPasswordReq, opts ...grpc.CallOption) (*VerifyPasswordReply, error)
 	// 保存密码
 	SavePassword(ctx context.Context, in *SavePasswordReq, opts ...grpc.CallOption) (*SavePasswordReply, error)
+	// 绑定用户
+	BindUser(ctx context.Context, in *BindUserReq, opts ...grpc.CallOption) (*BindUserReply, error)
 	// 获取密码加密公钥
 	GetKey(ctx context.Context, in *GetKeyReq, opts ...grpc.CallOption) (*GetKeyReply, error)
 }
@@ -89,6 +91,15 @@ func (c *accountClient) SavePassword(ctx context.Context, in *SavePasswordReq, o
 	return out, nil
 }
 
+func (c *accountClient) BindUser(ctx context.Context, in *BindUserReq, opts ...grpc.CallOption) (*BindUserReply, error) {
+	out := new(BindUserReply)
+	err := c.cc.Invoke(ctx, "/account.v1.Account/BindUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *accountClient) GetKey(ctx context.Context, in *GetKeyReq, opts ...grpc.CallOption) (*GetKeyReply, error) {
 	out := new(GetKeyReply)
 	err := c.cc.Invoke(ctx, "/account.v1.Account/GetKey", in, out, opts...)
@@ -112,6 +123,8 @@ type AccountServer interface {
 	VerifyPassword(context.Context, *VerifyPasswordReq) (*VerifyPasswordReply, error)
 	// 保存密码
 	SavePassword(context.Context, *SavePasswordReq) (*SavePasswordReply, error)
+	// 绑定用户
+	BindUser(context.Context, *BindUserReq) (*BindUserReply, error)
 	// 获取密码加密公钥
 	GetKey(context.Context, *GetKeyReq) (*GetKeyReply, error)
 	mustEmbedUnimplementedAccountServer()
@@ -135,6 +148,9 @@ func (UnimplementedAccountServer) VerifyPassword(context.Context, *VerifyPasswor
 }
 func (UnimplementedAccountServer) SavePassword(context.Context, *SavePasswordReq) (*SavePasswordReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SavePassword not implemented")
+}
+func (UnimplementedAccountServer) BindUser(context.Context, *BindUserReq) (*BindUserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BindUser not implemented")
 }
 func (UnimplementedAccountServer) GetKey(context.Context, *GetKeyReq) (*GetKeyReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetKey not implemented")
@@ -242,6 +258,24 @@ func _Account_SavePassword_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Account_BindUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BindUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).BindUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/account.v1.Account/BindUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).BindUser(ctx, req.(*BindUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Account_GetKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetKeyReq)
 	if err := dec(in); err != nil {
@@ -286,6 +320,10 @@ var Account_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SavePassword",
 			Handler:    _Account_SavePassword_Handler,
+		},
+		{
+			MethodName: "BindUser",
+			Handler:    _Account_BindUser_Handler,
 		},
 		{
 			MethodName: "GetKey",

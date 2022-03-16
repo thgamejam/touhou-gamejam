@@ -4,22 +4,9 @@ import (
     "context"
     "crypto/sha1"
     "encoding/hex"
-    "github.com/go-kratos/kratos/v2/log"
     "service/pkg/crypto/ecc"
     "service/pkg/uuid"
 )
-
-// PublicKey 公钥
-type PublicKey struct {
-    Hash string // 密钥摘要
-    Key  string // 公钥内容
-}
-
-// PrivateKey 密钥
-type PrivateKey struct {
-    Hash string // 密钥摘要
-    Key  string // 密钥内容
-}
 
 // PasswordCiphertext 密码密文, 被公钥加密的密码
 type PasswordCiphertext struct {
@@ -35,6 +22,7 @@ type Account struct {
     Phone        *TelPhone // 电话号码
     PasswordHash string    // 密码哈希值
     Status       uint8     // 状态
+    UserID       uint64    // 用户表ID
 }
 
 // TelPhone 电话号码
@@ -60,54 +48,6 @@ var decryptPassword = func(key *PrivateKey, ciphertext string) (plaintext string
 var hashPassword = func(password, sign string) string {
     hashByte := sha1.Sum([]byte(password + sign))
     return hex.EncodeToString(hashByte[:])
-}
-
-type AccountRepo interface {
-    // CreateEMailAccount 创建邮箱账户
-    // 返回创造账户的id
-    CreateEMailAccount(context.Context, *Account) (uint64, error)
-
-    // GetAccountByID 通过用户ID获取账户
-    GetAccountByID(context.Context, uint64) (*Account, error)
-    // GetAccountByEMail 通过用户邮箱获取账户
-    GetAccountByEMail(context.Context, string) (*Account, error)
-    // GetAccountByPhone 通过用户手机号获取账户
-    GetAccountByPhone(context.Context, *TelPhone) (*Account, error)
-
-    // ExistAccountEMail 是否存在邮箱
-    ExistAccountEMail(context.Context, string) (bool, error)
-
-    // GetPublicKey 获取公钥
-    // 传入与公钥成对的密钥的md5-16哈希摘要
-    GetPublicKey(context.Context, string) (*PublicKey, error)
-    // GetRandomlyPublicKey 获取任意的一个公钥
-    GetRandomlyPublicKey(context.Context) (*PublicKey, error)
-
-    // GetPrivateKey 获取密钥
-    // 传入密钥的md5-16哈希摘要
-    GetPrivateKey(context.Context, string) (*PrivateKey, error)
-
-    // UpdateAccount 更新账户
-    UpdateAccount(context.Context, *Account) error
-}
-
-type AccountUseCase struct {
-    repo AccountRepo
-    log  *log.Helper
-}
-
-func NewAccountUseCase(repo AccountRepo, logger log.Logger) *AccountUseCase {
-    return &AccountUseCase{repo: repo, log: log.NewHelper(logger)}
-}
-
-// GetKey 获取公钥
-func (uc *AccountUseCase) GetKey(ctx context.Context, hash string) (*PublicKey, error) {
-    return uc.repo.GetPublicKey(ctx, hash)
-}
-
-// GetRandomlyKey 获取任意的一个公钥
-func (uc *AccountUseCase) GetRandomlyKey(ctx context.Context) (*PublicKey, error) {
-    return uc.repo.GetRandomlyPublicKey(ctx)
 }
 
 // CreateEMailAccount 使用邮箱创建账户
@@ -202,4 +142,8 @@ func (uc *AccountUseCase) VerifyPasswordByEMail(
 // ExistAccountEMail 是否存在邮箱
 func (uc *AccountUseCase) ExistAccountEMail(ctx context.Context, email string) (bool, error) {
     return uc.ExistAccountEMail(ctx, email)
+}
+
+func (uc *AccountUseCase) BindUser(ctx context.Context, id, uid uint64) error {
+    return uc.BindUser(ctx, id, uid)
 }

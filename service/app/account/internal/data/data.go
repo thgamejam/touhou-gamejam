@@ -23,16 +23,12 @@ type Data struct {
 }
 
 // NewData .
-func NewData(
-    db *gorm.DB,
-    cache *cache.Cache,
-    logger log.Logger,
-) (*Data, func(), error) {
+func NewData(db *gorm.DB, cache *cache.Cache, logger log.Logger) (*Data, func(), error) {
     data := &Data{
         DataBase: db,
         Cache:    cache,
     }
-    
+
     cleanup := func() {
         _ = cache.Close()
         log.NewHelper(logger).Info("closing the data resources")
