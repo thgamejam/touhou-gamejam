@@ -33,7 +33,6 @@
 
 <script>
 import {ref} from "vue";
-import 'remixicon/fonts/remixicon.css'
 export default {
   name: "LoginPage",
   setup(){

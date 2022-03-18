@@ -78,7 +78,7 @@ export default {
   margin: 0 auto;
 }
 .sidebar-profile-description {
-  padding: 1px;
+  height: 20px;
 }
 .sidebar-profile-login-register {
 }
