@@ -1,110 +1,78 @@
 package object_storage
 
 import (
-    "context"
-    "github.com/aws/aws-sdk-go-v2/aws"
-    "github.com/aws/aws-sdk-go-v2/config"
-    "github.com/aws/aws-sdk-go-v2/credentials"
-    "github.com/aws/aws-sdk-go-v2/service/s3"
-    "service/pkg/conf"
-    "time"
+	"context"
+	"fmt"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
+	"net/url"
+	"service/pkg/conf"
+	"time"
 )
 
 type ObjectStorage struct {
-    client *s3.Client // 对象存储服务
+	client *minio.Client // 对象存储服务
 }
 
 // NewObjectStorage 初始化对象存储
 func NewObjectStorage(c *conf.Service) (*ObjectStorage, error) {
+	client, err := minio.New(
+		c.Data.ObjectStorage.Domain, // 使用的域名
+		&minio.Options{
+			Creds: credentials.NewStaticV4(
+				c.Data.ObjectStorage.AccessKeyID,
+				c.Data.ObjectStorage.SecretAccessKey,
+				c.Data.ObjectStorage.Token,
+			),
+			Secure: c.Data.ObjectStorage.Secure,
+		})
+	if err != nil {
+		return nil, err
+	}
 
-    // TODO 绑定 Log 未完成
+	// TODO 绑定 Log 未完成
 
-    const defaultRegion = "us-east-1"
+	oss := &ObjectStorage{
+		client: client,
+	}
 
-    staticResolver := aws.EndpointResolverWithOptionsFunc(
-        func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-            return aws.Endpoint{
-                PartitionID:   "aws",
-                URL:           c.Data.ObjectStorage.Url, // minio url
-                SigningRegion: defaultRegion,
-                //HostnameImmutable: true,
-            }, nil
-        },
-    )
-
-    cfg, err := config.LoadDefaultConfig(
-        context.TODO(),
-        func(lo *config.LoadOptions) error {
-            lo.Region = defaultRegion
-            lo.Credentials = credentials.NewStaticCredentialsProvider(
-                c.Data.ObjectStorage.AccessKey, // Access Key
-                c.Data.ObjectStorage.SecretKey, // Secret Key
-                "",
-            )
-            lo.EndpointResolverWithOptions = staticResolver
-            return nil
-        },
-    )
-    if err != nil {
-        return nil, err
-    }
-
-    client := s3.NewFromConfig(cfg)
-
-    oss := &ObjectStorage{
-        client: client,
-    }
-
-    return oss, nil
+	return oss, nil
 }
 
 // GetClient 获取对象存储客户端
-func (o *ObjectStorage) GetClient() *s3.Client {
-    return o.client
+func (o *ObjectStorage) GetClient() *minio.Client {
+	return o.client
 }
 
 // PreSignGetURL 获取文件对象的预签名URL
 // bucket: 桶
 // key: 对象路径
+// filename: 下载时的文件名
 // expirationTime: 过期时间
-func (o *ObjectStorage) PreSignGetURL(ctx context.Context, bucket, key string, expirationTime time.Duration) (string, error) {
-    input := &s3.GetObjectInput{
-        Bucket: aws.String(bucket),
-        Key:    aws.String(key),
-    }
+func (o *ObjectStorage) PreSignGetURL(
+	ctx context.Context, bucket, key, filename string, expirationTime time.Duration) (*url.URL, error) {
 
-    psClient := s3.NewPresignClient(o.client)
-    req, err := psClient.PresignGetObject(ctx, input,
-        func(options *s3.PresignOptions) {
-            options.Expires = expirationTime // 设置url过期时间
-        },
-    )
-    if err != nil {
-        return "", err
-    }
+	reqParams := make(url.Values)
+	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=\"%v\"", filename))
+	preSignedURL, err := o.client.PresignedGetObject(ctx, bucket, key, expirationTime, reqParams)
+	if err != nil {
+		return nil, err
+	}
 
-    return req.URL, nil
+	return preSignedURL, nil
 }
 
 // PreSignPutURL 上传文件对象的预签名URL
 // bucket: 桶
 // key: 对象路径
 // expirationTime: 过期时间
-func (o *ObjectStorage) PreSignPutURL(ctx context.Context, bucket, key string, expirationTime time.Duration) (string, error) {
-    input := &s3.PutObjectInput{
-        Bucket: aws.String(bucket),
-        Key:    aws.String(key),
-    }
+func (o *ObjectStorage) PreSignPutURL(
+	ctx context.Context, bucket, key string, expirationTime time.Duration) (*url.URL, error) {
 
-    psClient := s3.NewPresignClient(o.client)
-    req, err := psClient.PresignPutObject(ctx, input,
-        func(options *s3.PresignOptions) {
-            options.Expires = expirationTime // 设置url过期时间
-        },
-    )
-    if err != nil {
-        return "", err
-    }
+	preSignedURL, err := o.client.PresignedPutObject(ctx, bucket, key, expirationTime)
+	if err != nil {
+		return nil, err
+	}
 
-    return req.URL, nil
+	return preSignedURL, nil
 }
