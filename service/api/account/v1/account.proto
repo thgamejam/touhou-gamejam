@@ -16,6 +16,8 @@ service Account {
   // 使用ID获取账号
   rpc GetAccount (GetAccountReq) returns (GetAccountReply) {}
 
+  rpc GetAccountByUserID(GetAccountReq) returns (GetAccountReply) {}
+
   // ExistAccountEMail 是否存在邮箱
   rpc ExistAccountEMail (ExistAccountEMailReq) returns (ExistAccountEMailReply) {}
 

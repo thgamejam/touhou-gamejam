@@ -17,17 +17,15 @@
   ],
   "paths": {},
   "definitions": {
-    "accountv1GetKeyReply": {
+    "accountv1VerifyPasswordReply": {
       "type": "object",
       "properties": {
-        "hash": {
-          "type": "string"
-        },
-        "key": {
-          "type": "string"
+        "id": {
+          "type": "string",
+          "format": "uint64"
         }
       },
-      "title": "GetKeyReply 获取公钥回复"
+      "title": "VerifyPasswordReply 验证密码回复"
     },
     "protobufAny": {
       "type": "object",
@@ -106,19 +104,21 @@
       },
       "title": "GetAccountReply 使用ID获取账号回复"
     },
+    "v1GetKeyReply": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        }
+      },
+      "title": "GetKeyReply 获取公钥回复"
+    },
     "v1SavePasswordReply": {
       "type": "object",
       "title": "SavePasswordReply 保存密码回复"
-    },
-    "v1VerifyPasswordReply": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uint64"
-        }
-      },
-      "title": "VerifyPasswordReply 验证密码回复"
     }
   }
 }
