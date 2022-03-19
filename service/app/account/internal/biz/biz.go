@@ -15,7 +15,7 @@ type AccountRepo interface {
 	CreateEMailAccount(context.Context, *Account) (uint64, error)
 
 	// GetAccountByUserID 通过用户ID获取账户
-	GetAccountByUserID(ctx context.Context, uint642 uint64) (*Account, error)
+	GetAccountByUserID(ctx context.Context, userid uint64) (*Account, error)
 
 	// GetAccountByID 通过Account主键ID获取账户
 	GetAccountByID(context.Context, uint64) (*Account, error)
