@@ -73,6 +73,5 @@ func (o *ObjectStorage) PreSignPutURL(
 	if err != nil {
 		return nil, err
 	}
-
 	return preSignedURL, nil
 }
