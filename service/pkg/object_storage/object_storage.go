@@ -6,6 +6,7 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"net/url"
+	"os"
 	"service/pkg/conf"
 	"time"
 )
@@ -20,7 +21,7 @@ func NewObjectStorage(c *conf.Service) (*ObjectStorage, error) {
 		c.Data.ObjectStorage.Domain, // 使用的域名
 		&minio.Options{
 			Creds: credentials.NewStaticV4(
-				c.Data.ObjectStorage.AccessKeyID,
+				c.Data.ObjectStorage.AccessKeyId,
 				c.Data.ObjectStorage.SecretAccessKey,
 				c.Data.ObjectStorage.Token,
 			),
@@ -73,5 +74,19 @@ func (o *ObjectStorage) PreSignPutURL(
 	if err != nil {
 		return nil, err
 	}
+
 	return preSignedURL, nil
+}
+
+func (o *ObjectStorage) PutObject(ctx context.Context, bucket, key string, file *os.File) error {
+	objectStat, err := file.Stat()
+	if err != nil {
+		return err
+	}
+	_, err = o.client.PutObject(ctx, bucket, key, file, objectStat.Size(),
+		minio.PutObjectOptions{ContentType: "application/octet-stream"})
+	if err != nil {
+		return err
+	}
+	return nil
 }
