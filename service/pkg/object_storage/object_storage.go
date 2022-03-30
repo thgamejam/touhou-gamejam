@@ -3,11 +3,14 @@ package object_storage
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"os"
+	"time"
+
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"net/url"
+
 	"service/pkg/conf"
-	"time"
 )
 
 type ObjectStorage struct {
@@ -20,7 +23,7 @@ func NewObjectStorage(c *conf.Service) (*ObjectStorage, error) {
 		c.Data.ObjectStorage.Domain, // 使用的域名
 		&minio.Options{
 			Creds: credentials.NewStaticV4(
-				c.Data.ObjectStorage.AccessKeyID,
+				c.Data.ObjectStorage.AccessKeyId,
 				c.Data.ObjectStorage.SecretAccessKey,
 				c.Data.ObjectStorage.Token,
 			),
@@ -50,8 +53,8 @@ func (o *ObjectStorage) GetClient() *minio.Client {
 // filename: 下载时的文件名
 // expirationTime: 过期时间
 func (o *ObjectStorage) PreSignGetURL(
-	ctx context.Context, bucket, key, filename string, expirationTime time.Duration) (*url.URL, error) {
-
+	ctx context.Context, bucket, key, filename string, expirationTime time.Duration,
+) (*url.URL, error) {
 	reqParams := make(url.Values)
 	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=\"%v\"", filename))
 	preSignedURL, err := o.client.PresignedGetObject(ctx, bucket, key, expirationTime, reqParams)
@@ -67,11 +70,25 @@ func (o *ObjectStorage) PreSignGetURL(
 // key: 对象路径
 // expirationTime: 过期时间
 func (o *ObjectStorage) PreSignPutURL(
-	ctx context.Context, bucket, key string, expirationTime time.Duration) (*url.URL, error) {
-
+	ctx context.Context, bucket, key string, expirationTime time.Duration,
+) (*url.URL, error) {
 	preSignedURL, err := o.client.PresignedPutObject(ctx, bucket, key, expirationTime)
 	if err != nil {
 		return nil, err
 	}
+
 	return preSignedURL, nil
+}
+
+func (o *ObjectStorage) PutObject(ctx context.Context, bucket, key string, file *os.File) error {
+	objectStat, err := file.Stat()
+	if err != nil {
+		return err
+	}
+	_, err = o.client.PutObject(ctx, bucket, key, file, objectStat.Size(),
+		minio.PutObjectOptions{ContentType: "application/octet-stream"})
+	if err != nil {
+		return err
+	}
+	return nil
 }
