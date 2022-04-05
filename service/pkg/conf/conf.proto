@@ -30,7 +30,8 @@ message Server {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
-    uint32 max_bytes = 4;
+    uint32 required_body_size = 4;
+    uint32 max_body_size = 5;
   }
   message GRPC {
     string network = 1;
@@ -61,7 +62,7 @@ message Data {
     string access_key_id = 2;
     string secret_access_key = 3;
     string location = 4;        // 地域
-    bool   Secure = 5;          // 是否使用https
+    bool   secure = 5;          // 是否使用https
     string token = 6;
   }
 

@@ -1,0 +1,13 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "service/app/file_edge/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  EdgeFile edgeFile = 1;
+}
+
+message EdgeFile {
+}

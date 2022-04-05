@@ -3,12 +3,14 @@ package object_storage
 import (
 	"context"
 	"fmt"
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 	"net/url"
 	"os"
-	"service/pkg/conf"
 	"time"
+
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
+
+	"service/pkg/conf"
 )
 
 type ObjectStorage struct {
@@ -51,8 +53,8 @@ func (o *ObjectStorage) GetClient() *minio.Client {
 // filename: 下载时的文件名
 // expirationTime: 过期时间
 func (o *ObjectStorage) PreSignGetURL(
-	ctx context.Context, bucket, key, filename string, expirationTime time.Duration) (*url.URL, error) {
-
+	ctx context.Context, bucket, key, filename string, expirationTime time.Duration,
+) (*url.URL, error) {
 	reqParams := make(url.Values)
 	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=\"%v\"", filename))
 	preSignedURL, err := o.client.PresignedGetObject(ctx, bucket, key, expirationTime, reqParams)
@@ -68,8 +70,8 @@ func (o *ObjectStorage) PreSignGetURL(
 // key: 对象路径
 // expirationTime: 过期时间
 func (o *ObjectStorage) PreSignPutURL(
-	ctx context.Context, bucket, key string, expirationTime time.Duration) (*url.URL, error) {
-
+	ctx context.Context, bucket, key string, expirationTime time.Duration,
+) (*url.URL, error) {
 	preSignedURL, err := o.client.PresignedPutObject(ctx, bucket, key, expirationTime)
 	if err != nil {
 		return nil, err
