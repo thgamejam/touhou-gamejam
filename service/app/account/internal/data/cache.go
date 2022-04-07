@@ -5,12 +5,12 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"service/pkg/crypto/ecc"
-	"strconv"
+	"service/pkg/util/strconv"
 )
 
 // GetAccountByUserId 通过用户id获取账户
 func (r *accountRepo) GetAccountByUserId(
-	ctx context.Context, id uint64) (model *Account, ok bool, err error) {
+	ctx context.Context, id uint32) (model *Account, ok bool, err error) {
 
 	str, ok, err := r.data.Cache.GetString(ctx, accountUserIdKey(id))
 	if err != nil {
@@ -21,16 +21,16 @@ func (r *accountRepo) GetAccountByUserId(
 		return
 	}
 
-	userid, err := strconv.ParseUint(str, 10, 64)
+	userid, err := strconv.ParseUint32(str)
 	if err != nil {
 		return
 	}
 
-	return r.GetAccountByUserIDFromDB(ctx, userid)
+	return r.GetAccountByUserIDFromDB(ctx, uint32(userid))
 }
 
 // GetAccountByIDFromCache 使用Account主键ID从缓存中获取Account
-func (r *accountRepo) GetAccountByIDFromCache(ctx context.Context, id uint64) (model *Account, ok bool, err error) {
+func (r *accountRepo) GetAccountByIDFromCache(ctx context.Context, id uint32) (model *Account, ok bool, err error) {
 	ok, err = r.data.Cache.Get(ctx, accountCacheKey(id), &model)
 	return
 }
@@ -47,7 +47,7 @@ func (r *accountRepo) GetAccountByEMailFromCache(
 		return
 	}
 
-	id, err := strconv.ParseUint(str, 10, 64)
+	id, err := strconv.ParseUint32(str)
 	if err != nil {
 		return nil, false, err
 	}
@@ -57,7 +57,7 @@ func (r *accountRepo) GetAccountByEMailFromCache(
 // SetAccountToCache 保存账户数据到缓存
 func (r *accountRepo) SetAccountToCache(ctx context.Context, model *Account) (err error) {
 	// 维护邮箱和id关系 EMail: ID
-	err = r.data.Cache.SetString(ctx, accountEMailCacheKey(model.Email), strconv.FormatUint(model.ID, 10), 0)
+	err = r.data.Cache.SetString(ctx, accountEMailCacheKey(model.Email), strconv.UItoa(model.ID), 0)
 	if err != nil {
 		return
 	}

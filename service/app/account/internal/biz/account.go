@@ -17,13 +17,13 @@ type PasswordCiphertext struct {
 
 // Account 账户
 type Account struct {
-	ID           uint64
+	ID           uint32
 	UUID         uuid.UUID // 唯一标识符
 	Email        string    // 邮箱
 	Phone        TelPhone  // 电话号码
 	PasswordHash []byte    // 密码哈希值
 	Status       uint8     // 状态
-	UserID       uint64    // 用户表ID
+	UserID       uint32    // 用户表ID
 }
 
 // TelPhone 电话号码
@@ -53,7 +53,7 @@ var hashPassword = func(password, sign string) []byte {
 
 // CreateEMailAccount 使用邮箱创建账户
 func (uc *AccountUseCase) CreateEMailAccount(
-	ctx context.Context, email string, passwdCT *PasswordCiphertext) (id uint64, err error) {
+	ctx context.Context, email string, passwdCT *PasswordCiphertext) (id uint32, err error) {
 
 	isExist, err := uc.repo.ExistAccountEMail(ctx, email)
 	if err != nil {
@@ -98,17 +98,17 @@ func (uc *AccountUseCase) getPasswordPlaintext(ctx context.Context, passwdCT *Pa
 }
 
 // GetAccount 通过ID获取账号
-func (uc *AccountUseCase) GetAccount(ctx context.Context, id uint64) (*Account, error) {
+func (uc *AccountUseCase) GetAccount(ctx context.Context, id uint32) (*Account, error) {
 	return uc.repo.GetAccountByID(ctx, id)
 }
 
 // GetAccountByUserID 通过用户ID获取账户
-func (uc *AccountUseCase) GetAccountByUserID(ctx context.Context, id uint64) (*Account, error) {
+func (uc *AccountUseCase) GetAccountByUserID(ctx context.Context, id uint32) (*Account, error) {
 	return uc.repo.GetAccountByUserID(ctx, id)
 }
 
 // SavePassword 保存密码, 修改密码
-func (uc *AccountUseCase) SavePassword(ctx context.Context, id uint64, passwdCT *PasswordCiphertext) (err error) {
+func (uc *AccountUseCase) SavePassword(ctx context.Context, id uint32, passwdCT *PasswordCiphertext) (err error) {
 	// 获取账户
 	account, err := uc.repo.GetAccountByID(ctx, id)
 	if err != nil {
@@ -134,7 +134,7 @@ func (uc *AccountUseCase) SavePassword(ctx context.Context, id uint64, passwdCT 
 
 // VerifyPasswordByEMail 通过邮箱验证对应账户的密码
 func (uc *AccountUseCase) VerifyPasswordByEMail(
-	ctx context.Context, email string, passwdCT *PasswordCiphertext) (id uint64, ok bool, err error) {
+	ctx context.Context, email string, passwdCT *PasswordCiphertext) (id uint32, ok bool, err error) {
 	account, err := uc.repo.GetAccountByEMail(ctx, email)
 	if err != nil {
 		return
@@ -156,6 +156,6 @@ func (uc *AccountUseCase) ExistAccountEMail(ctx context.Context, email string) (
 	return uc.repo.ExistAccountEMail(ctx, email)
 }
 
-func (uc *AccountUseCase) BindUser(ctx context.Context, id, uid uint64) error {
+func (uc *AccountUseCase) BindUser(ctx context.Context, id, uid uint32) error {
 	return uc.repo.BindUser(ctx, id, uid)
 }

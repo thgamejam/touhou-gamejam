@@ -21,8 +21,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "format": "uint64"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "VerifyPasswordReply 验证密码回复"
@@ -62,8 +62,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "format": "uint64"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "CreateAccountReply 创建账号回复"
@@ -98,8 +98,8 @@
           "format": "int64"
         },
         "userID": {
-          "type": "string",
-          "format": "uint64"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "title": "GetAccountReply 使用ID获取账号回复"

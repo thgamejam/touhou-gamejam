@@ -1,11 +1,11 @@
 use touhou_gamejam;
 
 create table account (
-    id          bigint unsigned     auto_increment  primary key,
+    id          int unsigned        auto_increment  primary key,
     tel_code    smallint unsigned   not null    default 0   comment '国际电话区号',
     phone       char(11)            not null    default ''  comment '电话号',
     email       char(32)            not null    default ''  comment '邮箱',
-    user_id     bigint unsigned     not null    default 0   comment '用户表id',
+    user_id     int unsigned        not null    default 0   comment '用户表id',
     uuid        binary(16)          not null                comment 'uuid',
     password    binary(20)          not null                comment '密码哈希值',
     status      tinyint unsigned    not null    default 0   comment '账号状态',
