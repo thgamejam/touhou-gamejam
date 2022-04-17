@@ -4,21 +4,21 @@ import (
 	"context"
 	v1 "service/api/account/v1"
 	"service/app/account/internal/biz"
-	"strconv"
+	"service/pkg/util/strconv"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-var accountCacheKey = func(id uint64) string {
-	return "account_model_" + strconv.FormatUint(id, 10)
+var accountCacheKey = func(id uint32) string {
+	return "account_model_" + strconv.UItoa(id)
 }
 
 var accountEMailCacheKey = func(email string) string {
 	return "account_email_to_id_" + email
 }
 
-var accountUserIdKey = func(userid uint64) string {
-	return "account_userid_to_id_" + strconv.FormatUint(userid, 10)
+var accountUserIdKey = func(userid uint32) string {
+	return "account_userid_to_id_" + strconv.UItoa(userid)
 }
 
 var modelToAccount = func(model *Account) *biz.Account {
@@ -46,7 +46,7 @@ func NewAccountRepo(data *Data, logger log.Logger) biz.AccountRepo {
 	}
 }
 
-func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Account) (uint64, error) {
+func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Account) (uint32, error) {
 	model := &Account{
 		UUID:     account.UUID,
 		Email:    account.Email,
@@ -67,7 +67,7 @@ func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Accou
 	return model.ID, nil
 }
 
-func (r *accountRepo) GetAccountByUserID(ctx context.Context, userid uint64) (*biz.Account, error) {
+func (r *accountRepo) GetAccountByUserID(ctx context.Context, userid uint32) (*biz.Account, error) {
 	acc, ok, err := r.GetAccountByUserId(ctx, userid)
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func (r *accountRepo) GetAccountByUserID(ctx context.Context, userid uint64) (*b
 	return modelToAccount(acc), nil
 }
 
-func (r *accountRepo) GetAccountByID(ctx context.Context, id uint64) (*biz.Account, error) {
+func (r *accountRepo) GetAccountByID(ctx context.Context, id uint32) (*biz.Account, error) {
 	model, ok, err := r.GetAccountByIDFromCache(ctx, id)
 	if err != nil {
 		r.log.Error("") // TODO
@@ -205,7 +205,7 @@ func (r *accountRepo) UpdateAccount(ctx context.Context, account *biz.Account) e
 	return nil
 }
 
-func (r *accountRepo) BindUser(ctx context.Context, id, uid uint64) error {
+func (r *accountRepo) BindUser(ctx context.Context, id, uid uint32) error {
 	model, ok, err := r.GetAccountByIDFromDB(ctx, id)
 	if err != nil {
 		return err

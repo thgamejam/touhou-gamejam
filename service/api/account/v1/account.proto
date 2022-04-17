@@ -45,12 +45,12 @@ message CreateEMailAccountReq {
 }
 // CreateAccountReply 创建账号回复
 message CreateEMailAccountReply {
-  uint64 id = 1;
+  uint32 id = 1;
 }
 
 // GetAccountReq 使用ID获取账号请求
 message GetAccountReq {
-  uint64 id = 1 [(validate.rules).uint64 = {gt: 0}];
+  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];
 }
 // GetAccountReply 使用ID获取账号回复
 message GetAccountReply {
@@ -59,7 +59,7 @@ message GetAccountReply {
   uint32 telCode = 3; // 国际区号
   string phone = 4;   // 电话号
   uint32 status = 5;  // 账号状态
-  uint64 userID = 6;  // 用户表ID
+  uint32 userID = 6;  // 用户表ID
 }
 
 // ExistAccountEMailReq 检查邮箱是否存在请求
@@ -82,13 +82,13 @@ message VerifyPasswordReq {
 }
 // VerifyPasswordReply 验证密码回复
 message VerifyPasswordReply {
-  uint64 id = 1;
+  uint32 id = 1;
 }
 
 // SavePasswordReq 保存密码请求
 message SavePasswordReq {
   // 用户id
-  uint64 id = 1 [(validate.rules).uint64 = {gt: 0}];
+  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];
   // 密文密码 len:64-256
   string ciphertext = 2 [(validate.rules).string = {min_len: 64, max_len: 256}];
   // 公钥摘要 len:16
@@ -100,8 +100,8 @@ message SavePasswordReply {
 
 // BindUserReq 绑定用户请求
 message BindUserReq {
-  uint64 id = 1 [(validate.rules).uint64 = {gt: 0}];
-  uint64 userID = 2 [(validate.rules).uint64 = {gt: 0}];
+  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];
+  uint32 userID = 2 [(validate.rules).uint32 = {gt: 0}];
 }
 // BindUserReply 绑定用户回复
 message BindUserReply {}

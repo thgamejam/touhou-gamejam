@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-func (r *accountRepo) GetAccountByUserIDFromDB(ctx context.Context, id uint64) (model *Account, ok bool, err error) {
+func (r *accountRepo) GetAccountByUserIDFromDB(ctx context.Context, id uint32) (model *Account, ok bool, err error) {
 	model = &Account{}
 	tx := r.data.DataBase.Limit(1).Find(&model, "userid = ?", id)
 	err = tx.Error
@@ -17,7 +17,7 @@ func (r *accountRepo) GetAccountByUserIDFromDB(ctx context.Context, id uint64) (
 	return model, true, nil
 }
 
-func (r *accountRepo) GetAccountByIDFromDB(ctx context.Context, id uint64) (model *Account, ok bool, err error) {
+func (r *accountRepo) GetAccountByIDFromDB(ctx context.Context, id uint32) (model *Account, ok bool, err error) {
 	model = &Account{}
 	tx := r.data.DataBase.Limit(1).Find(&model, id)
 	err = tx.Error
