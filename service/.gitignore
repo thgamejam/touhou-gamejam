@@ -37,6 +37,6 @@ bin/
 
 openapi.yaml
 
-# api目录下proto生成文件
-api/*.pd.go
-api/*.swagger.json
+# proto生成文件
+*.pd.go
+*.swagger.json

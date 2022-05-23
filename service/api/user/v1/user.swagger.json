@@ -44,6 +44,19 @@
         }
       }
     },
+    "userv1VerifyPasswordReply": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        }
+      },
+      "title": "VerifyPasswordReply 验证密码回复"
+    },
     "v1AccountFormat": {
       "type": "string",
       "enum": [
@@ -87,19 +100,6 @@
     "v1UpdateUserReply": {
       "type": "object",
       "title": "UpdateUserReply"
-    },
-    "v1VerifyPasswordReply": {
-      "type": "object",
-      "properties": {
-        "ok": {
-          "type": "boolean"
-        },
-        "id": {
-          "type": "string",
-          "format": "uint64"
-        }
-      },
-      "title": "VerifyPasswordReply 验证密码回复"
     }
   }
 }
