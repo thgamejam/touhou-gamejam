@@ -37,6 +37,9 @@ bin/
 
 openapi.yaml
 
-# proto生成文件
+# proto 生成文件
 *.pd.go
+/api/*/*/*.pb.go
+*.pb.validate.go
+conf.pb.go
 *.swagger.json
