@@ -36,3 +36,7 @@ bin/
 *.swp
 
 openapi.yaml
+
+# api目录下proto生成文件
+api/*.pd.go
+api/*.swagger.json
