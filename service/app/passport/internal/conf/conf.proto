@@ -1,0 +1,10 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "service/app/passport/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+
+}

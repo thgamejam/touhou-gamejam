@@ -1,0 +1,27 @@
+server:
+  http:
+    addr: 0.0.0.0:8000
+    timeout: 1s
+  grpc:
+    addr: 0.0.0.0:6000
+    timeout: 1s
+
+service:
+  data:
+    database:
+      driver: mysql
+      source: root:123456@tcp(127.0.0.1:3306)/touhou_gamejam?charset=utf8mb4&parseTime=True&loc=Local
+      max_idle_conn: 50
+      max_open_conn: 100
+      conn_max_lifetime: 30s
+    redis:
+      network: tcp
+      addr: 127.0.0.1:6379
+      password: ""
+      read_timeout: 0.2s
+      write_timeout: 0.2s
+Email:
+  user: mail@mailpush.thjam.cc
+  pass: iTvLd6f9cKwQ3yn
+  host: smtpdm.aliyun.com
+  port: 80

@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package passport.v1;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "service/api/passport/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.passport.v1";
+option java_outer_classname = "PassportProtoV1";
+
+service Passport {
+  // 创建账户
+  rpc CreateAccount (CreateAccountRequest) returns (CreateAccountReply) {
+    // http://passport-api.xx.com/web/v1/createAccount
+    option(google.api.http) = {
+      put: "/web/v1/createAccount"
+      body: "body"
+    };
+  }
+  // 验证邮箱
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailReply) {
+    option(google.api.http) = {
+      put: "/web/v1/verifyEmail"
+      body: "body"
+    };
+  }
+  rpc GetKey(GetPublicKeyRequest) returns (GetPublicKeyReply) {
+    option(google.api.http) = {
+      get: "/web/v1/getPublicKey"
+    };
+  }
+}
+
+message CreateAccountRequest {
+  message CreateAccountBody {
+    string emile = 1;
+    string password = 2;
+    string token = 3;
+  }
+  CreateAccountBody body = 1;
+}
+message CreateAccountReply {
+  bool ok = 1;
+}
+
+message VerifyEmailRequest {
+  message VerifyEmailBody{
+    string code = 1;
+    string email = 2;
+  }
+  VerifyEmailBody body = 1;
+}
+message VerifyEmailReply {
+  string token = 1;
+}
+
+message GetPublicKeyRequest {
+
+}
+message GetPublicKeyReply{
+
+}
