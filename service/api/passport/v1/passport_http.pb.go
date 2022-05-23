@@ -18,35 +18,135 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type PassportHTTPServer interface {
-	GetPassport(context.Context, *GetPassportRequest) (*GetPassportReply, error)
+	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordReply, error)
+	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountReply, error)
+	GetPublicKey(context.Context, *GetPublicKeyRequest) (*GetPublicKeyReply, error)
+	Login(context.Context, *LoginRequest) (*LoginReply, error)
+	VerifyEmail(context.Context, *VerifyEmailRequest) (*VerifyEmailReply, error)
 }
 
 func RegisterPassportHTTPServer(s *http.Server, srv PassportHTTPServer) {
 	r := s.Route("/")
-	r.GET("/passport", _Passport_GetPassport0_HTTP_Handler(srv))
+	r.PUT("/web/v1/createAccount", _Passport_CreateAccount0_HTTP_Handler(srv))
+	r.PUT("/web/v1/verifyEmail", _Passport_VerifyEmail0_HTTP_Handler(srv))
+	r.GET("/web/v1/key", _Passport_GetPublicKey0_HTTP_Handler(srv))
+	r.POST("/web/v1/login", _Passport_Login0_HTTP_Handler(srv))
+	r.POST("/web/v1/changePassword", _Passport_ChangePassword0_HTTP_Handler(srv))
 }
 
-func _Passport_GetPassport0_HTTP_Handler(srv PassportHTTPServer) func(ctx http.Context) error {
+func _Passport_CreateAccount0_HTTP_Handler(srv PassportHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in GetPassportRequest
+		var in CreateAccountRequest
+		if err := ctx.Bind(&in.Body); err != nil {
+			return err
+		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/passport.v1.Passport/GetPassport")
+		http.SetOperation(ctx, "/passport.v1.Passport/CreateAccount")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetPassport(ctx, req.(*GetPassportRequest))
+			return srv.CreateAccount(ctx, req.(*CreateAccountRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*GetPassportReply)
+		reply := out.(*CreateAccountReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Passport_VerifyEmail0_HTTP_Handler(srv PassportHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in VerifyEmailRequest
+		if err := ctx.Bind(&in.Body); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/passport.v1.Passport/VerifyEmail")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.VerifyEmail(ctx, req.(*VerifyEmailRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*VerifyEmailReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Passport_GetPublicKey0_HTTP_Handler(srv PassportHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetPublicKeyRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/passport.v1.Passport/GetPublicKey")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetPublicKey(ctx, req.(*GetPublicKeyRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetPublicKeyReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Passport_Login0_HTTP_Handler(srv PassportHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in LoginRequest
+		if err := ctx.Bind(&in.Body); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/passport.v1.Passport/Login")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Login(ctx, req.(*LoginRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*LoginReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Passport_ChangePassword0_HTTP_Handler(srv PassportHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ChangePasswordRequest
+		if err := ctx.Bind(&in.Body); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/passport.v1.Passport/ChangePassword")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ChangePassword(ctx, req.(*ChangePasswordRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ChangePasswordReply)
 		return ctx.Result(200, reply)
 	}
 }
 
 type PassportHTTPClient interface {
-	GetPassport(ctx context.Context, req *GetPassportRequest, opts ...http.CallOption) (rsp *GetPassportReply, err error)
+	ChangePassword(ctx context.Context, req *ChangePasswordRequest, opts ...http.CallOption) (rsp *ChangePasswordReply, err error)
+	CreateAccount(ctx context.Context, req *CreateAccountRequest, opts ...http.CallOption) (rsp *CreateAccountReply, err error)
+	GetPublicKey(ctx context.Context, req *GetPublicKeyRequest, opts ...http.CallOption) (rsp *GetPublicKeyReply, err error)
+	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
+	VerifyEmail(ctx context.Context, req *VerifyEmailRequest, opts ...http.CallOption) (rsp *VerifyEmailReply, err error)
 }
 
 type PassportHTTPClientImpl struct {
@@ -57,13 +157,65 @@ func NewPassportHTTPClient(client *http.Client) PassportHTTPClient {
 	return &PassportHTTPClientImpl{client}
 }
 
-func (c *PassportHTTPClientImpl) GetPassport(ctx context.Context, in *GetPassportRequest, opts ...http.CallOption) (*GetPassportReply, error) {
-	var out GetPassportReply
-	pattern := "/passport"
+func (c *PassportHTTPClientImpl) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...http.CallOption) (*ChangePasswordReply, error) {
+	var out ChangePasswordReply
+	pattern := "/web/v1/changePassword"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/passport.v1.Passport/ChangePassword"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in.Body, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PassportHTTPClientImpl) CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...http.CallOption) (*CreateAccountReply, error) {
+	var out CreateAccountReply
+	pattern := "/web/v1/createAccount"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/passport.v1.Passport/CreateAccount"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in.Body, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PassportHTTPClientImpl) GetPublicKey(ctx context.Context, in *GetPublicKeyRequest, opts ...http.CallOption) (*GetPublicKeyReply, error) {
+	var out GetPublicKeyReply
+	pattern := "/web/v1/key"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/passport.v1.Passport/GetPassport"))
+	opts = append(opts, http.Operation("/passport.v1.Passport/GetPublicKey"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PassportHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginReply, error) {
+	var out LoginReply
+	pattern := "/web/v1/login"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/passport.v1.Passport/Login"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in.Body, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PassportHTTPClientImpl) VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...http.CallOption) (*VerifyEmailReply, error) {
+	var out VerifyEmailReply
+	pattern := "/web/v1/verifyEmail"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/passport.v1.Passport/VerifyEmail"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in.Body, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

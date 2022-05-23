@@ -22,11 +22,16 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PassportClient interface {
-	CreatePassport(ctx context.Context, in *CreatePassportRequest, opts ...grpc.CallOption) (*CreatePassportReply, error)
-	DeletePassport(ctx context.Context, in *DeletePassportRequest, opts ...grpc.CallOption) (*DeletePassportReply, error)
-	GetPassport(ctx context.Context, in *GetPassportRequest, opts ...grpc.CallOption) (*GetPassportReply, error)
-	UpdatePassport(ctx context.Context, in *UpdatePassportRequest, opts ...grpc.CallOption) (*UpdatePassportReply, error)
-	ListPassport(ctx context.Context, in *ListPassportRequest, opts ...grpc.CallOption) (*ListPassportReply, error)
+	// 预创建账户
+	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountReply, error)
+	// 验证邮箱且创建用户
+	VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*VerifyEmailReply, error)
+	// 获取密码加密公钥
+	GetPublicKey(ctx context.Context, in *GetPublicKeyRequest, opts ...grpc.CallOption) (*GetPublicKeyReply, error)
+	// 账户登录
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	// 修改密码
+	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordReply, error)
 }
 
 type passportClient struct {
@@ -37,45 +42,45 @@ func NewPassportClient(cc grpc.ClientConnInterface) PassportClient {
 	return &passportClient{cc}
 }
 
-func (c *passportClient) CreatePassport(ctx context.Context, in *CreatePassportRequest, opts ...grpc.CallOption) (*CreatePassportReply, error) {
-	out := new(CreatePassportReply)
-	err := c.cc.Invoke(ctx, "/passport.v1.Passport/CreatePassport", in, out, opts...)
+func (c *passportClient) CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountReply, error) {
+	out := new(CreateAccountReply)
+	err := c.cc.Invoke(ctx, "/passport.v1.Passport/CreateAccount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *passportClient) DeletePassport(ctx context.Context, in *DeletePassportRequest, opts ...grpc.CallOption) (*DeletePassportReply, error) {
-	out := new(DeletePassportReply)
-	err := c.cc.Invoke(ctx, "/passport.v1.Passport/DeletePassport", in, out, opts...)
+func (c *passportClient) VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*VerifyEmailReply, error) {
+	out := new(VerifyEmailReply)
+	err := c.cc.Invoke(ctx, "/passport.v1.Passport/VerifyEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *passportClient) GetPassport(ctx context.Context, in *GetPassportRequest, opts ...grpc.CallOption) (*GetPassportReply, error) {
-	out := new(GetPassportReply)
-	err := c.cc.Invoke(ctx, "/passport.v1.Passport/GetPassport", in, out, opts...)
+func (c *passportClient) GetPublicKey(ctx context.Context, in *GetPublicKeyRequest, opts ...grpc.CallOption) (*GetPublicKeyReply, error) {
+	out := new(GetPublicKeyReply)
+	err := c.cc.Invoke(ctx, "/passport.v1.Passport/GetPublicKey", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *passportClient) UpdatePassport(ctx context.Context, in *UpdatePassportRequest, opts ...grpc.CallOption) (*UpdatePassportReply, error) {
-	out := new(UpdatePassportReply)
-	err := c.cc.Invoke(ctx, "/passport.v1.Passport/UpdatePassport", in, out, opts...)
+func (c *passportClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error) {
+	out := new(LoginReply)
+	err := c.cc.Invoke(ctx, "/passport.v1.Passport/Login", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *passportClient) ListPassport(ctx context.Context, in *ListPassportRequest, opts ...grpc.CallOption) (*ListPassportReply, error) {
-	out := new(ListPassportReply)
-	err := c.cc.Invoke(ctx, "/passport.v1.Passport/ListPassport", in, out, opts...)
+func (c *passportClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordReply, error) {
+	out := new(ChangePasswordReply)
+	err := c.cc.Invoke(ctx, "/passport.v1.Passport/ChangePassword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,11 +91,16 @@ func (c *passportClient) ListPassport(ctx context.Context, in *ListPassportReque
 // All implementations must embed UnimplementedPassportServer
 // for forward compatibility
 type PassportServer interface {
-	CreatePassport(context.Context, *CreatePassportRequest) (*CreatePassportReply, error)
-	DeletePassport(context.Context, *DeletePassportRequest) (*DeletePassportReply, error)
-	GetPassport(context.Context, *GetPassportRequest) (*GetPassportReply, error)
-	UpdatePassport(context.Context, *UpdatePassportRequest) (*UpdatePassportReply, error)
-	ListPassport(context.Context, *ListPassportRequest) (*ListPassportReply, error)
+	// 预创建账户
+	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountReply, error)
+	// 验证邮箱且创建用户
+	VerifyEmail(context.Context, *VerifyEmailRequest) (*VerifyEmailReply, error)
+	// 获取密码加密公钥
+	GetPublicKey(context.Context, *GetPublicKeyRequest) (*GetPublicKeyReply, error)
+	// 账户登录
+	Login(context.Context, *LoginRequest) (*LoginReply, error)
+	// 修改密码
+	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordReply, error)
 	mustEmbedUnimplementedPassportServer()
 }
 
@@ -98,20 +108,20 @@ type PassportServer interface {
 type UnimplementedPassportServer struct {
 }
 
-func (UnimplementedPassportServer) CreatePassport(context.Context, *CreatePassportRequest) (*CreatePassportReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreatePassport not implemented")
+func (UnimplementedPassportServer) CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
 }
-func (UnimplementedPassportServer) DeletePassport(context.Context, *DeletePassportRequest) (*DeletePassportReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeletePassport not implemented")
+func (UnimplementedPassportServer) VerifyEmail(context.Context, *VerifyEmailRequest) (*VerifyEmailReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmail not implemented")
 }
-func (UnimplementedPassportServer) GetPassport(context.Context, *GetPassportRequest) (*GetPassportReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPassport not implemented")
+func (UnimplementedPassportServer) GetPublicKey(context.Context, *GetPublicKeyRequest) (*GetPublicKeyReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPublicKey not implemented")
 }
-func (UnimplementedPassportServer) UpdatePassport(context.Context, *UpdatePassportRequest) (*UpdatePassportReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdatePassport not implemented")
+func (UnimplementedPassportServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedPassportServer) ListPassport(context.Context, *ListPassportRequest) (*ListPassportReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListPassport not implemented")
+func (UnimplementedPassportServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
 func (UnimplementedPassportServer) mustEmbedUnimplementedPassportServer() {}
 
@@ -126,92 +136,92 @@ func RegisterPassportServer(s grpc.ServiceRegistrar, srv PassportServer) {
 	s.RegisterService(&Passport_ServiceDesc, srv)
 }
 
-func _Passport_CreatePassport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreatePassportRequest)
+func _Passport_CreateAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PassportServer).CreatePassport(ctx, in)
+		return srv.(PassportServer).CreateAccount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/passport.v1.Passport/CreatePassport",
+		FullMethod: "/passport.v1.Passport/CreateAccount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PassportServer).CreatePassport(ctx, req.(*CreatePassportRequest))
+		return srv.(PassportServer).CreateAccount(ctx, req.(*CreateAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Passport_DeletePassport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeletePassportRequest)
+func _Passport_VerifyEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PassportServer).DeletePassport(ctx, in)
+		return srv.(PassportServer).VerifyEmail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/passport.v1.Passport/DeletePassport",
+		FullMethod: "/passport.v1.Passport/VerifyEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PassportServer).DeletePassport(ctx, req.(*DeletePassportRequest))
+		return srv.(PassportServer).VerifyEmail(ctx, req.(*VerifyEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Passport_GetPassport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPassportRequest)
+func _Passport_GetPublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublicKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PassportServer).GetPassport(ctx, in)
+		return srv.(PassportServer).GetPublicKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/passport.v1.Passport/GetPassport",
+		FullMethod: "/passport.v1.Passport/GetPublicKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PassportServer).GetPassport(ctx, req.(*GetPassportRequest))
+		return srv.(PassportServer).GetPublicKey(ctx, req.(*GetPublicKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Passport_UpdatePassport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdatePassportRequest)
+func _Passport_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PassportServer).UpdatePassport(ctx, in)
+		return srv.(PassportServer).Login(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/passport.v1.Passport/UpdatePassport",
+		FullMethod: "/passport.v1.Passport/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PassportServer).UpdatePassport(ctx, req.(*UpdatePassportRequest))
+		return srv.(PassportServer).Login(ctx, req.(*LoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Passport_ListPassport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListPassportRequest)
+func _Passport_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangePasswordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PassportServer).ListPassport(ctx, in)
+		return srv.(PassportServer).ChangePassword(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/passport.v1.Passport/ListPassport",
+		FullMethod: "/passport.v1.Passport/ChangePassword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PassportServer).ListPassport(ctx, req.(*ListPassportRequest))
+		return srv.(PassportServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -224,24 +234,24 @@ var Passport_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*PassportServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreatePassport",
-			Handler:    _Passport_CreatePassport_Handler,
+			MethodName: "CreateAccount",
+			Handler:    _Passport_CreateAccount_Handler,
 		},
 		{
-			MethodName: "DeletePassport",
-			Handler:    _Passport_DeletePassport_Handler,
+			MethodName: "VerifyEmail",
+			Handler:    _Passport_VerifyEmail_Handler,
 		},
 		{
-			MethodName: "GetPassport",
-			Handler:    _Passport_GetPassport_Handler,
+			MethodName: "GetPublicKey",
+			Handler:    _Passport_GetPublicKey_Handler,
 		},
 		{
-			MethodName: "UpdatePassport",
-			Handler:    _Passport_UpdatePassport_Handler,
+			MethodName: "Login",
+			Handler:    _Passport_Login_Handler,
 		},
 		{
-			MethodName: "ListPassport",
-			Handler:    _Passport_ListPassport_Handler,
+			MethodName: "ChangePassword",
+			Handler:    _Passport_ChangePassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

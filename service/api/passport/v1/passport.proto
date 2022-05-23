@@ -11,7 +11,8 @@ option java_package = "dev.kratos.api.passport.v1";
 option java_outer_classname = "PassportProtoV1";
 
 service Passport {
-  // 创建账户
+
+  // 预创建账户
   rpc CreateAccount (CreateAccountRequest) returns (CreateAccountReply) {
     // http://passport-api.xx.com/web/v1/createAccount
     option(google.api.http) = {
@@ -19,46 +20,101 @@ service Passport {
       body: "body"
     };
   }
-  // 验证邮箱
+
+  // 验证邮箱且创建用户
   rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailReply) {
     option(google.api.http) = {
       put: "/web/v1/verifyEmail"
       body: "body"
     };
   }
-  rpc GetKey(GetPublicKeyRequest) returns (GetPublicKeyReply) {
+
+  // 获取密码加密公钥
+  rpc GetPublicKey(GetPublicKeyRequest) returns (GetPublicKeyReply) {
     option(google.api.http) = {
-      get: "/web/v1/getPublicKey"
+      get: "/web/v1/key"
+    };
+  }
+
+  // 账户登录
+  rpc Login(LoginRequest) returns (LoginReply) {
+    option(google.api.http) = {
+      post: "/web/v1/login"
+      body: "body"
+    };
+  }
+
+  // 修改密码
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordReply) {
+    option(google.api.http) = {
+      post: "/web/v1/changePassword"
+      body: "body"
     };
   }
 }
 
+// 预创建账户请求
 message CreateAccountRequest {
   message CreateAccountBody {
-    string emile = 1;
-    string password = 2;
-    string token = 3;
+    string email = 1 [(validate.rules).string = {email: true, max_len: 32}];
+    string password = 2 [(validate.rules).string = {min_len: 64, max_len: 256}];
+    string hash = 3 [(validate.rules).string.len = 16];  // 秘钥哈希
+    string token = 4;     // 验证码token
   }
   CreateAccountBody body = 1;
 }
+// 预创建账户返回
 message CreateAccountReply {
   bool ok = 1;
 }
 
+// 验证邮箱请求
 message VerifyEmailRequest {
   message VerifyEmailBody{
-    string code = 1;
-    string email = 2;
+    string code = 1 [(validate.rules).string.len = 32];    // 会话号uuid
+    string email = 2 [(validate.rules).string = {email: true, max_len: 32}];
   }
   VerifyEmailBody body = 1;
 }
+// 验证邮箱返回
 message VerifyEmailReply {
-  string token = 1;
+  string token = 1;     // 登录token
 }
 
 message GetPublicKeyRequest {
-
 }
-message GetPublicKeyReply{
+message GetPublicKeyReply {
+  string hash = 1;    // 秘钥哈希
+  string key = 2;     // 公钥值
+}
 
+// 登录请求
+message LoginRequest {
+  message LoginBody {
+    string email = 1 [(validate.rules).string = {email: true, max_len: 32}];
+    string password = 2 [(validate.rules).string = {min_len: 64, max_len: 256}];
+    string hash = 3 [(validate.rules).string.len = 16];  // 秘钥哈希
+    string token = 4; // 验证码token
+  }
+  LoginBody body = 1;
+}
+// 登录返回
+message LoginReply{
+  bool ok = 1;
+  string token = 2; // 登录成功token
+}
+
+// 修改密码请求
+message ChangePasswordRequest {
+  message ChangePasswordBody {
+    string oldPassword = 1 [(validate.rules).string = {min_len: 64, max_len: 256}];
+    string newPassword = 2 [(validate.rules).string = {min_len: 64, max_len: 256}];
+    string hash = 3 [(validate.rules).string.len = 16];  // 秘钥哈希
+  }
+  ChangePasswordBody body = 1;
+}
+// 修改密码返回
+message ChangePasswordReply{
+  bool ok = 1;
+  string token = 2;   // 登录成功token
 }

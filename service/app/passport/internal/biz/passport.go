@@ -9,8 +9,15 @@ type Model struct {
 	Hello string
 }
 
+type Account struct {
+	Email    string
+	Password string
+	Hash     string
+}
+
 type PassportRepo interface {
-	CreateModel(context.Context, *Model) error
+	// PrepareCreateAccount 预创建账户到缓存
+	PrepareCreateAccount(ctx context.Context, account Account) error
 }
 
 type PassportUseCase struct {
@@ -22,6 +29,9 @@ func NewPassportUseCase(repo PassportRepo, logger log.Logger) *PassportUseCase {
 	return &PassportUseCase{repo: repo, log: log.NewHelper(logger)}
 }
 
-func (uc *PassportUseCase) Create(ctx context.Context, g *Model) error {
-	return uc.repo.CreateModel(ctx, g)
+func (uc *PassportUseCase) PrepareCreateAccount(ctx context.Context, account Account, token string) error {
+
+	// TODO 检测验证码token
+
+	return uc.repo.PrepareCreateAccount(ctx, account)
 }

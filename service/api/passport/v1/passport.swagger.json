@@ -16,14 +16,15 @@
     "application/json"
   ],
   "paths": {
-    "/passport": {
-      "get": {
-        "operationId": "Passport_GetPassport",
+    "/web/v1/changePassword": {
+      "post": {
+        "summary": "修改密码",
+        "operationId": "Passport_ChangePassword",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetPassportReply"
+              "$ref": "#/definitions/v1ChangePasswordReply"
             }
           },
           "default": {
@@ -35,11 +36,134 @@
         },
         "parameters": [
           {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangePasswordRequestChangePasswordBody"
+            }
+          }
+        ],
+        "tags": [
+          "Passport"
+        ]
+      }
+    },
+    "/web/v1/createAccount": {
+      "put": {
+        "summary": "预创建账户",
+        "operationId": "Passport_CreateAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateAccountReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateAccountRequestCreateAccountBody"
+            }
+          }
+        ],
+        "tags": [
+          "Passport"
+        ]
+      }
+    },
+    "/web/v1/key": {
+      "get": {
+        "summary": "获取密码加密公钥",
+        "operationId": "Passport_GetPublicKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetPublicKeyReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Passport"
+        ]
+      }
+    },
+    "/web/v1/login": {
+      "post": {
+        "summary": "账户登录",
+        "operationId": "Passport_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LoginReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequestLoginBody"
+            }
+          }
+        ],
+        "tags": [
+          "Passport"
+        ]
+      }
+    },
+    "/web/v1/verifyEmail": {
+      "put": {
+        "summary": "验证邮箱且创建用户",
+        "operationId": "Passport_VerifyEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VerifyEmailReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VerifyEmailRequestVerifyEmailBody"
+            }
           }
         ],
         "tags": [
@@ -49,6 +173,65 @@
     }
   },
   "definitions": {
+    "ChangePasswordRequestChangePasswordBody": {
+      "type": "object",
+      "properties": {
+        "oldPassword": {
+          "type": "string"
+        },
+        "newPassword": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateAccountRequestCreateAccountBody": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginRequestLoginBody": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "VerifyEmailRequestVerifyEmailBody": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -76,25 +259,58 @@
         }
       }
     },
-    "v1CreatePassportReply": {
+    "v1ChangePasswordReply": {
       "type": "object",
-      "title": "CreatePassportReply"
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "修改密码返回"
     },
-    "v1DeletePassportReply": {
+    "v1CreateAccountReply": {
       "type": "object",
-      "title": "DeletePassportReply"
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      },
+      "title": "预创建账户返回"
     },
-    "v1GetPassportReply": {
+    "v1GetPublicKeyReply": {
       "type": "object",
-      "title": "GetPassportReply"
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        }
+      }
     },
-    "v1ListPassportReply": {
+    "v1LoginReply": {
       "type": "object",
-      "title": "ListPassportReply"
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "登录返回"
     },
-    "v1UpdatePassportReply": {
+    "v1VerifyEmailReply": {
       "type": "object",
-      "title": "UpdatePassportReply"
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "验证邮箱返回"
     }
   }
 }
