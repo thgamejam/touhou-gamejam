@@ -102,11 +102,6 @@ func (uc *AccountUseCase) GetAccount(ctx context.Context, id uint32) (*Account, 
 	return uc.repo.GetAccountByID(ctx, id)
 }
 
-// GetAccountByUserID 通过用户ID获取账户
-func (uc *AccountUseCase) GetAccountByUserID(ctx context.Context, id uint32) (*Account, error) {
-	return uc.repo.GetAccountByUserID(ctx, id)
-}
-
 // SavePassword 保存密码, 修改密码
 func (uc *AccountUseCase) SavePassword(ctx context.Context, id uint32, passwdCT *PasswordCiphertext) (err error) {
 	// 获取账户
@@ -154,8 +149,4 @@ func (uc *AccountUseCase) VerifyPasswordByEMail(
 // ExistAccountEMail 是否存在邮箱
 func (uc *AccountUseCase) ExistAccountEMail(ctx context.Context, email string) (bool, error) {
 	return uc.repo.ExistAccountEMail(ctx, email)
-}
-
-func (uc *AccountUseCase) BindUser(ctx context.Context, id, uid uint32) error {
-	return uc.repo.BindUser(ctx, id, uid)
 }

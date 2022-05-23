@@ -99,26 +99,3 @@ func (s *AccountService) SavePassword(ctx context.Context, req *pb.SavePasswordR
 	}
 	return &pb.SavePasswordReply{}, nil
 }
-
-func (s *AccountService) BindUser(ctx context.Context, req *pb.BindUserReq) (*pb.BindUserReply, error) {
-	err := s.uc.BindUser(ctx, req.Id, req.UserID)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.BindUserReply{}, nil
-}
-
-func (s *AccountService) GetAccountByUserID(ctx context.Context, req *pb.GetAccountReq) (*pb.GetAccountReply, error) {
-	account, err := s.uc.GetAccountByUserID(ctx, req.Id)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.GetAccountReply{
-		Uuid:    account.UUID.String(),
-		Email:   account.Email,
-		TelCode: uint32(account.Phone.TelCode),
-		Phone:   account.Phone.Phone,
-		Status:  uint32(account.Status),
-		UserID:  account.UserID,
-	}, nil
-}

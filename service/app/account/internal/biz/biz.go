@@ -14,9 +14,6 @@ type AccountRepo interface {
 	// 返回创造账户的id
 	CreateEMailAccount(context.Context, *Account) (uint32, error)
 
-	// GetAccountByUserID 通过用户ID获取账户
-	GetAccountByUserID(ctx context.Context, userid uint32) (*Account, error)
-
 	// GetAccountByID 通过Account主键ID获取账户
 	GetAccountByID(context.Context, uint32) (*Account, error)
 	// GetAccountByEMail 通过用户邮箱获取账户
@@ -39,9 +36,6 @@ type AccountRepo interface {
 
 	// UpdateAccount 更新账户
 	UpdateAccount(context.Context, *Account) error
-
-	// BindUser 绑定用户
-	BindUser(context.Context, uint32, uint32) error
 }
 
 type AccountUseCase struct {

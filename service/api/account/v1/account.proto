@@ -16,8 +16,6 @@ service Account {
   // 使用ID获取账号
   rpc GetAccount (GetAccountReq) returns (GetAccountReply) {}
 
-  rpc GetAccountByUserID(GetAccountReq) returns (GetAccountReply) {}
-
   // ExistAccountEMail 是否存在邮箱
   rpc ExistAccountEMail (ExistAccountEMailReq) returns (ExistAccountEMailReply) {}
 
@@ -26,9 +24,6 @@ service Account {
 
   // 保存密码
   rpc SavePassword(SavePasswordReq) returns (SavePasswordReply) {}
-
-  // 绑定用户
-  rpc BindUser (BindUserReq) returns (BindUserReply) {}
 
   // 获取密码加密公钥
   rpc GetKey (GetKeyReq) returns (GetKeyReply) {}
@@ -97,14 +92,6 @@ message SavePasswordReq {
 // SavePasswordReply 保存密码回复
 message SavePasswordReply {
 }
-
-// BindUserReq 绑定用户请求
-message BindUserReq {
-  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];
-  uint32 userID = 2 [(validate.rules).uint32 = {gt: 0}];
-}
-// BindUserReply 绑定用户回复
-message BindUserReply {}
 
 // GetKeyReq 获取公钥请求
 message GetKeyReq {}
