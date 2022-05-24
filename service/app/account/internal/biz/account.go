@@ -69,7 +69,7 @@ func (uc *AccountUseCase) PrepareCreateEMailAccount(
 // FinishCreateEMailAccount 完成邮箱创建账户
 func (uc *AccountUseCase) FinishCreateEMailAccount(ctx context.Context, sid string) (id uint32, err error) {
 
-	email, ciphertext, err := uc.repo.GetPrepareCreateEMailAccount(ctx, sid)
+	email, ciphertext, err := uc.repo.GetAndDeletePrepareCreateEMailAccount(ctx, sid)
 	if err != nil {
 		return 0, err
 	}
@@ -78,6 +78,7 @@ func (uc *AccountUseCase) FinishCreateEMailAccount(ctx context.Context, sid stri
 	if err != nil {
 		return 0, err
 	}
+	// 防止账户被创建多次
 	if isExist {
 		return 0, v1.ErrorEmailAlreadyExists("邮箱已注册 (%v)", email)
 	}

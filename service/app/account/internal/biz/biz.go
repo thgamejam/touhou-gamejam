@@ -14,9 +14,9 @@ type AccountRepo interface {
 	// 返回一个预创建的会话号
 	SavePrepareCreateEMailAccount(ctx context.Context, email string, ciphertext *PasswordCiphertext) (sid string, err error)
 
-	// GetPrepareCreateEMailAccount 获取保存的预创建账户数据
+	// GetAndDeletePrepareCreateEMailAccount 获取并删除保存的预创建账户数据
 	// 需要保存时的会话号
-	GetPrepareCreateEMailAccount(ctx context.Context, sid string) (email string, ciphertext *PasswordCiphertext, err error)
+	GetAndDeletePrepareCreateEMailAccount(ctx context.Context, sid string) (email string, ciphertext *PasswordCiphertext, err error)
 
 	// CreateEMailAccount 创建邮箱账户
 	// 返回创造账户的id

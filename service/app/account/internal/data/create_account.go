@@ -33,8 +33,8 @@ func (r *accountRepo) SavePrepareCreateEMailAccount(
 	return sid, err
 }
 
-// GetPrepareCreateEMailAccount 获取保存的预创建账户数据
-func (r *accountRepo) GetPrepareCreateEMailAccount(
+// GetAndDeletePrepareCreateEMailAccount 获取并删除保存的预创建账户数据
+func (r *accountRepo) GetAndDeletePrepareCreateEMailAccount(
 	ctx context.Context, sid string) (email string, ciphertext *biz.PasswordCiphertext, err error) {
 
 	var cache *PrepareCreateEMailAccountCache
@@ -45,6 +45,8 @@ func (r *accountRepo) GetPrepareCreateEMailAccount(
 	if !ok {
 		return "", nil, errors.New("") // TODO Get Prepare Create EMail Account ERROR
 	}
+
+	r.data.Cache.Del(ctx, prepareCreateEMailAccountCacheKey(sid))
 
 	return cache.Email, &biz.PasswordCiphertext{KeyHash: cache.KeyHash, Ciphertext: cache.Ciphertext}, nil
 }
