@@ -34,18 +34,30 @@ func (s *AccountService) ExistAccountEMail(
 	return &pb.ExistAccountEMailReply{Ok: ok}, nil
 }
 
-func (s *AccountService) CreateEMailAccount(
-	ctx context.Context, req *pb.CreateEMailAccountReq) (*pb.CreateEMailAccountReply, error) {
+func (s *AccountService) PrepareCreateEMailAccount(
+	ctx context.Context, req *pb.PrepareCreateEMailAccountReq) (*pb.PrepareCreateEMailAccountReply, error) {
 
 	passwdCT := &biz.PasswordCiphertext{
 		KeyHash:    req.Hash,
 		Ciphertext: req.Ciphertext,
 	}
-	id, err := s.uc.CreateEMailAccount(ctx, req.Email, passwdCT)
+
+	sid, err := s.uc.PrepareCreateEMailAccount(ctx, req.Email, passwdCT)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CreateEMailAccountReply{Id: id}, nil
+
+	return &pb.PrepareCreateEMailAccountReply{Sid: sid}, nil
+}
+
+func (s *AccountService) FinishCreateEMailAccount(
+	ctx context.Context, req *pb.FinishCreateEMailAccountReq) (*pb.FinishCreateEMailAccountReply, error) {
+
+	id, err := s.uc.FinishCreateEMailAccount(ctx, req.Sid)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.FinishCreateEMailAccountReply{Id: id}, nil
 }
 
 func (s *AccountService) GetAccount(ctx context.Context, req *pb.GetAccountReq) (*pb.GetAccountReply, error) {
@@ -59,7 +71,6 @@ func (s *AccountService) GetAccount(ctx context.Context, req *pb.GetAccountReq) 
 		TelCode: uint32(account.Phone.TelCode),
 		Phone:   account.Phone.Phone,
 		Status:  uint32(account.Status),
-		UserID:  account.UserID,
 	}, nil
 }
 

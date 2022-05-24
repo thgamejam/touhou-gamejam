@@ -22,7 +22,6 @@ func (r *accountRepo) UpdateAccount(ctx context.Context, account *biz.Account) e
 	model.Email = account.Email
 	model.Status = account.Status
 	model.Password = account.PasswordHash
-	model.UserID = account.UserID
 	// 储存到数据库并加入缓存
 	err = r.data.DataBase.Save(&model).Error
 	if err != nil {

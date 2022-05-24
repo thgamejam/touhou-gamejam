@@ -23,7 +23,6 @@ type Account struct {
 	Phone        TelPhone  // 电话号码
 	PasswordHash []byte    // 密码哈希值
 	Status       uint8     // 状态
-	UserID       uint32    // 用户表ID
 }
 
 // TelPhone 电话号码
@@ -51,20 +50,40 @@ var hashPassword = func(password, sign string) []byte {
 	return byte20[:]
 }
 
-// CreateEMailAccount 使用邮箱创建账户
-func (uc *AccountUseCase) CreateEMailAccount(
-	ctx context.Context, email string, passwdCT *PasswordCiphertext) (id uint32, err error) {
+// PrepareCreateEMailAccount 预创建用户
+func (uc *AccountUseCase) PrepareCreateEMailAccount(
+	ctx context.Context, email string, passwdCT *PasswordCiphertext) (sid string, err error) {
+
+	// 验证邮箱是否存在
+	isExist, err := uc.repo.ExistAccountEMail(ctx, email)
+	if err != nil {
+		return "", err
+	}
+	if isExist {
+		return "", v1.ErrorEmailAlreadyExists("邮箱已注册 (%v)", email)
+	}
+
+	return uc.repo.SavePrepareCreateEMailAccount(ctx, email, passwdCT)
+}
+
+// FinishCreateEMailAccount 完成邮箱创建账户
+func (uc *AccountUseCase) FinishCreateEMailAccount(ctx context.Context, sid string) (id uint32, err error) {
+
+	email, ciphertext, err := uc.repo.GetPrepareCreateEMailAccount(ctx, sid)
+	if err != nil {
+		return 0, err
+	}
 
 	isExist, err := uc.repo.ExistAccountEMail(ctx, email)
 	if err != nil {
 		return 0, err
 	}
 	if isExist {
-		return 0, v1.ErrorEmailAlreadyExists("email already exists (%v)", email)
+		return 0, v1.ErrorEmailAlreadyExists("邮箱已注册 (%v)", email)
 	}
 
 	// 解密
-	password, err := uc.getPasswordPlaintext(ctx, passwdCT)
+	password, err := uc.getPasswordPlaintext(ctx, ciphertext)
 	if err != nil {
 		return
 	}

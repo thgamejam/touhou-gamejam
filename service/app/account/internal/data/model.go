@@ -14,7 +14,6 @@ type Account struct {
 	Status   uint8     `json:"status" gorm:"column:status"`
 	UUID     uuid.UUID `json:"uuid" gorm:"column:uuid"`
 	Password []byte    `json:"password" gorm:"column:password"`
-	UserID   uint32    `json:"user_id" gorm:"column:user_id"`
 }
 
 func (Account) TableName() string {
@@ -26,4 +25,11 @@ type LockOpener struct {
 	ID      int    `json:"id"`
 	Public  string `json:"public"`
 	Private string `json:"private"`
+}
+
+// PrepareCreateEMailAccountCache 预创建用户缓存
+type PrepareCreateEMailAccountCache struct {
+	Email      string `json:"email"`
+	KeyHash    string `json:"hash"`       // 秘钥哈希键
+	Ciphertext string `json:"ciphertext"` // 密文密码
 }

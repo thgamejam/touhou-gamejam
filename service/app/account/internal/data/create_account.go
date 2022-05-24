@@ -2,10 +2,54 @@ package data
 
 import (
 	"context"
+	"errors"
 	"service/app/account/internal/biz"
 	"service/pkg/util/strconv"
+	uuid2 "service/pkg/uuid"
 )
 
+var prepareCreateEMailAccountCacheKey = func(sid string) string {
+	return "prepare_create_account_to_uid_" + sid
+}
+
+// SavePrepareCreateEMailAccount 保存预创建账户数据
+func (r *accountRepo) SavePrepareCreateEMailAccount(
+	ctx context.Context, email string, ciphertext *biz.PasswordCiphertext) (sid string, err error) {
+	// 生成会话号
+	sid = uuid2.New().String()
+
+	cache := &PrepareCreateEMailAccountCache{
+		Email:      email,
+		KeyHash:    ciphertext.KeyHash,
+		Ciphertext: ciphertext.Ciphertext,
+	}
+
+	// 保存预创建账户到缓存
+	err = r.data.Cache.Set(ctx, prepareCreateEMailAccountCacheKey(sid), &cache, 0)
+	if err != nil {
+		return "", err
+	}
+
+	return sid, err
+}
+
+// GetPrepareCreateEMailAccount 获取保存的预创建账户数据
+func (r *accountRepo) GetPrepareCreateEMailAccount(
+	ctx context.Context, sid string) (email string, ciphertext *biz.PasswordCiphertext, err error) {
+
+	var cache *PrepareCreateEMailAccountCache
+	ok, err := r.data.Cache.Get(ctx, prepareCreateEMailAccountCacheKey(sid), cache)
+	if err != nil {
+		return "", nil, err
+	}
+	if !ok {
+		return "", nil, errors.New("") // TODO Get Prepare Create EMail Account ERROR
+	}
+
+	return cache.Email, &biz.PasswordCiphertext{KeyHash: cache.KeyHash, Ciphertext: cache.Ciphertext}, nil
+}
+
+// CreateEMailAccount 创建邮箱账户
 func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Account) (uint32, error) {
 	model := &Account{
 		UUID:     account.UUID,
@@ -14,7 +58,6 @@ func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Accou
 		Phone:    account.Phone.Phone,
 		Password: account.PasswordHash,
 		Status:   account.Status,
-		UserID:   0,
 	}
 	err := r.data.DataBase.Create(&model).Error
 	if err != nil {

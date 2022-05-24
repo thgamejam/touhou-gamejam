@@ -23,7 +23,6 @@ var modelToAccount = func(model *Account) *biz.Account {
 		Phone:        biz.TelPhone{TelCode: model.TelCode, Phone: model.Phone},
 		PasswordHash: model.Password,
 		Status:       model.Status,
-		UserID:       model.UserID,
 	}
 }
 
