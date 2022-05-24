@@ -50,5 +50,10 @@ path=${path%/*}
 app_name=${path##*/}
 app_path="$pwd/app/$app_name"
 service_path="$app_path/internal/service"
+service_file="$service_path/$app_name.go"
+
+if [ -f "$service_file" ]; then
+  mv "$service_file" "$service_file.d"
+fi
 
 kratos proto server $file -t $service_path
