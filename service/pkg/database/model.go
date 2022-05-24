@@ -21,11 +21,11 @@ func createCallback(db *gorm.DB) {
 		nowTime := time.Now()
 		createTimeField := db.Statement.Schema.LookUpField("ctime")
 		if createTimeField != nil {
-			_ = createTimeField.Set(db.Statement.ReflectValue, nowTime)
+			_ = createTimeField.Set(db.Statement.Context, db.Statement.ReflectValue, nowTime)
 		}
 		modifyTimeField := db.Statement.Schema.LookUpField("mtime")
 		if modifyTimeField != nil {
-			_ = modifyTimeField.Set(db.Statement.ReflectValue, nowTime)
+			_ = modifyTimeField.Set(db.Statement.Context, db.Statement.ReflectValue, nowTime)
 		}
 	}
 }
@@ -35,7 +35,7 @@ func updateCallback(db *gorm.DB) {
 		nowTime := time.Now()
 		modifyTimeField := db.Statement.Schema.LookUpField("mtime")
 		if modifyTimeField != nil {
-			_ = modifyTimeField.Set(db.Statement.ReflectValue, nowTime)
+			_ = modifyTimeField.Set(db.Statement.Context, db.Statement.ReflectValue, nowTime)
 		}
 	}
 }
@@ -44,13 +44,13 @@ func deleteCallback(db *gorm.DB) {
 	if db.Statement.Schema != nil {
 		modifyDeleteField := db.Statement.Schema.LookUpField("del")
 		if modifyDeleteField != nil {
-			_ = modifyDeleteField.Set(db.Statement.ReflectValue, true)
+			_ = modifyDeleteField.Set(db.Statement.Context, db.Statement.ReflectValue, true)
 		}
 
 		nowTime := time.Now()
 		modifyTimeField := db.Statement.Schema.LookUpField("mtime")
 		if modifyTimeField != nil {
-			_ = modifyTimeField.Set(db.Statement.ReflectValue, nowTime)
+			_ = modifyTimeField.Set(db.Statement.Context, db.Statement.ReflectValue, nowTime)
 		}
 	}
 }
