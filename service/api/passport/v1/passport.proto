@@ -71,7 +71,7 @@ message CreateAccountReply {
 // 验证邮箱请求
 message VerifyEmailRequest {
   message VerifyEmailBody{
-    string code = 1 [(validate.rules).string.len = 32];    // 会话号uuid
+    string token = 1 [(validate.rules).string.len = 32];
     string email = 2 [(validate.rules).string = {email: true, max_len: 32}];
   }
   VerifyEmailBody body = 1;
