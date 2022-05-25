@@ -20,7 +20,7 @@ service:
       password: ""
       read_timeout: 0.2s
       write_timeout: 0.2s
-Email:
+email:
   user: mail@mailpush.thjam.cc
   pass: iTvLd6f9cKwQ3yn
   host: smtpdm.aliyun.com
