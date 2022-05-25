@@ -6,5 +6,10 @@ option go_package = "service/app/passport/internal/conf;conf";
 import "google/protobuf/duration.proto";
 
 message Bootstrap {
+  Passport passport = 1;
+}
 
+message Passport{
+  string verify_email_key = 1;
+  uint32 login_expire_time = 2;
 }

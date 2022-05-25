@@ -20,8 +20,12 @@ service:
       password: ""
       read_timeout: 0.2s
       write_timeout: 0.2s
-Email:
+email:
   user: mail@mailpush.thjam.cc
   pass: iTvLd6f9cKwQ3yn
   host: smtpdm.aliyun.com
   port: 80
+
+passport:
+  verify_email_key: "abc123"
+  login_expire_time: 3
