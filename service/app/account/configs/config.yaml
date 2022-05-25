@@ -20,3 +20,5 @@ service:
       password: ""
       read_timeout: 0.2s
       write_timeout: 0.2s
+account:
+  verify_email_key: "abc123"

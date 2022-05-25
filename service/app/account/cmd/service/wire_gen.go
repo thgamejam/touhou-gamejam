@@ -11,6 +11,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 	"service/app/account/internal/biz"
+	conf2 "service/app/account/internal/conf"
 	"service/app/account/internal/data"
 	"service/app/account/internal/server"
 	"service/app/account/internal/service"
@@ -22,7 +23,7 @@ import (
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *conf.Server, confService *conf.Service, registrar registry.Registrar, discovery registry.Discovery, logger log.Logger) (*kratos.App, func(), error) {
+func initApp(confServer *conf.Server, confService *conf.Service, account *conf2.Account, registrar registry.Registrar, discovery registry.Discovery, logger log.Logger) (*kratos.App, func(), error) {
 	db, err := database.NewDataBase(confService)
 	if err != nil {
 		return nil, nil, err

@@ -6,5 +6,9 @@ option go_package = "service/app/account/internal/conf;conf";
 import "google/protobuf/duration.proto";
 
 message Bootstrap {
+  Account account = 1;
+}
 
+message Account{
+  string verify_email_key = 1;
 }
