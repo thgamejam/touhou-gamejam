@@ -34,6 +34,15 @@ func (r *passportRepo) SignLoginToken(ctx context.Context, accountID uint32) (to
 	return
 }
 
+// GetPublicKey 获取公钥和哈希值
+func (r *passportRepo) GetPublicKey(ctx context.Context) (key string, hash string, err error) {
+	rep, err := r.data.accountClient.GetKey(ctx, &accountV1.GetKeyReq{})
+	if err != nil {
+		return
+	}
+	return rep.Key, rep.Hash, nil
+}
+
 // CreatAccount 创建用户
 func (r *passportRepo) CreatAccount(ctx context.Context, sid string, key string) (uint32, error) {
 	sidMd5 := md5.Sum([]byte(sid + r.conf.VerifyEmailKey))

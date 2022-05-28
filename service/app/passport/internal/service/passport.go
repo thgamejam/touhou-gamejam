@@ -24,8 +24,17 @@ func (s *PassportService) CreateAccount(ctx context.Context, req *pb.CreateAccou
 func (s *PassportService) VerifyEmail(ctx context.Context, req *pb.VerifyEmailRequest) (*pb.VerifyEmailReply, error) {
 	return &pb.VerifyEmailReply{}, nil
 }
+
+// GetPublicKey 获取公钥和哈希值
 func (s *PassportService) GetPublicKey(ctx context.Context, req *pb.GetPublicKeyRequest) (*pb.GetPublicKeyReply, error) {
-	return &pb.GetPublicKeyReply{}, nil
+	k, h, err := s.uc.GetKey(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetPublicKeyReply{
+		Key:  k,
+		Hash: h,
+	}, nil
 }
 func (s *PassportService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginReply, error) {
 	return &pb.LoginReply{}, nil

@@ -21,7 +21,11 @@ type PassportRepo interface {
 	// CreatAccount 创建用户
 	CreatAccount(ctx context.Context, sid string, key string) (id uint32, err error)
 
+	// SignLoginToken 签署登录token
 	SignLoginToken(ctx context.Context, accountID uint32) (token string, err error)
+
+	// GetPublicKey 获取公钥和哈希值
+	GetPublicKey(ctx context.Context) (key string, hash string, err error)
 }
 
 type PassportUseCase struct {
@@ -31,6 +35,11 @@ type PassportUseCase struct {
 
 func NewPassportUseCase(repo PassportRepo, logger log.Logger) *PassportUseCase {
 	return &PassportUseCase{repo: repo, log: log.NewHelper(logger)}
+}
+
+// GetKey 获取公钥和哈希
+func (uc *PassportUseCase) GetKey(ctx context.Context) (key string, hash string, err error) {
+	return uc.repo.GetPublicKey(ctx)
 }
 
 // CreatAccount 验证sid的md5值并创建用户签署登录token
