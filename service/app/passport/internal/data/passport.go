@@ -9,6 +9,8 @@ import (
 	accountV1 "service/api/account/v1"
 	"service/app/passport/internal/biz"
 	"service/app/passport/internal/conf"
+	"service/pkg/jwt"
+	"time"
 )
 
 type passportRepo struct {
@@ -28,10 +30,14 @@ func NewPassportRepo(data *Data, conf *conf.Passport, logger log.Logger) biz.Pas
 
 // SignLoginToken 签署登录token
 func (r *passportRepo) SignLoginToken(ctx context.Context, accountID uint32) (token string, err error) {
-
-	// TODO 签署验证token
-
-	return
+	t, err := jwt.CreateLoginToken(jwt.LoginToken{
+		UserID:     accountID,
+		CreateTime: time.Now().Unix(),
+	}, []byte(r.conf.VerifyEmailKey), time.Duration(r.conf.LoginExpireTime)*time.Second)
+	if err != nil {
+		return "", err
+	}
+	return t, nil
 }
 
 // GetPublicKey 获取公钥和哈希值

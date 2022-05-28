@@ -21,8 +21,16 @@ func (s *PassportService) CreateAccount(ctx context.Context, req *pb.CreateAccou
 		Ok: true,
 	}, nil
 }
+
+// VerifyEmail 验证邮箱并返回登录token
 func (s *PassportService) VerifyEmail(ctx context.Context, req *pb.VerifyEmailRequest) (*pb.VerifyEmailReply, error) {
-	return &pb.VerifyEmailReply{}, nil
+	token, err := s.uc.CreatAccount(ctx, req.Body.Sid, req.Body.Key)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.VerifyEmailReply{
+		Token: token,
+	}, nil
 }
 
 // GetPublicKey 获取公钥和哈希值

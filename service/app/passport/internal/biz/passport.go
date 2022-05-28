@@ -20,10 +20,8 @@ type PassportRepo interface {
 	PrepareCreateAccount(ctx context.Context, account Account) error
 	// CreatAccount 创建用户
 	CreatAccount(ctx context.Context, sid string, key string) (id uint32, err error)
-
 	// SignLoginToken 签署登录token
 	SignLoginToken(ctx context.Context, accountID uint32) (token string, err error)
-
 	// GetPublicKey 获取公钥和哈希值
 	GetPublicKey(ctx context.Context) (key string, hash string, err error)
 }
@@ -43,14 +41,17 @@ func (uc *PassportUseCase) GetKey(ctx context.Context) (key string, hash string,
 }
 
 // CreatAccount 验证sid的md5值并创建用户签署登录token
-func (uc *PassportUseCase) CreatAccount(ctx context.Context, sid string, key string) (id uint32, err error) {
-	return uc.repo.CreatAccount(ctx, sid, key)
+func (uc *PassportUseCase) CreatAccount(ctx context.Context, sid string, key string) (token string, err error) {
+	id, err := uc.repo.CreatAccount(ctx, sid, key)
+	if err != nil {
+		return "", err
+	}
+	token, err = uc.repo.SignLoginToken(ctx, id)
+	return
 }
 
 // PrepareCreateAccount 预创建账户
 func (uc *PassportUseCase) PrepareCreateAccount(ctx context.Context, account Account, token string) error {
-
-	// TODO 检测验证码token
-
+	// TODO 验证人机token
 	return uc.repo.PrepareCreateAccount(ctx, account)
 }
