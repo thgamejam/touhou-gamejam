@@ -14,23 +14,23 @@ type UploadClaims struct {
 	SHA1     string `json:"sha1"`                // SHA1Hash值
 	SliceID  uint32 `json:"slice_id,omitempty"`  // 分片ID
 	SliceLen uint32 `json:"slice_len,omitempty"` // 分片长度
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
-// CreateUploadToken create token
+// CreateUploadToken 创建上传文件token
 func CreateUploadToken(claims *UploadClaims, secret []byte, expirationTime time.Duration) (signedToken string, err error) {
-	claims.ExpiresAt = time.Now().Add(expirationTime).Unix()
+	claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(expirationTime))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err = token.SignedString(secret)
 	return
 }
 
-// ValidateUploadToken validate token
+// ValidateUploadToken 验证上传文件token
 func ValidateUploadToken(signedToken string, secret []byte) (claims *UploadClaims, success bool) {
 	token, err := jwt.ParseWithClaims(signedToken, &UploadClaims{},
 		func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected login method %v", token.Header["alg"])
+				return nil, fmt.Errorf("错误的签名方式 %v", token.Header["alg"])
 			}
 			return secret, nil
 		})

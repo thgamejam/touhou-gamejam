@@ -87,7 +87,7 @@ func uploadFile(c *pkgConf.Service, efs *service.FileEdgeService) func(ctx krato
 		in.SHA1 = claims.SHA1
 		in.SliceID = claims.SliceID
 		in.SliceLen = claims.SliceLen
-		in.ExpiresAt = claims.ExpiresAt
+		in.ExpiresAt = claims.ExpiresAt.Unix()
 
 		in.Name = handler.Filename
 
