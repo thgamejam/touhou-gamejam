@@ -37,8 +37,8 @@ func (r *accountRepo) SavePrepareCreateEMailAccount(
 func (r *accountRepo) GetAndDeletePrepareCreateEMailAccount(
 	ctx context.Context, sid string) (email string, ciphertext *biz.PasswordCiphertext, err error) {
 
-	var cache *PrepareCreateEMailAccountCache
-	ok, err := r.data.Cache.Get(ctx, prepareCreateEMailAccountCacheKey(sid), cache)
+	var cache PrepareCreateEMailAccountCache
+	ok, err := r.data.Cache.Get(ctx, prepareCreateEMailAccountCacheKey(sid), &cache)
 	if err != nil {
 		return "", nil, err
 	}
