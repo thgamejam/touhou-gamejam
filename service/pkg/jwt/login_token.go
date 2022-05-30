@@ -10,11 +10,11 @@ import (
 type LoginToken struct {
 	UserID     uint32 `json:"user_id"`     // 用户id
 	CreateTime int64  `json:"create_time"` // 创建时间
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func CreateLoginToken(claims LoginToken, secret []byte, expirationTime time.Duration) (signedToken string, err error) {
-	claims.ExpiresAt = time.Now().Add(expirationTime).Unix()
+	claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(expirationTime))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err = token.SignedString(secret)
 	return

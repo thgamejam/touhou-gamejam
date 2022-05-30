@@ -11,19 +11,20 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 	"service/app/passport/internal/biz"
-	"service/app/passport/internal/conf"
+	conf2 "service/app/passport/internal/conf"
 	"service/app/passport/internal/data"
 	"service/app/passport/internal/server"
 	"service/app/passport/internal/service"
-	pkgConf "service/pkg/conf"
+	"service/pkg/conf"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *pkgConf.Server, confService *pkgConf.Service, passport *conf.Passport, registrar registry.Registrar, discovery registry.Discovery, logger log.Logger) (*kratos.App, func(), error) {
+func initApp(confServer *conf.Server, confService *conf.Service, passport *conf2.Passport, registrar registry.Registrar, discovery registry.Discovery, logger log.Logger) (*kratos.App, func(), error) {
 	accountClient := data.NewAccountServiceClient(discovery)
-	dataData, cleanup, err := data.NewData(accountClient, logger)
+	userClient := data.NewUserServiceClient(discovery)
+	dataData, cleanup, err := data.NewData(accountClient, userClient, logger)
 	if err != nil {
 		return nil, nil, err
 	}

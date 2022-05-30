@@ -15,10 +15,11 @@ import (
 	"service/app/passport/internal/server"
 	"service/app/passport/internal/service"
 
+	"service/app/passport/internal/conf"
 	pkgConf "service/pkg/conf"
 )
 
 // initApp init kratos application.
-func initApp(*pkgConf.Server, *pkgConf.Service, registry.Registrar, registry.Discovery, log.Logger) (*kratos.App, func(), error) {
+func initApp(*pkgConf.Server, *pkgConf.Service, *conf.Passport, registry.Registrar, registry.Discovery, log.Logger) (*kratos.App, func(), error) {
 	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }
