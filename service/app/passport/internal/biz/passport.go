@@ -24,6 +24,8 @@ type PassportRepo interface {
 	SignLoginToken(ctx context.Context, accountID uint32) (token string, err error)
 	// GetPublicKey 获取公钥和哈希值
 	GetPublicKey(ctx context.Context) (key string, hash string, err error)
+	// LoginVerify 登录校验
+	LoginVerify(ctx context.Context, username string, ciphertext string, hash string) (id uint32, err error)
 }
 
 type PassportUseCase struct {
@@ -48,6 +50,23 @@ func (uc *PassportUseCase) CreatAccount(ctx context.Context, sid string, key str
 	}
 	token, err = uc.repo.SignLoginToken(ctx, id)
 	return
+}
+
+// Login 登录并签署验证token
+func (uc *PassportUseCase) Login(ctx context.Context, username string, ciphertext string, hash string) (ok bool, token string, err error) {
+	userID, err := uc.repo.LoginVerify(ctx, username, ciphertext, hash)
+	if err != nil {
+		return false, "", err
+	}
+
+	// TODO 判断user是否存在，若不存在则新建user
+
+	loginToken, err := uc.repo.SignLoginToken(ctx, userID)
+	if err != nil {
+		return false, "", err
+	}
+
+	return true, loginToken, nil
 }
 
 // PrepareCreateAccount 预创建账户

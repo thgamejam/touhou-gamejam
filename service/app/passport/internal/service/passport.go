@@ -44,9 +44,20 @@ func (s *PassportService) GetPublicKey(ctx context.Context, req *pb.GetPublicKey
 		Hash: h,
 	}, nil
 }
+
+// Login 登录
 func (s *PassportService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginReply, error) {
-	return &pb.LoginReply{}, nil
+	ok, token, err := s.uc.Login(ctx, req.Body.Email, req.Body.Password, req.Body.Hash)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.LoginReply{
+		Ok:    ok,
+		Token: token,
+	}, nil
 }
+
 func (s *PassportService) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ChangePasswordReply, error) {
 	return &pb.ChangePasswordReply{}, nil
 }

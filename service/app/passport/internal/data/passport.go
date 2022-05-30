@@ -28,6 +28,20 @@ func NewPassportRepo(data *Data, conf *conf.Passport, logger log.Logger) biz.Pas
 	}
 }
 
+// LoginVerify 登录验证
+func (r *passportRepo) LoginVerify(ctx context.Context, username string, ciphertext string, hash string) (uint32, error) {
+	userID, err := r.data.accountClient.VerifyPassword(ctx, &accountV1.VerifyPasswordReq{
+		Username:   username,
+		Ciphertext: ciphertext,
+		Hash:       hash,
+	})
+	if err != nil {
+		return 0, err
+	}
+
+	return userID.Id, nil
+}
+
 // SignLoginToken 签署登录token
 func (r *passportRepo) SignLoginToken(ctx context.Context, accountID uint32) (token string, err error) {
 	t, err := jwt.CreateLoginToken(jwt.LoginToken{
