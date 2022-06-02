@@ -47,7 +47,7 @@ func (r *passportRepo) SignLoginToken(ctx context.Context, accountID uint32) (to
 	t, err := jwt.CreateLoginToken(jwt.LoginToken{
 		UserID:     accountID,
 		CreateTime: time.Now().Unix(),
-	}, []byte(r.conf.VerifyEmailKey), time.Duration(r.conf.LoginExpireTime)*time.Second)
+	}, []byte(r.conf.VerifyEmailKey), time.Duration(r.conf.LoginExpireTime)*time.Hour*24)
 	if err != nil {
 		return "", err
 	}
