@@ -31,7 +31,7 @@ func initApp(confServer *conf.Server, confService *conf.Service, passport *conf2
 	passportRepo := data.NewPassportRepo(dataData, passport, logger)
 	passportUseCase := biz.NewPassportUseCase(passportRepo, logger)
 	passportService := service.NewPassportService(passportUseCase, logger)
-	httpServer := server.NewHTTPServer(confServer, passportService, logger)
+	httpServer := server.NewHTTPServer(confServer, passport, passportService, logger)
 	grpcServer := server.NewGRPCServer(confServer, passportService, logger)
 	app := newApp(logger, registrar, httpServer, grpcServer)
 	return app, func() {
