@@ -1,7 +1,12 @@
 package jwt
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"github.com/go-kratos/kratos/v2/middleware"
+	"github.com/go-kratos/kratos/v2/middleware/selector"
+	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/golang-jwt/jwt/v4"
 	"time"
 )
@@ -13,6 +18,35 @@ type LoginToken struct {
 	jwt.RegisteredClaims
 }
 
+func ValidateLoginListMatcher() selector.MatchFunc {
+	skipRouters := make(map[string]bool)
+	skipRouters["/passport.v1.Passport/ChangePassword"] = true
+	return func(ctx context.Context, operation string) bool {
+		if _, ok := skipRouters[operation]; ok {
+			return true
+		}
+		return false
+	}
+}
+
+func JWTLoginAuth(secret []byte) middleware.Middleware {
+	return func(handler middleware.Handler) middleware.Handler {
+		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
+			if tr, ok := transport.FromServerContext(ctx); ok {
+				token := tr.RequestHeader().Get("Authorization")
+				if token == "" {
+					return nil, errors.New("TokenNotFound")
+				}
+				_, success := ValidateLoginToken(token, secret)
+				if !success {
+					return nil, errors.New("TokenValidateError")
+				}
+			}
+			return handler(ctx, req)
+		}
+	}
+}
+
 func CreateLoginToken(claims LoginToken, secret []byte, expirationTime time.Duration) (signedToken string, err error) {
 	claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(expirationTime))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -20,8 +54,8 @@ func CreateLoginToken(claims LoginToken, secret []byte, expirationTime time.Dura
 	return
 }
 
-func ValidateLoginToken(signedToken string, c jwt.Claims, secret []byte) (claims jwt.Claims, success bool) {
-	token, err := jwt.ParseWithClaims(signedToken, c,
+func ValidateLoginToken(signedToken string, secret []byte) (claims *LoginToken, success bool) {
+	token, err := jwt.ParseWithClaims(signedToken, &LoginToken{},
 		func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected login method %v", token.Header["alg"])
@@ -29,8 +63,13 @@ func ValidateLoginToken(signedToken string, c jwt.Claims, secret []byte) (claims
 			return secret, nil
 		})
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	claims, success = token.Claims, true
+	claims, ok := token.Claims.(*LoginToken)
+	if ok && token.Valid {
+		success = true
+		return
+	}
 	return
 }
