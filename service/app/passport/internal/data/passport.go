@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/transport"
 	accountV1 "service/api/account/v1"
 	"service/app/passport/internal/biz"
 	"service/app/passport/internal/conf"
@@ -28,6 +29,59 @@ func NewPassportRepo(data *Data, conf *conf.Passport, logger log.Logger) biz.Pas
 	}
 }
 
+// VerifyAccountTokenId 验证会话Token是否合法
+func (r *passportRepo) VerifyAccountTokenId(ctx context.Context) (accountId uint32, err error) {
+	// 格式化ctx
+	tr, y := transport.FromServerContext(ctx)
+	if !y {
+		// 错误 格式化错误
+		return 0, errors.New("FromServerError")
+	}
+	// 获取token字符
+	token := tr.RequestHeader().Get("Authorization")
+	if token == "" {
+		// 错误 Token没有找到
+		return 0, errors.New("TokenNotFound")
+	}
+	// 解密Token
+	loginToken, success := jwt.ValidateLoginToken(token, []byte(r.conf.VerifyEmailKey))
+	if !success {
+		// 错误 Token解析错误
+		return 0, errors.New("TokenValidateError")
+	}
+	if loginToken.RenewalAt < time.Now().Unix() {
+		// 错误 时间过期
+		return 0, errors.New("PleaseRenewalToken")
+	}
+	// 验证会话ID是否合法
+	session, err := r.data.accountClient.VerifySession(ctx, &accountV1.VerifySessionReq{
+		Id:  loginToken.UserID,
+		Sid: loginToken.UUID,
+	})
+	if err != nil {
+		return 0, err
+	}
+	if !session.Ok {
+		// 错误 会话ID不合法
+		return 0, errors.New("PleaseRenewalToken")
+	}
+	// 返回合法的用户ID
+	return loginToken.UserID, nil
+}
+
+// ChangeUserPassword 修改用户密码
+func (r *passportRepo) ChangeUserPassword(ctx context.Context, accountID uint32, password string, hash string) (ok bool, err error) {
+	_, err = r.data.accountClient.SavePassword(ctx, &accountV1.SavePasswordReq{
+		Id:         accountID,
+		Ciphertext: password,
+		Hash:       hash,
+	})
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // LoginVerify 登录验证
 func (r *passportRepo) LoginVerify(ctx context.Context, username string, ciphertext string, hash string) (uint32, error) {
 	userID, err := r.data.accountClient.VerifyPassword(ctx, &accountV1.VerifyPasswordReq{
@@ -44,10 +98,19 @@ func (r *passportRepo) LoginVerify(ctx context.Context, username string, ciphert
 
 // SignLoginToken 签署登录token
 func (r *passportRepo) SignLoginToken(ctx context.Context, accountID uint32) (token string, err error) {
+	sid, err := r.data.accountClient.CreateSession(ctx, &accountV1.CreateSessionReq{
+		Id:        accountID,
+		ExpiresAt: r.conf.LoginExpireTime,
+	})
+	if err != nil {
+		return "", err
+	}
 	t, err := jwt.CreateLoginToken(jwt.LoginToken{
-		UserID:     accountID,
-		CreateTime: time.Now().Unix(),
-	}, []byte(r.conf.VerifyEmailKey), time.Duration(r.conf.LoginExpireTime)*time.Hour*24)
+		UserID:    accountID,
+		UUID:      sid.Sid,
+		CreateAt:  time.Now().Unix(),
+		RenewalAt: time.Now().Add(r.conf.RenewalTime.AsDuration()).Unix(),
+	}, []byte(r.conf.VerifyEmailKey), r.conf.RenewalTime)
 	if err != nil {
 		return "", err
 	}

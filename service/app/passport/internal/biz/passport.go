@@ -26,6 +26,10 @@ type PassportRepo interface {
 	GetPublicKey(ctx context.Context) (key string, hash string, err error)
 	// LoginVerify 登录校验
 	LoginVerify(ctx context.Context, username string, ciphertext string, hash string) (id uint32, err error)
+	// ChangeUserPassword 修改用户密码
+	ChangeUserPassword(ctx context.Context, accountID uint32, password string, hash string) (ok bool, err error)
+	// VerifyAccountTokenId 验证用户Token是否合法并返回合法账户ID
+	VerifyAccountTokenId(ctx context.Context) (accountId uint32, err error)
 }
 
 type PassportUseCase struct {
@@ -35,6 +39,19 @@ type PassportUseCase struct {
 
 func NewPassportUseCase(repo PassportRepo, logger log.Logger) *PassportUseCase {
 	return &PassportUseCase{repo: repo, log: log.NewHelper(logger)}
+}
+
+// RenewalToken 验证并续签Token
+func (uc *PassportUseCase) RenewalToken(ctx context.Context) (string, error) {
+	accountId, err := uc.repo.VerifyAccountTokenId(ctx)
+	if err != nil {
+		return "", err
+	}
+	token, err := uc.repo.SignLoginToken(ctx, accountId)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }
 
 // GetKey 获取公钥和哈希

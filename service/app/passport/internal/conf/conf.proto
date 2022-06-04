@@ -4,7 +4,6 @@ package kratos.api;
 option go_package = "service/app/passport/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
-import "google/protobuf/duration.proto";
 
 message Bootstrap {
   Passport passport = 1;

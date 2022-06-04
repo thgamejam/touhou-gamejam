@@ -12,6 +12,14 @@ option java_outer_classname = "PassportProtoV1";
 
 service Passport {
 
+  // RenewalToken Token续签
+  rpc RenewalToken (RenewalTokenRequest) returns (RenewalTokenReply){
+    option(google.api.http) = {
+      post: "/web/v1/renewalToken"
+      body: "body"
+    };
+  }
+
   // 预创建账户
   rpc CreateAccount (CreateAccountRequest) returns (CreateAccountReply) {
     // http://passport-api.xx.com/web/v1/createAccount
@@ -51,6 +59,16 @@ service Passport {
       body: "body"
     };
   }
+}
+
+// 续签token请求
+message RenewalTokenRequest{
+  message RenewalTokenBody{
+  }
+  RenewalTokenBody body = 1;
+}
+message RenewalTokenReply{
+  string token = 1;
 }
 
 // 预创建账户请求

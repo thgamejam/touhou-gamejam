@@ -2,10 +2,20 @@ package service
 
 import (
 	"context"
-	"service/app/passport/internal/biz"
-
 	pb "service/api/passport/v1"
+	"service/app/passport/internal/biz"
 )
+
+// RenewalToken 续签Token
+func (s *PassportService) RenewalToken(ctx context.Context, req *pb.RenewalTokenRequest) (*pb.RenewalTokenReply, error) {
+	token, err := s.uc.RenewalToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RenewalTokenReply{
+		Token: token,
+	}, nil
+}
 
 // CreateAccount 预创建账户
 func (s *PassportService) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountReply, error) {
