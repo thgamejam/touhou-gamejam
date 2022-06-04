@@ -13,13 +13,17 @@ import (
 	"service/pkg/jwt"
 )
 
+var LoginAuthRouters = []string{
+	"/passport.v1.Passport/ChangePassword",
+}
+
 // NewHTTPServer new a HTTP server.
 func NewHTTPServer(c *pkgConf.Server, t *conf.Passport, service *service.PassportService, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
 			validate.Validator(),
-			selector.Server(jwt.JWTLoginAuth([]byte(t.VerifyEmailKey))).Match(jwt.ValidateLoginListMatcher()).Build(),
+			selector.Server(jwt.LoginAuthMiddleware([]byte(t.VerifyEmailKey))).Match(jwt.ValidateLoginListMatcher(LoginAuthRouters)).Build(),
 		),
 	}
 	if c.Http.Network != "" {
