@@ -4,12 +4,17 @@ package kratos.api;
 option go_package = "service/app/passport/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
+import "google/protobuf/duration.proto";
 
 message Bootstrap {
   Passport passport = 1;
 }
 
 message Passport{
+  // token加密
   string verify_email_key = 1;
-  uint32 login_expire_time = 2;
+  // 登录过期时间
+  google.protobuf.Duration login_expire_time = 2;
+  // 续签时间
+  google.protobuf.Duration  renewal_time =3;
 }
