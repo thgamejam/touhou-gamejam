@@ -3,6 +3,7 @@ syntax = "proto3";
 package account.v1;
 
 import "validate/validate.proto";
+import "google/protobuf/duration.proto";
 
 option go_package = "service/api/account/v1;v1";
 option java_multiple_files = true;
@@ -30,6 +31,15 @@ service Account {
 
   // 获取密码加密公钥
   rpc GetKey (GetKeyReq) returns (GetKeyReply) {}
+
+  // 创建会话
+  rpc CreateSession(CreateSessionReq) returns (CreateSessionReply) {}
+
+  // 验证会话
+  rpc VerifySession(VerifySessionReq) returns (VerifySessionReply) {}
+
+  // 关闭会话
+  rpc CloseSession(CloseSessionReq) returns (CloseSessionReply) {}
 }
 
 // PrepareCreateEMailAccountReq 预创建邮箱账号请求
@@ -110,4 +120,34 @@ message GetKeyReq {}
 message GetKeyReply {
   string hash = 1;  // 密钥hash
   string key = 2;   // 公钥内容
+}
+
+// CreateSessionReq 创建会话请求
+message CreateSessionReq {
+  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];  // 账户id
+  google.protobuf.Duration expires_at = 2;            // 会话最长有效期
+}
+// CreateSessionReply 验证会话回复
+message CreateSessionReply {
+  bool sid = 1;  // 会话id
+}
+
+// VerifySessionReq 验证会话请求
+message VerifySessionReq {
+  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];  // 账户id
+  string sid = 2 [(validate.rules).string.len = 32];  // 会话id
+}
+// VerifySessionReply 验证会话回复
+message VerifySessionReply {
+  bool ok = 1;  // true 正确, false 错误
+}
+
+// CloseSessionReq 关闭会话请求
+message CloseSessionReq {
+  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];  // 账户id
+  string sid = 2 [(validate.rules).string.len = 32];  // 会话id
+}
+// CloseSessionReply 关闭会话回复
+message CloseSessionReply {
+  bool ok = 1;  // true 正确, false 错误
 }
