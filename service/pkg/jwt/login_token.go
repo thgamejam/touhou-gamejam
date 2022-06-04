@@ -8,6 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang/protobuf/ptypes/duration"
 	"time"
 )
 
@@ -59,7 +60,9 @@ func LoginAuthMiddleware(secret []byte) middleware.Middleware {
 				if !success {
 					return nil, errors.New("TokenValidateError")
 				}
-
+				if loginToken.RenewalAt < time.Now().Unix() {
+					return nil, errors.New("PleaseRenewalToken")
+				}
 				ctx = context.WithValue(ctx, loginTokenKey{}, loginToken)
 			}
 
@@ -69,8 +72,8 @@ func LoginAuthMiddleware(secret []byte) middleware.Middleware {
 }
 
 // CreateLoginToken 创建登录token
-func CreateLoginToken(claims LoginToken, secret []byte, expirationTime time.Duration) (signedToken string, err error) {
-	claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(expirationTime))
+func CreateLoginToken(claims LoginToken, secret []byte, expirationTime *duration.Duration) (signedToken string, err error) {
+	claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(expirationTime.AsDuration()))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err = token.SignedString(secret)
 	return
