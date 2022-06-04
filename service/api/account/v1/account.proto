@@ -129,7 +129,7 @@ message CreateSessionReq {
 }
 // CreateSessionReply 验证会话回复
 message CreateSessionReply {
-  bool sid = 1;  // 会话id
+  string sid = 1;  // 会话id
 }
 
 // VerifySessionReq 验证会话请求
