@@ -18,7 +18,7 @@ func (r *accountRepo) SavePrepareCreateEMailAccount(
 	// 生成会话号
 	sid = uuid2.New().String()
 
-	cache := &PrepareCreateEMailAccountCache{
+	cache := PrepareCreateEMailAccountCache{
 		Email:      email,
 		KeyHash:    ciphertext.KeyHash,
 		Ciphertext: ciphertext.Ciphertext,
@@ -46,14 +46,17 @@ func (r *accountRepo) GetAndDeletePrepareCreateEMailAccount(
 		return "", nil, errors.New("") // TODO Get Prepare Create EMail Account ERROR
 	}
 
-	r.data.Cache.Del(ctx, prepareCreateEMailAccountCacheKey(sid))
+	err = r.data.Cache.Del(ctx, prepareCreateEMailAccountCacheKey(sid))
+	if err != nil {
+		return "", nil, err
+	}
 
 	return cache.Email, &biz.PasswordCiphertext{KeyHash: cache.KeyHash, Ciphertext: cache.Ciphertext}, nil
 }
 
 // CreateEMailAccount 创建邮箱账户
 func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Account) (uint32, error) {
-	model := &Account{
+	model := Account{
 		UUID:     account.UUID,
 		Email:    account.Email,
 		TelCode:  account.Phone.TelCode,
@@ -65,7 +68,7 @@ func (r *accountRepo) CreateEMailAccount(ctx context.Context, account *biz.Accou
 	if err != nil {
 		return 0, err
 	}
-	err = r.CacheSetAccount(ctx, model)
+	err = r.CacheSetAccount(ctx, &model)
 	if err != nil {
 		return 0, err
 	}

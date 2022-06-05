@@ -7,7 +7,8 @@ import (
 )
 
 func (r *accountRepo) UpdateAccount(ctx context.Context, account *biz.Account) error {
-	model, ok, err := r.DBGetAccountByID(ctx, account.ID)
+	var model Account
+	ok, err := r.DBGetAccountByID(ctx, &model, account.ID)
 	if err != nil {
 		return err
 	}
@@ -27,7 +28,7 @@ func (r *accountRepo) UpdateAccount(ctx context.Context, account *biz.Account) e
 	if err != nil {
 		return err
 	}
-	err = r.CacheDeleteAccount(ctx, model)
+	err = r.CacheDeleteAccount(ctx, &model)
 	if err != nil {
 		r.log.Error("") // TODO
 	}

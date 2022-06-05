@@ -33,3 +33,8 @@ type PrepareCreateEMailAccountCache struct {
 	KeyHash    string `json:"hash"`       // 秘钥哈希键
 	Ciphertext string `json:"ciphertext"` // 密文密码
 }
+
+// AccountSessionCache 账户会话缓存
+type AccountSessionCache struct {
+	IP string `json:"ip"` // 会话的ip地址
+}

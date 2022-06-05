@@ -25,8 +25,8 @@ var lockOpenerIDCacheKey = func(id int) string {
 
 // GetPublicKey 使用Hash值获取公钥
 func (r *accountRepo) GetPublicKey(ctx context.Context, hash string) (*biz.PublicKey, error) {
-	lock := &LockOpener{}
-	ok, err := r.data.Cache.Get(ctx, lockOpenerCacheKey(hash), lock)
+	var lock LockOpener
+	ok, err := r.data.Cache.Get(ctx, lockOpenerCacheKey(hash), &lock)
 	if err != nil {
 		r.log.Error("") // TODO
 	}
@@ -47,14 +47,14 @@ func (r *accountRepo) GetRandomlyPublicKey(ctx context.Context) (key *biz.Public
 	id := rand.Intn(lockOpenerListMaxLen)
 
 	// 查找缓存中是否已经存在id对于的密钥对
-	var lock *LockOpener
+	var lock LockOpener
 	hash, ok, _ := r.data.Cache.GetString(ctx, lockOpenerIDCacheKey(id))
 	if ok {
 		return r.GetPublicKey(ctx, hash)
 	}
 
 	// 缓存不存在密钥对时进行创建
-	lock, hash, err = r.CacheCreateLockOpener(ctx, id)
+	hash, err = r.CacheCreateLockOpener(ctx, &lock, id)
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +67,8 @@ func (r *accountRepo) GetRandomlyPublicKey(ctx context.Context) (key *biz.Public
 
 // GetPrivateKey 使用Hash值获取密钥
 func (r *accountRepo) GetPrivateKey(ctx context.Context, hash string) (*biz.PrivateKey, error) {
-	lock := &LockOpener{}
-	ok, err := r.data.Cache.Get(ctx, lockOpenerCacheKey(hash), lock)
+	var lock LockOpener
+	ok, err := r.data.Cache.Get(ctx, lockOpenerCacheKey(hash), &lock)
 	if err != nil {
 		r.log.Error("") // TODO
 	}
@@ -90,7 +90,7 @@ var hashMd5To16 = func(privateKey string) string {
 }
 
 // CacheCreateLockOpener 创建钥匙对到缓存中
-func (r *accountRepo) CacheCreateLockOpener(ctx context.Context, id int) (lock *LockOpener, hash string, err error) {
+func (r *accountRepo) CacheCreateLockOpener(ctx context.Context, lock *LockOpener, id int) (hash string, err error) {
 	// 生成钥匙对
 	privateKey, publicKey, err := ecc.GenerateKey()
 	if err != nil {

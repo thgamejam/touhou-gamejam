@@ -12,7 +12,8 @@ func (r *accountRepo) ExistAccountEMail(ctx context.Context, email string) (bool
 	}
 
 	// 通过邮箱查找账号数据
-	model, ok, err := r.DBGetAccountByEMail(ctx, email)
+	var model Account
+	ok, err = r.DBGetAccountByEMail(ctx, &model, email)
 	if err != nil {
 		return false, err
 	}
@@ -20,7 +21,7 @@ func (r *accountRepo) ExistAccountEMail(ctx context.Context, email string) (bool
 		return false, nil
 	}
 
-	err = r.CacheSetAccount(ctx, model)
+	err = r.CacheSetAccount(ctx, &model)
 	if err != nil {
 		r.log.Error("") // TODO
 	}
