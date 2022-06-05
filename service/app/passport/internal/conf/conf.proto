@@ -15,5 +15,5 @@ message Passport{
   // 登录过期时间
   google.protobuf.Duration login_expire_time = 2;
   // 续签时间
-  google.protobuf.Duration  renewal_time =3;
+  google.protobuf.Duration renewal_time =3;
 }

@@ -1,9 +1,9 @@
 server:
   http:
-    addr: 0.0.0.0:8000
+    addr: 0.0.0.0:8001
     timeout: 1s
   grpc:
-    addr: 0.0.0.0:6000
+    addr: 0.0.0.0:6001
     timeout: 1s
 
 service:
@@ -28,4 +28,5 @@ email:
 
 passport:
   verify_email_key: "abc123"
-  login_expire_time: 3
+  login_expire_time: 2592000s
+  renewal_time: 1800s
