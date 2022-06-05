@@ -29,6 +29,28 @@ func NewPassportRepo(data *Data, conf *conf.Passport, logger log.Logger) biz.Pas
 	}
 }
 
+// AccountLogout 注销会话号ID
+func (r *passportRepo) AccountLogout(ctx context.Context, id uint32, sid string) (err error) {
+	_, err = r.data.accountClient.CloseSession(ctx, &accountV1.CloseSessionReq{
+		Id:  id,
+		Sid: sid,
+	})
+	return
+}
+
+// ChangePassword 修改密码
+func (r *passportRepo) ChangePassword(ctx context.Context, id uint32, ciphertext string, hash string) (err error) {
+	_, err = r.data.accountClient.SavePassword(ctx, &accountV1.SavePasswordReq{
+		Id:         id,
+		Ciphertext: ciphertext,
+		Hash:       hash,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // VerifyAccountTokenId 验证会话Token是否合法
 func (r *passportRepo) VerifyAccountTokenId(ctx context.Context) (accountId uint32, err error) {
 	// 格式化ctx

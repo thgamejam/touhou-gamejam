@@ -30,11 +30,34 @@ type PassportRepo interface {
 	ChangeUserPassword(ctx context.Context, accountID uint32, password string, hash string) (ok bool, err error)
 	// VerifyAccountTokenId 验证用户Token是否合法并返回合法账户ID
 	VerifyAccountTokenId(ctx context.Context) (accountId uint32, err error)
+	// ChangePassword 修改密码
+	ChangePassword(ctx context.Context, id uint32, ciphertext string, hash string) (err error)
+	// AccountLogout 注销会话号ID
+	AccountLogout(ctx context.Context, id uint32, sid string) (err error)
 }
 
 type PassportUseCase struct {
 	repo PassportRepo
 	log  *log.Helper
+}
+
+// Logout 登出
+func (uc *PassportUseCase) Logout(ctx context.Context, id uint32, sid string) (err error) {
+	err = uc.repo.AccountLogout(ctx, id, sid)
+	return
+}
+
+// ChangePassword 修改密码
+func (uc *PassportUseCase) ChangePassword(ctx context.Context, id uint32, ciphertext string, hash string) (token string, err error) {
+	err = uc.repo.ChangePassword(ctx, id, ciphertext, hash)
+	if err != nil {
+		return "", err
+	}
+	token, err = uc.repo.SignLoginToken(ctx, id)
+	if err != nil {
+		return "", err
+	}
+	return
 }
 
 func NewPassportUseCase(repo PassportRepo, logger log.Logger) *PassportUseCase {

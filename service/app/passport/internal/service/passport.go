@@ -2,9 +2,24 @@ package service
 
 import (
 	"context"
+	"errors"
 	pb "service/api/passport/v1"
 	"service/app/passport/internal/biz"
+	"service/pkg/jwt"
 )
+
+//LogoutRequest 登出请求
+func (s *PassportService) LogoutRequest(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutReply, error) {
+	loginToken, ok := jwt.FromLoginTokenContext(ctx)
+	if !ok {
+		return nil, errors.New("TokenNotFound")
+	}
+	err := s.uc.Logout(ctx, loginToken.UserID, loginToken.UUID)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.LogoutReply{}, nil
+}
 
 // RenewalToken 续签Token
 func (s *PassportService) RenewalToken(ctx context.Context, req *pb.RenewalTokenRequest) (*pb.RenewalTokenReply, error) {
@@ -68,6 +83,18 @@ func (s *PassportService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	}, nil
 }
 
+// ChangePassword 修改密码
 func (s *PassportService) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ChangePasswordReply, error) {
-	return &pb.ChangePasswordReply{}, nil
+	loginToken, ok := jwt.FromLoginTokenContext(ctx)
+	if !ok {
+		return nil, errors.New("TokenNotFound")
+	}
+	newToken, err := s.uc.ChangePassword(ctx, loginToken.UserID, req.Body.NewPassword, req.Body.Hash)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ChangePasswordReply{
+		Ok:    true,
+		Token: newToken,
+	}, nil
 }

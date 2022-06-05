@@ -12,8 +12,15 @@ option java_outer_classname = "PassportProtoV1";
 
 service Passport {
 
+  rpc Logout(LogoutRequest) returns (LogoutReply) {
+    option(google.api.http) = {
+      post: "/web/v1/logout"
+      body: "body"
+    };
+  }
+
   // RenewalToken Token续签
-  rpc RenewalToken (RenewalTokenRequest) returns (RenewalTokenReply){
+  rpc RenewalToken (RenewalTokenRequest) returns (RenewalTokenReply) {
     option(google.api.http) = {
       post: "/web/v1/renewalToken"
       body: "body"
@@ -59,6 +66,15 @@ service Passport {
       body: "body"
     };
   }
+}
+
+// 注销请求
+message LogoutRequest{
+  message LogoutRequestBody{
+  }
+  LogoutRequestBody body = 1;
+}
+message LogoutReply{
 }
 
 // 续签token请求
