@@ -110,3 +110,27 @@ func (s *AccountService) SavePassword(ctx context.Context, req *pb.SavePasswordR
 	}
 	return &pb.SavePasswordReply{}, nil
 }
+
+func (s *AccountService) CreateSession(ctx context.Context, req *pb.CreateSessionReq) (*pb.CreateSessionReply, error) {
+	sid, err := s.uc.CreateSession(ctx, req.Id, req.Ip)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreateSessionReply{Sid: sid}, nil
+}
+
+func (s *AccountService) VerifySession(ctx context.Context, req *pb.VerifySessionReq) (*pb.VerifySessionReply, error) {
+	ok, err := s.uc.ExistSession(ctx, req.Id, req.Sid)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.VerifySessionReply{Ok: ok}, nil
+}
+
+func (s *AccountService) CloseSession(ctx context.Context, req *pb.CloseSessionReq) (*pb.CloseSessionReply, error) {
+	err := s.uc.CloseSession(ctx, req.Id, req.Sid)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CloseSessionReply{Ok: true}, nil
+}

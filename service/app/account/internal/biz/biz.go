@@ -44,6 +44,15 @@ type AccountRepo interface {
 
 	// UpdateAccount 更新账户
 	UpdateAccount(ctx context.Context, account *Account) error
+
+	// CreateSession 创建账户会话
+	CreateSession(ctx context.Context, id uint32, ip string) (sid string, err error)
+
+	// ExistSession 判断账户会话是否存在
+	ExistSession(ctx context.Context, id uint32, sid string) (ok bool, err error)
+
+	// CloseSession 关闭账户会话
+	CloseSession(ctx context.Context, id uint32, sids ...string) error
 }
 
 type AccountUseCase struct {

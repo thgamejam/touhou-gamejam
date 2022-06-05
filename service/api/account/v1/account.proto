@@ -124,8 +124,9 @@ message GetKeyReply {
 
 // CreateSessionReq 创建会话请求
 message CreateSessionReq {
-  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];  // 账户id
-  google.protobuf.Duration expires_at = 2;            // 会话最长有效期
+  uint32 id = 1 [(validate.rules).uint32 = {gt: 0}];                    // 账户id
+  string ip = 2 [(validate.rules).string = {min_len: 7, max_len: 15}];  // 会话客户端的ip
+  google.protobuf.Duration expires_at = 3;                              // 会话最长有效期
 }
 // CreateSessionReply 验证会话回复
 message CreateSessionReply {

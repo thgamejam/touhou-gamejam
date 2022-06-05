@@ -170,3 +170,18 @@ func (uc *AccountUseCase) VerifyPasswordByEMail(
 func (uc *AccountUseCase) ExistAccountEMail(ctx context.Context, email string) (bool, error) {
 	return uc.repo.ExistAccountEMail(ctx, email)
 }
+
+// CreateSession 创建账户会话
+func (uc *AccountUseCase) CreateSession(ctx context.Context, id uint32, ip string) (sid string, err error) {
+	return uc.repo.CreateSession(ctx, id, ip)
+}
+
+// ExistSession 判断账户会话是否存在
+func (uc *AccountUseCase) ExistSession(ctx context.Context, id uint32, sid string) (ok bool, err error) {
+	return uc.repo.ExistSession(ctx, id, sid)
+}
+
+// CloseSession 关闭账户会话
+func (uc *AccountUseCase) CloseSession(ctx context.Context, id uint32, sid string) error {
+	return uc.repo.CloseSession(ctx, id, sid)
+}
