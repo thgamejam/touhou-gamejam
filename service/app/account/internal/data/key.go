@@ -99,7 +99,7 @@ func (r *accountRepo) CacheCreateLockOpener(ctx context.Context, lock *LockOpene
 	// 取密钥hash
 	hash = hashMd5To16(privateKey)
 
-	lock = &LockOpener{
+	*lock = LockOpener{
 		ID:      id,
 		Public:  publicKey,
 		Private: privateKey,
