@@ -1,7 +1,7 @@
 <template>
   <div class="signin-background" />
   <div class="signin-container center bg-white">
-    <div class="signin-form center">
+    <div class="signin-form center" v-show="isLogin">
       <div class="signin-form-account">
         <!--<p class="bold">账号</p>-->
         <input class="signin-form-account-input" placeholder="电子邮箱或手机号码">
@@ -11,7 +11,8 @@
         <input class="signin-form-password-input" placeholder="密码">
       </div>
       <div class="signin-helper">
-        <a class="signin-helper-forget-password left" href="">忘记密码</a> <a class="signin-helper-register right" href="">立即注册</a>
+        <a class="signin-helper-forget-password left" href="">忘记密码</a>
+        <button class="signin-helper-register right" @click="onButtonDown">立即注册</button>
       </div>
 
       <div class="signin-login-btn">
@@ -28,10 +29,38 @@
         <i class="ri-wechat-fill"></i>
       </div>
     </div>
+
+    <div class="signin-form center" v-show="!isLogin">
+      <div class="signin-form-account">
+        <!--<p class="bold">账号</p>-->
+        <input class="signin-form-account-input" placeholder="电子邮箱或手机号码">
+      </div>
+      <div class="signin-form-password">
+        <!--<p class="bold">密码</p>-->
+        <input class="signin-form-password-input" placeholder="密码">
+      </div>
+      <div class="signin-form-password">
+        <!--<p class="bold">密码</p>-->
+        <input class="signin-form-password-input" placeholder="确认密码">
+      </div>
+      <div class="signin-helper">
+        <button class="signin-helper-forget-password center">机器人验证</button>
+      </div>
+
+      <div class="signin-login-btn">
+        <button>注册</button>
+      </div>
+
+      <el-divider style="opacity: 0.8;margin: 30px 0 30px 0;">
+        <button style="font-size: 5px" class="signin-helper-register right" @click="onButtonDown">返回登录</button>
+      </el-divider>
+    </div>
   </div>
 </template>
 
 <script>
+import {ref} from "vue";
+
 export default {
   name: "LoginRegister",
   components: {},
@@ -39,6 +68,17 @@ export default {
     let parentBody = document.querySelector('body');
     if (parentBody) {
       parentBody.setAttribute('style', 'background-color: #f5f7f9; margin: 0px;');
+    }
+
+    let isLogin = ref(true);
+
+    function onButtonDown() {
+      isLogin.value = !isLogin.value;
+    }
+
+    return {
+      isLogin,
+      onButtonDown
     }
   }
 }
@@ -72,6 +112,7 @@ i:hover {
   margin: 0 auto;
 }
 .signin-container {
+  position: absolute;
   width: 500px;
   height: 400px;
   border-radius: 20px;
@@ -92,12 +133,15 @@ i:hover {
 
 }
 .signin-helper {
-  height: 30px;
-  margin: 15px 40px;
+  height: 20px;
+  margin: 10px 30px;
 }
 .signin-helper-register,
 .signin-helper-forget-password {
-  padding: 7px 0;
+  cursor: pointer;
+  border: transparent;
+  background-color: transparent;
+  font-size: 14px;
   text-decoration: none;
   color: #606266;
 }
