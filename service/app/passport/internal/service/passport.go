@@ -8,8 +8,8 @@ import (
 	"service/pkg/jwt"
 )
 
-//LogoutRequest 登出请求
-func (s *PassportService) LogoutRequest(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutReply, error) {
+//Logout 登出请求
+func (s *PassportService) Logout(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutReply, error) {
 	loginToken, ok := jwt.FromLoginTokenContext(ctx)
 	if !ok {
 		return nil, errors.New("TokenNotFound")

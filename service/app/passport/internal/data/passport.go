@@ -120,8 +120,14 @@ func (r *passportRepo) LoginVerify(ctx context.Context, username string, ciphert
 
 // SignLoginToken 签署登录token
 func (r *passportRepo) SignLoginToken(ctx context.Context, accountID uint32) (token string, err error) {
+	tr, ok := transport.FromServerContext(ctx)
+	if !ok {
+		return "", errors.New("ctxError")
+	}
+	ip := tr.RequestHeader().Get("X-RemoteAddr")
 	sid, err := r.data.accountClient.CreateSession(ctx, &accountV1.CreateSessionReq{
 		Id:        accountID,
+		Ip:        ip,
 		ExpiresAt: r.conf.LoginExpireTime,
 	})
 	if err != nil {
