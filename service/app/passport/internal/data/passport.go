@@ -8,6 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport"
 	accountV1 "service/api/account/v1"
+	userV1 "service/api/user/v1"
 	"service/app/passport/internal/biz"
 	"service/app/passport/internal/conf"
 	"service/pkg/jwt"
@@ -27,6 +28,27 @@ func NewPassportRepo(data *Data, conf *conf.Passport, logger log.Logger) biz.Pas
 		conf: conf,
 		log:  log.NewHelper(logger),
 	}
+}
+
+func (r *passportRepo) CreateUserByAccountID(ctx context.Context, id uint32) (ok bool, err error) {
+	_, err = r.data.userClient.CreateUser(ctx, &userV1.CreateUserRequest{AccountID: id})
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// GetUserByAccountID 通过账户ID获取账户
+func (r *passportRepo) GetUserByAccountID(ctx context.Context, id uint32) (ok bool, err error) {
+	_, err = r.data.userClient.GetUserByAccountID(ctx, &userV1.GetUserByAccountIDRequest{AccountID: id})
+	if err != nil {
+		// 若错误信息为用户未找到则不返回错误
+		if userV1.IsUserNotFoundByAccount(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
 }
 
 // AccountLogout 注销会话号ID

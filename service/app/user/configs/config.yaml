@@ -1,9 +1,9 @@
 server:
   http:
-    addr: 0.0.0.0:8000
+    addr: 0.0.0.0:8002
     timeout: 1s
   grpc:
-    addr: 0.0.0.0:9000
+    addr: 0.0.0.0:6002
     timeout: 1s
 
 service:
@@ -20,3 +20,8 @@ service:
       password: ""
       read_timeout: 0.2s
       write_timeout: 0.2s
+email:
+  user: mail@mailpush.thjam.cc
+  pass: iTvLd6f9cKwQ3yn
+  host: smtpdm.aliyun.com
+  port: 80

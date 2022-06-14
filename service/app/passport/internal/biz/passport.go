@@ -34,6 +34,10 @@ type PassportRepo interface {
 	ChangePassword(ctx context.Context, id uint32, ciphertext string, hash string) (err error)
 	// AccountLogout 注销会话号ID
 	AccountLogout(ctx context.Context, id uint32, sid string) (err error)
+	// GetUserByAccountID 通过账户ID获取用户
+	GetUserByAccountID(ctx context.Context, id uint32) (ok bool, err error)
+	// CreateUserByAccountID 通过账户ID创建用户
+	CreateUserByAccountID(ctx context.Context, id uint32) (ok bool, err error)
 }
 
 type PassportUseCase struct {
@@ -94,14 +98,25 @@ func (uc *PassportUseCase) CreatAccount(ctx context.Context, sid string, key str
 
 // Login 登录并签署验证token
 func (uc *PassportUseCase) Login(ctx context.Context, username string, ciphertext string, hash string) (ok bool, token string, err error) {
-	userID, err := uc.repo.LoginVerify(ctx, username, ciphertext, hash)
+	accountID, err := uc.repo.LoginVerify(ctx, username, ciphertext, hash)
 	if err != nil {
 		return false, "", err
 	}
+	ok, err = uc.repo.GetUserByAccountID(ctx, accountID)
+	if err != nil {
+		// user服务内部错误
+		return false, "", nil
+	}
 
-	// TODO 判断user是否存在，若不存在则新建user
+	if !ok {
+		// 若用户不存在则创建用户
+		_, err = uc.repo.CreateUserByAccountID(ctx, accountID)
+		if err == nil {
+			return false, "", err
+		}
+	}
 
-	loginToken, err := uc.repo.SignLoginToken(ctx, userID)
+	loginToken, err := uc.repo.SignLoginToken(ctx, accountID)
 	if err != nil {
 		return false, "", err
 	}

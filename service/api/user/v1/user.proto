@@ -23,6 +23,7 @@ service User {
 
 // CreateUserRequest 创建用户请求
 message CreateUserRequest {
+  uint32 accountID = 1;
 }
 // CreateUserReply 创建用户请求返回信息
 message CreateUserReply {
