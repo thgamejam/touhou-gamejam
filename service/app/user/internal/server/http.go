@@ -5,7 +5,6 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	v1 "service/api/user/v1"
 	//"service/app/user/internal/conf"
 	"service/app/user/internal/service"
 
@@ -30,6 +29,6 @@ func NewHTTPServer(c *pkgConf.Server, service *service.UserService, logger log.L
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterUserHTTPServer(srv, service)
+	//v1.RegisterUserHTTPServer(srv, service)
 	return srv
 }

@@ -9,103 +9,49 @@ option java_multiple_files = true;
 option java_package = "dev.kratos.api.user.v1";
 option java_outer_classname = "UserProtoV1";
 
-enum AccountFormat {
-  ID = 0;
-  USERNAME = 1;
-  EMAIL = 2;
-  PHONE = 3;
-}
-
 service User {
   // 创建用户
   rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {}
 
-  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {}
-
   // 使用ID获取用户
-  rpc GetUser (GetUserRequest) returns (GetUserReply) {}
+  rpc GetUserByAccountID (GetUserByAccountIDRequest) returns (GetUserByAccountIDReply) {}
 
-  // 使用用户名获取用户
-  rpc GetUserByUsername (GetUserByUsernameRequest) returns (GetUserReply) {}
+  // 使用邮箱获取用户
+  rpc GetUsernameByEmail (GetUserByEmailRequest) returns (GetUserReply) {}
 
-  // 使用邮箱获取用户名
-  rpc GetUsernameByEmail (GetUsernameByEmailRequest) returns (GetUsernameReply) {}
-
-  // 使用手机号获取用户名
-  rpc GetUsernameByPhone (GetUsernameByPhoneRequest) returns (GetUsernameReply) {}
-
-  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply) {}
-
-  // ListUser 获取用户列表
-  rpc ListUser (ListUserRequest) returns (ListUserReply) {}
-
-  // VerifyPassword 校验密码
-  rpc VerifyPassword(VerifyPasswordRequest) returns (VerifyPasswordReply) {}
 }
 
-// CreateUserRequest
+// CreateUserRequest 创建用户请求
 message CreateUserRequest {
-  string username = 1 [(validate.rules).string = {min_len: 4, max_len: 32}];
-  string password = 2;
-  string email = 3 [(validate.rules).string.email = true];
 }
-// CreateUserReply
+// CreateUserReply 创建用户请求返回信息
 message CreateUserReply {
-  uint64 id = 1;
-}
-
-// DeleteUserRequest
-message DeleteUserRequest {
-}
-// DeleteUserReply
-message DeleteUserReply {
+  UserInfo userInfo = 1;
 }
 
 // GetUserRequest 获取用户请求
-message GetUserRequest {
-  uint64 id = 1 [(validate.rules).uint64 = {gt: 0}];
+message GetUserByAccountIDRequest{
+  uint32 accountID = 1;
 }
-// GetUserByUsernameRequest 使用用户名获取用户请求
-message GetUserByUsernameRequest{
-  string username = 1 [(validate.rules).string = {min_len: 4, max_len: 32}];
-}
-// GetUserReply 获取用户回复
-message GetUserReply {
+// GetUserByAccountIDReply 返回用户信息
+message GetUserByAccountIDReply{
+  UserInfo userInfo= 1;
 }
 
-message GetUsernameByEmailRequest {
-  string email = 1 [(validate.rules).string.email = true];
+// GetUserByEmailRequest 通过邮箱获取用户请求
+message GetUserByEmailRequest{
+  string email = 1 [(validate.rules).string = {email: true, max_len: 32}];
 }
-message GetUsernameByPhoneRequest {
-  string phone = 1 [(validate.rules).string.len = 11];
-}
-message GetUsernameReply {
-  string username = 1;
-}
-
-// UpdateUserRequest
-message UpdateUserRequest {
-}
-// UpdateUserReply
-message UpdateUserReply {
+// 返回用户信息
+message GetUserReply{
+  UserInfo userInfo= 1;
 }
 
-// ListUserRequest
-message ListUserRequest {
-  repeated uint64 ids = 1;
-}
-// ListUserReply
-message ListUserReply {
-}
-
-// VerifyPasswordRequest 验证密码请求
-message VerifyPasswordRequest {
-  AccountFormat format = 1;
-  string username = 2 [(validate.rules).string = {min_len: 4, max_len: 32}];
-  string password = 3;
-}
-// VerifyPasswordReply 验证密码回复
-message VerifyPasswordReply {
-  bool ok = 1;
-  uint64 id = 2;
+// UserInfo 用户信息
+message UserInfo{
+  string name = 1;
+  string avatar_url = 2;
+  uint32 work_count = 3;
+  uint32 fans_count = 4;
+  repeated string tags = 5;
 }
