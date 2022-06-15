@@ -5,7 +5,7 @@ create table user (
     account_id          int unsigned        not null                    comment '账户id索引',
     name                varchar(16)         not null    default ''      comment '名称',
     avatar_id           int unsigned        not null    default 0       comment '头像id',
-    tag_string          char(32)            not null    default ''      comment '标签合集字符串',
+    tag_string          varchar(16)            not null    default ''      comment '标签合集字符串',
     allow_syndication   boolean             not null    default true    comment '是否允许联合发布邀请',
     works_count         int signed          not null    default 0       comment '作品数',
     fans_count          smallint unsigned   not null    default 0       comment '粉丝数',
