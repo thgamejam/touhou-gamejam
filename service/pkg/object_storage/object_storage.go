@@ -47,6 +47,16 @@ func (o *ObjectStorage) GetClient() *minio.Client {
 	return o.client
 }
 
+// CreateBucket 创建桶
+func (o *ObjectStorage) CreateBucket(ctx context.Context, bucketName string) (err error) {
+	return o.client.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: "cn-north-1"})
+}
+
+// ExistBucket 获取对应桶是否存在
+func (o *ObjectStorage) ExistBucket(ctx context.Context, bucketName string) (ok bool, err error) {
+	return o.client.BucketExists(ctx, bucketName)
+}
+
 // PreSignGetURL 获取文件对象的预签名URL
 // bucket: 桶
 // key: 对象路径
