@@ -20,8 +20,19 @@ service:
       password: ""
       read_timeout: 0.2s
       write_timeout: 0.2s
+    objectStorage:
+      domain: localhost:9000
+      access_key_id: minioadmin
+      secret_access_key: minioadmin
+      location: cn-north-1
+      secure: false
+      token: ""
 email:
   user: mail@mailpush.thjam.cc
   pass: iTvLd6f9cKwQ3yn
   host: smtpdm.aliyun.com
   port: 80
+
+user:
+  default_user_avatar_hash: aaa
+  user_avatar_bucket_name:  useravatarbucket

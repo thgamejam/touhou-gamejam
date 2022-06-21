@@ -11,18 +11,20 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 	"service/app/user/internal/biz"
+	conf2 "service/app/user/internal/conf"
 	"service/app/user/internal/data"
 	"service/app/user/internal/server"
 	"service/app/user/internal/service"
 	"service/pkg/cache"
 	"service/pkg/conf"
 	"service/pkg/database"
+	"service/pkg/object_storage"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *conf.Server, confService *conf.Service, registrar registry.Registrar, discovery registry.Discovery, logger log.Logger) (*kratos.App, func(), error) {
+func initApp(confServer *conf.Server, confService *conf.Service, user *conf2.User, registrar registry.Registrar, discovery registry.Discovery, logger log.Logger) (*kratos.App, func(), error) {
 	db, err := database.NewDataBase(confService)
 	if err != nil {
 		return nil, nil, err
@@ -31,11 +33,15 @@ func initApp(confServer *conf.Server, confService *conf.Service, registrar regis
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData, cleanup, err := data.NewData(logger, db, cacheCache)
+	objectStorage, err := object_storage.NewObjectStorage(confService)
 	if err != nil {
 		return nil, nil, err
 	}
-	userRepo := data.NewUserRepo(dataData, logger)
+	dataData, cleanup, err := data.NewData(logger, db, cacheCache, user, objectStorage)
+	if err != nil {
+		return nil, nil, err
+	}
+	userRepo := data.NewUserRepo(dataData, user, logger)
 	userUseCase := biz.NewUserUseCase(userRepo, logger)
 	userService := service.NewUserService(userUseCase, logger)
 	httpServer := server.NewHTTPServer(confServer, userService, logger)

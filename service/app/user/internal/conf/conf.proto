@@ -6,5 +6,12 @@ option go_package = "service/app/user/internal/conf;conf";
 import "google/protobuf/duration.proto";
 
 message Bootstrap {
+  User user = 1;
+}
 
+message User{
+  // 默认用户头像
+  string default_user_avatar_hash = 1;
+  // 用户头像桶名称
+  string user_avatar_bucket_name = 2;
 }

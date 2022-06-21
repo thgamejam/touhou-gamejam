@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	userV1 "service/api/user/v1"
 	"service/app/user/internal/biz"
 )
 
@@ -27,22 +28,30 @@ func (r *userRepo) GetUserByAccountIDOnDatabase(ctx context.Context, accountID u
 		return nil, err
 	}
 	if tx.RowsAffected == 0 {
-		return nil, nil
+		return nil, userV1.ErrorUserNotFoundByAccount("accountID : %v not found", accountID)
 	}
 
-	// TODO 将头像ID转换为URL 标签ID转换为具体字段
+	// 获取用户头像
+	url, err := r.GetUserAvatarURL(ctx, model.AvatarID)
+	if err != nil {
+		r.log.Error("头像报错%v", err)
+	}
+
+	// TODO 标签ID转换为具体字段
 
 	user = &biz.UserInfo{
 		Name:      model.Name,
-		AvatarUrl: "model.AvatarID",
+		AvatarUrl: url,
 		WorkCount: model.WorksCount,
 		FansCount: model.FansCount,
 		Tags:      tagsToStringList(model.TagString),
 	}
+
 	err = r.data.Cache.Set(ctx, userCacheKey(accountID), user, 0)
 	if err != nil {
 		return nil, err
 	}
+
 	return
 }
 
@@ -56,4 +65,25 @@ func (r *userRepo) GetUserByAccountIDOnCache(ctx context.Context, accountID uint
 		return false, nil, nil
 	}
 	return
+}
+
+// GetUserAvatarURL 根据用户ID获取头像
+func (r *userRepo) GetUserAvatarURL(ctx context.Context, avatarID string) (string, error) {
+	// 从缓存中获取用户头像
+	avatar, ok, _ := r.data.Cache.GetString(ctx, userAvatarIDCacheURL(avatarID))
+	if ok {
+		// 若缓存中存在则直接返回
+		return avatar, nil
+	}
+	// 缓存中不存在则从对象存储里获取URL
+	url, err := r.data.ObjectStorage.PreSignGetURL(ctx, r.conf.UserAvatarBucketName, avatarID, avatarID, -1)
+	if err != nil {
+		// 若对象存储报错则尝试获取默认头像
+		url, err = r.data.ObjectStorage.PreSignGetURL(ctx, r.conf.UserAvatarBucketName, r.conf.DefaultUserAvatarHash, r.conf.DefaultUserAvatarHash, -1)
+		return url.String(), err
+	}
+	// 添加用户头像url到缓存
+	_ = r.data.Cache.SetString(ctx, userAvatarIDCacheURL(avatarID), url.String(), -1)
+
+	return url.String(), err
 }

@@ -110,7 +110,7 @@ func main() {
 	// 服务发现
 	rd := consulUtil.NewDiscovery()
 
-	app, cleanup, err := initApp(pkgBootstrap.Server, pkgBootstrap.Service, rr, rd, logger)
+	app, cleanup, err := initApp(pkgBootstrap.Server, pkgBootstrap.Service, bc.User, rr, rd, logger)
 	if err != nil {
 		panic(err)
 	}

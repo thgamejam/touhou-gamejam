@@ -11,6 +11,7 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/google/wire"
 	"service/app/user/internal/biz"
+	"service/app/user/internal/conf"
 	"service/app/user/internal/data"
 	"service/app/user/internal/server"
 	"service/app/user/internal/service"
@@ -19,6 +20,6 @@ import (
 )
 
 // initApp init kratos application.
-func initApp(*pkgConf.Server, *pkgConf.Service, registry.Registrar, registry.Discovery, log.Logger) (*kratos.App, func(), error) {
+func initApp(*pkgConf.Server, *pkgConf.Service, *conf.User, registry.Registrar, registry.Discovery, log.Logger) (*kratos.App, func(), error) {
 	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }
