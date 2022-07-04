@@ -1,16 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-  // blog-venja-cc
+  // pages
   {
     path: '/',
-    name: 'Blog',
-    component: () => import('../blog-venja-cc/Index.vue')
+    name: 'Index',
+    component: () => import('../pages/Index.vue')
   },
   {
     path: '/signin',
     name: 'SignIn',
-    component: () => import('../blog-venja-cc/LoginRegister.vue')
+    component: () => import('../pages/LoginRegister.vue')
+  },
+  {
+    path: '/blog/:blogId',
+    name: 'Blog',
+    component: () => import('../pages/Blog.vue')
+  },
+  {
+    path: '/blog/:blogId/edit',
+    name: 'BlogEdit',
+    component: () => import('../pages/BlogEdit.vue')
+  },
+  {
+    path: '/blog/add',
+    name: 'BlogAdd',
+    component: () => import('../pages/BlogEdit.vue')
   },
 ]
 

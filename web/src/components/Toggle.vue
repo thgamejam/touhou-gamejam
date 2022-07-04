@@ -19,36 +19,25 @@
         </button>
       </p>
     </div>
-    <button @click="onButtonDown">Login/Logout</button>
+<!--    <button @click="onButtonDown">Login/Logout</button>-->
   </div>
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {ref} from "vue";
 
-export default {
-  name: "Toggle",
-  setup() {
-    let affixTop = ref(false);
-    let logon = ref(false);
+let affixTop = ref(false);
+let logon = ref(false);
 
-    window.addEventListener('scroll', onScroll)
+window.addEventListener('scroll', onScroll)
 
-    function onScroll() {
-      affixTop.value = window.scrollY >= 300;
-    }
+function onScroll() {
+  affixTop.value = window.scrollY >= 300;
+}
 
-    function onButtonDown() {
-      logon.value = !logon.value;
-    }
-
-    return {
-      affixTop,
-      logon,
-      onButtonDown
-    }
-  },
+function onButtonDown() {
+  logon.value = !logon.value;
 }
 </script>
 

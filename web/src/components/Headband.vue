@@ -2,10 +2,8 @@
   <div class="headband"></div>
 </template>
 
-<script>
-export default {
-  name: "Headband"
-}
+<script lang="ts" setup>
+
 </script>
 
 <style scoped>

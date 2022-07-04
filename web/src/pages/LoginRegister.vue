@@ -1,5 +1,5 @@
 <template>
-  <div class="signin-background" />
+  <div class="signin-background"/>
   <div class="signin-container center bg-white">
     <div class="signin-form center" v-show="isLogin">
       <div class="signin-form-account">
@@ -58,29 +58,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import {ref} from "vue";
 
-export default {
-  name: "LoginRegister",
-  components: {},
-  setup() {
-    let parentBody = document.querySelector('body');
-    if (parentBody) {
-      parentBody.setAttribute('style', 'background-color: #f5f7f9; margin: 0px;');
-    }
+let isLogin = ref(true);
 
-    let isLogin = ref(true);
-
-    function onButtonDown() {
-      isLogin.value = !isLogin.value;
-    }
-
-    return {
-      isLogin,
-      onButtonDown
-    }
-  }
+function onButtonDown() {
+  isLogin.value = !isLogin.value;
 }
 </script>
 
@@ -99,18 +83,22 @@ input {
   outline: 0;
   width: 90%;
 }
+
 i {
   color: #606266;
 }
+
 i:hover {
   color: #000000;
 }
+
 .signin-background {
   background: url('../assets/Logo_bg.png') no-repeat;
   width: 500px;
   height: 500px;
   margin: 0 auto;
 }
+
 .signin-container {
   position: absolute;
   width: 500px;
@@ -118,24 +106,29 @@ i:hover {
   border-radius: 20px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
 }
+
 .signin-form {
   transform: translate(0, 10%);
   width: 75%;
   height: 90%;
 }
+
 .signin-form-account,
 .signin-form-password {
   height: 40px;
   margin: 15px auto;
 }
+
 .signin-form-account-input,
 .signin-form-password-input {
 
 }
+
 .signin-helper {
   height: 20px;
   margin: 10px 30px;
 }
+
 .signin-helper-register,
 .signin-helper-forget-password {
   cursor: pointer;
@@ -145,13 +138,16 @@ i:hover {
   text-decoration: none;
   color: #606266;
 }
+
 .signin-helper-register:hover,
 .signin-helper-forget-password:hover {
-   color: #000000;
- }
+  color: #000000;
+}
+
 .signin-login-btn {
   margin: 15px 0;
 }
+
 .signin-login-btn button {
   border: #606266 1px solid;
   border-radius: 5px;
@@ -161,10 +157,12 @@ i:hover {
   height: 40px;
   width: 90%;
 }
+
 .signin-login-btn button:hover {
   border: #000000 1px solid;
   background-color: #000000;
 }
+
 .signin-login-btn button:focus {
   border: #363636 3px solid;
   background-color: #363636;

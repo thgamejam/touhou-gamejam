@@ -13,20 +13,7 @@
 }
 
 body{
-  background-color: #131313;
-}
-
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+  background-color: #f5f7f9;
+  margin: 0;
 }
 </style>
